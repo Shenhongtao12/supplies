@@ -47,11 +47,11 @@ public class AdminController extends BaseController {
     @PostMapping("login")
     public ResponseEntity<RestResponse> login(@Validated @RequestBody Login admin, HttpSession session) {
         //验证图形验
-        String code = session.getAttribute("code").toString();
-        if (StringUtils.isEmpty(code)) {
+        Object code = session.getAttribute("code");
+        if (code == null) {
             return ResponseEntity.ok().body(ERROR("验证码已过期，请刷新页面"));
         }
-        if (StringUtils.equals(code, admin.getCode())) {
+        if (StringUtils.equals(code.toString().toLowerCase(), admin.getCode().toLowerCase())) {
             Admin adminInfo = adminService.login(admin);
             if (adminInfo == null) {
                 return ResponseEntity.ok().body(ERROR("用户名或密码错误"));

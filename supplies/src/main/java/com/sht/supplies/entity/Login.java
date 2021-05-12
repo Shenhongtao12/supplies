@@ -29,7 +29,7 @@ public class Login {
     @Length(min = 6, max = 20, message = "密码长度应在6-20字符")
     private String password;
 
-    @NotBlank(message = "密码不能为空")
+    @NotBlank(message = "验证码不能为空")
     @Length(min = 4, max = 4, message = "验证码长度为4个字符")
     private String code;
 

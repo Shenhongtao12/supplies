@@ -11,7 +11,7 @@ import java.io.IOException;
  * @date 2020/11/22 20:36
  * 配置OPTIONS请求
  */
-@Component
+//@Component
 public class CorsFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
