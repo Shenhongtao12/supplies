@@ -13,6 +13,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
     default-property-inclusion: non_null
+    date-format: yyyy-MM-dd HH:mm:ss
 pagehelper:
   helperDialect: mysql  #设置数据库
   reasonable: true  #分页合理化参数pageNum<=0 时会查询第一页，pageNum>pages（超过总数时），会查询最后一页

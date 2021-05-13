@@ -1,5 +1,7 @@
 package com.sht.supplies.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import tk.mybatis.mapper.annotation.KeySql;
@@ -10,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * @author Aaron
@@ -26,29 +29,33 @@ public class Goods {
     @KeySql(useGeneratedKeys = true)
     private Integer id;
 
-    @NotBlank(message = "物料编号不能为空")
-    @Length(min = 6, max = 20, message = "物料编号长度应6-20字符")
+    @ApiModelProperty(notes = "物料编号")
+    @Length(min = 4, max = 20, message = "物料编号长度应4-20字符")
     private String partNumber;
 
+    @ApiModelProperty(notes = "物料名称")
     @NotBlank(message = "物料名称不能为空")
-    @Length(min = 1, max = 100, message = "物料名称长度应在1-100字符")
-    public String title;
+    @Length(min = 1, max = 50, message = "物料名称长度应在1-50字符")
+    private String title;
 
-    public BigDecimal price;
+    @ApiModelProperty(notes = "计量单位")
+    @NotBlank(message = "计量单位不能为空")
+    @Length(min = 1, max = 10, message = "计量单位长度应在1-10个字符")
+    private String unit;
 
-    @NotBlank(message = "库存不能为空")
-    @Size(min = 0, max = 99999, message = "库存最小为0，最大为99999")
+    @ApiModelProperty(notes = "总库存，根据进货量计算，库存最小值为0，最大值为999999")
+    @Size(min = 0, max = 999999, message = "库存最小值为0，最大值为999999")
     private Integer inventory;
 
+    @ApiModelProperty(notes = "类别，就是Excel中每一页的标题")
+    @NotBlank(message = "类别不能为空")
+    @Length(min = 1, max = 10, message = "类别长度应在1-10个字符")
+    private String category;
 
-    @NotBlank(message = "单位不能为空")
-    @Length(min = 1, max = 10, message = "分类名长度应在1-10个字符")
-    public String unit;
+    @ApiModelProperty(notes = "不需要传该参数，从token中获取")
+    private Integer adminId;
 
-    /*@NotBlank(message = "品牌不能为空")
-    @Length(min = 1, max = 100, message = "品牌长度应大于1，小于200")*/
-    public String brand;
+    //@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime inDate;
 
-    @Transient
-    public BigDecimal originalPrice;
 }

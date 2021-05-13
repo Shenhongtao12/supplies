@@ -1,16 +1,22 @@
 package com.sht.supplies.controller;
 
+import com.sht.supplies.common.BaseCommon;
 import com.sht.supplies.common.RestResponse;
+import com.sht.supplies.utils.DateUtils;
 import io.jsonwebtoken.Claims;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.beans.PropertyEditorSupport;
+import java.util.Date;
 
 /**
  * @author Administrator
  */
-public class BaseController {
+public class BaseController extends BaseCommon {
 
     protected HttpServletRequest request;
     protected HttpServletResponse response;
@@ -30,23 +36,20 @@ public class BaseController {
         }
     }
 
-    public RestResponse SUCCESS(String message){
-        return new RestResponse(200, message);
-    }
-
-    public RestResponse SUCCESS(Object data) {
-        return new RestResponse(200, data);
-    }
-
-    public RestResponse SUCCESS(Object data, String message) {
-        return new RestResponse(200, data, message);
-    }
-
-    public RestResponse ERROR(String message) {
-        return new RestResponse(400, message);
-    }
-
-    public RestResponse ERROR(Integer code, String message) {
-        return new RestResponse(code, message);
+    /**
+     * 将前台传递过来的日期格式的字符串，自动转化为Date类型
+     */
+    @InitBinder
+    public void initBinder(WebDataBinder binder)
+    {
+        // Date 类型转换
+        binder.registerCustomEditor(Date.class, new PropertyEditorSupport()
+        {
+            @Override
+            public void setAsText(String text)
+            {
+                setValue(DateUtils.parseDate(text));
+            }
+        });
     }
 }

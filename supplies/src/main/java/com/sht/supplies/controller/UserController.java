@@ -43,7 +43,7 @@ public class UserController extends BaseController {
         return ResponseEntity.ok().body(userService.update(user));
     }
 
-    @GetMapping("userPage")
+    @GetMapping
     public ResponseEntity<RestResponse> userPage(@RequestParam(name = "name",required = false) String name,
                                                  @RequestParam(name = "page", defaultValue = "1") Integer page,
                                                  @RequestParam(name = "size", defaultValue = "10") Integer size) {
@@ -55,5 +55,10 @@ public class UserController extends BaseController {
     public ResponseEntity<RestResponse> delete(@RequestParam(name = "id") Integer id) {
 
         return ResponseEntity.ok(userService.delete(id));
+    }
+
+    @GetMapping("select-user")
+    public ResponseEntity<RestResponse> selectUser() {
+        return ResponseEntity.ok(SUCCESS(userService.selectUser()));
     }
 }
