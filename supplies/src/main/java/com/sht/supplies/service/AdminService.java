@@ -75,6 +75,9 @@ public class AdminService {
     }
 
     public PageResult<Admin> queryPage(String name, Integer page, Integer size) {
+        if (size > 100) {
+            size = 100;
+        }
         PageHelper.startPage(page, size);
         Example example = new Example(Admin.class);
         Example.Criteria criteria = example.createCriteria();

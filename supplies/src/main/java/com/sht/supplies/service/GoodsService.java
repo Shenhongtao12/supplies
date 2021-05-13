@@ -1,56 +1,68 @@
 package com.sht.supplies.service;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sht.supplies.common.BaseCommon;
 import com.sht.supplies.common.PageResult;
+import com.sht.supplies.common.RestResponse;
 import com.sht.supplies.entity.Goods;
+import com.sht.supplies.entity.GoodsSelect;
 import com.sht.supplies.mapper.GoodsMapper;
-import net.sf.jsqlparser.expression.TimeValue;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Aaron
  * @date 2020/12/19 23:00
  */
+@Slf4j
 @Service
-public class GoodsService {
+public class GoodsService extends BaseCommon {
 
     @Autowired
     private GoodsMapper goodsMapper;
 
-    /**
-     * 分页查询数据
-     */
-    public PageResult<Map<String, Object>> findByPage(int page, int size, String keyword) throws IOException {
-        if (page <= 1) {
-            page = 1;
+    public RestResponse save(Goods goods) {
+        if (StringUtils.isNotEmpty(goods.getPartNumber()) && goodsMapper.existsPartNumber(goods.getPartNumber()) != null) {
+            return ERROR(goods.getPartNumber() + " 物料编号已存在");
         }
-
-        return new PageResult<>( );
+        if (goodsMapper.existsTitle(goods.getTitle()) != null) {
+            return ERROR(goods.getTitle() + " 物料名称已存在");
+        }
+        goods.setId(null);
+        goods.setInventory(0);
+        goods.setInDate(LocalDateTime.now());
+        try {
+            goodsMapper.insertSelective(goods);
+            return SUCCESS("添加成功");
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            return ERROR("添加失败，系统异常");
+        }
     }
 
-    public int save(Goods goods) {
-        goodsMapper.insertSelective(goods);
-        return goods.getId();
-    }
-
-
-
-
-
-    public int update(Goods goods) {
-        return goodsMapper.updateByPrimaryKeySelective(goods);
+    public RestResponse update(Goods goods) {
+        if (goods.getPartNumber() != null && !goods.getId().equals(goodsMapper.existsPartNumber(goods.getPartNumber()))) {
+            return ERROR(goods.getPartNumber() + " 物料编号已存在");
+        }
+        if (!goods.getId().equals(goodsMapper.existsTitle(goods.getTitle()))) {
+            return ERROR(goods.getTitle() + " 物料名称已存在");
+        }
+        goods.setInDate(null);
+        goods.setInventory(null);
+        try {
+            goodsMapper.updateByPrimaryKeySelective(goods);
+            return SUCCESS("更新成功");
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            return ERROR("更新失败");
+        }
     }
 
     public boolean existsWithPrimaryKey(Integer id) {
@@ -63,26 +75,29 @@ public class GoodsService {
         goods.setId(id);
     }
 
-    public Goods findByID(Integer id) {
-        return goodsMapper.selectByPrimaryKey(id);
-    }
-
-    public PageResult<Goods> findGoodsPage(String keyword, Boolean shelf, Integer page, Integer size) {
+    public PageResult<Goods> findGoodsPage(String partNumber, String title, String category, Integer page, Integer size) {
+        if (size > 100) {
+            size = 100;
+        }
         Example example = new Example(Goods.class);
         Example.Criteria criteria = example.createCriteria();
-        if (shelf != null) {
-            criteria.andEqualTo("shelf", shelf);
+        if (StringUtils.isNotEmpty(partNumber)) {
+            criteria.andEqualTo("partNumber", partNumber);
         }
 
-        if (keyword != null) {
-            criteria.andLike("title", "%" + keyword + "%");
+        if (StringUtils.isNotEmpty(title)) {
+            criteria.andLike("title", "%" + title + "%");
+        }
+
+        if (StringUtils.isNotEmpty(category)) {
+            criteria.andEqualTo("category", category);
         }
         PageHelper.startPage(page, size);
         Page<Goods> goodsPage = (Page<Goods>) goodsMapper.selectByExample(example);
         return new PageResult<>(goodsPage.getTotal(), goodsPage.getPages(), goodsPage.getResult());
     }
 
-    public Integer countGoods() {
-        return goodsMapper.countGoods();
+    public List<GoodsSelect> getPartNumberTitle() {
+        return goodsMapper.getPartNumberTitle();
     }
 }
