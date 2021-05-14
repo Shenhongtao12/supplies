@@ -3,6 +3,7 @@ package com.sht.supplies.controller;
 import com.sht.supplies.common.RestResponse;
 import com.sht.supplies.entity.Goods;
 import com.sht.supplies.service.GoodsService;
+import io.swagger.annotations.Api;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("api/goods")
+@Api(tags = "物料")
 public class GoodsController extends BaseController {
 
     @Autowired
@@ -33,7 +35,7 @@ public class GoodsController extends BaseController {
     public ResponseEntity<RestResponse> findByPage(
             @Validated @Length(min = 4, max = 20, message = "物料编号长度应4-20字符") @RequestParam(name = "partNumber", required = false) String partNumber,
             @Validated @Length(min = 1, max = 50, message = "物料名称长度应1-50字符")@RequestParam(name = "title", required = false) String title,
-            @Validated @Length(min = 1, max = 10, message = "物料名称长度应1-10字符")@RequestParam(name = "category", required = false) String category,
+            @Validated @Length(min = 1, max = 10, message = "物料所属分类长度应1-10字符")@RequestParam(name = "category", required = false) String category,
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "size", defaultValue = "20") Integer size) {
         return ResponseEntity.ok(SUCCESS(goodsService.findGoodsPage(partNumber, title, category, page, size)));

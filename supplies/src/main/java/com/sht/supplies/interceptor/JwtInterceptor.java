@@ -5,8 +5,8 @@ import com.sht.supplies.common.RestResponse;
 import com.sht.supplies.controller.BaseController;
 import com.sht.supplies.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ public class JwtInterceptor extends BaseController implements HandlerInterceptor
         // 1.通过request获取请求token信息
         String authorization = request.getHeader("Authorization");
         //判断请求头信息是否为空，或者是否已Bearer开头
-        if(!StringUtils.isEmpty(authorization) && authorization.startsWith("Bearer")) {
+        if(StringUtils.isNotEmpty(authorization) && authorization.startsWith("Bearer")) {
             //获取token数据
             String token = authorization.replace("Bearer ","");
             //解析token获取claims

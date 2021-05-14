@@ -28,7 +28,7 @@ public class UserService extends BaseCommon {
     private UserMapper userMapper;
 
     public RestResponse save(User user) {
-        if (userMapper.existsWorkNumber(user.getWorkNumber()) > 0) {
+        if (userMapper.existsWorkNumber(user.getWorkNumber()) != null) {
             return ERROR("员工工号重复");
         }
         user.setInDate(LocalDateTime.now());
@@ -44,6 +44,10 @@ public class UserService extends BaseCommon {
     public RestResponse update(User user) {
         if (!userMapper.existsWithPrimaryKey(user.getId())) {
             return ERROR("修改失败，该员工已删除");
+        }
+        Integer userId = userMapper.existsWorkNumber(user.getWorkNumber());
+        if (userId != null && !userId.equals(user.getId())) {
+            return ERROR("工号: '" + user.getWorkNumber()+ "' 已有员工使用");
         }
         user.setInDate(null);
         try {

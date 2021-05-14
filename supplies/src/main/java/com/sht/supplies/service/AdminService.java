@@ -37,12 +37,13 @@ public class AdminService {
     private AdminMapper adminMapper;
 
     public Boolean existsWorkNumber(String workNumber) {
-        return adminMapper.existsWorkNumber(workNumber) > 0;
+        return adminMapper.existsWorkNumber(workNumber) != null;
     }
 
     public Boolean add(Admin admin) {
         admin.setId(null);
         admin.setInDate(LocalDateTime.now());
+        admin.setPassword(aesEncrypt(admin.getPassword()));
         try {
             adminMapper.insertSelective(admin);
             return true;
