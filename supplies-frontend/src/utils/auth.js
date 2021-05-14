@@ -1,5 +1,5 @@
 const TokenKey = 'token'
-
+const UserIdKey = 'id'
 
 /**
  * 获取缓存数据
@@ -46,11 +46,22 @@ export function getToken() {
   return getStorage(TokenKey);
 }
 
+export function getUserId() {
+  return getStorage(UserIdKey);
+}
+
 export function setToken(token) {
-  console.log(token)
   return setStorage(TokenKey, token)
 }
 
 export function removeToken() {
   return delStorage(TokenKey)
+}
+
+export function setUserId(id) {
+  return setStorage(UserIdKey, id)
+}
+
+export function removeUserId() {
+  return delStorage(UserIdKey)
 }

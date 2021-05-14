@@ -9,7 +9,6 @@ Vue.use(Router)
 export const constantRouterMap = [
   {path: '/login', component: _import('login/index'), hidden: true},
   {path: '/404', component: _import('404'), hidden: true},
-
   {
     path: '',
     component: Layout,
@@ -24,16 +23,16 @@ export const constantRouterMap = [
   {
     path: '/system',
     component: Layout,
-    redirect: '/system/article',
+    redirect: '/system/employee',
     name: '功能模块',
     meta: {title: '功能模块', icon: 'tree'},
     children: [
       {
-        path: 'article',
-        name: '文章',
-        component: _import('article/article'),
-        meta: {title: '文章', icon: 'example'},
-        menu: 'article'
+        path: 'employee',
+        name: '员工管理',
+        component: _import('employee/employee'),
+        meta: {title: '员工管理', icon: 'example'},
+        menu: 'employee'
       },
     ]
   },
@@ -53,6 +52,38 @@ export const constantRouterMap = [
       },
     ]
   },
+  {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/administrator',
+    name: '功能模块',
+    meta: {title: '功能模块', icon: 'tree'},
+    children: [
+      {
+        path: 'administrator',
+        name: '管理员',
+        component: _import('administrator/administrator'),
+        meta: {title: '管理员', icon: 'example'},
+        menu: 'administrator'
+      },
+    ]
+  },
+  {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/putstorage',
+    name: '功能模块',
+    meta: {title: '功能模块', icon: 'tree'},
+    children: [
+      {
+        path: 'putstorage',
+        name: '物料入库',
+        component: _import('putstorage/putstorage'),
+        meta: {title: '物料入库', icon: 'example'},
+        menu: 'putstorage'
+      },
+    ]
+  },
 ]
 export default new Router({
   // mode: 'history', //后端支持可开
@@ -60,22 +91,22 @@ export default new Router({
   routes: constantRouterMap
 })
 export const asyncRouterMap = [
-  {
-    path: '/system',
-    component: Layout,
-    redirect: '/system/article',
-    name: '功能模块',
-    meta: {title: '功能模块', icon: 'tree'},
-    children: [
-      {
-        path: 'article',
-        name: '文章',
-        component: _import('article/article'),
-        meta: {title: '文章', icon: 'eye'},
-        menu: 'article'
-      },
-    ]
-  },
+  // {
+  //   path: '/system',
+  //   component: Layout,
+  //   redirect: '/system/article',
+  //   name: '功能模块',
+  //   meta: {title: '功能模块', icon: 'tree'},
+  //   children: [
+  //     {
+  //       path: 'article',
+  //       name: '文章',
+  //       component: _import('article/article'),
+  //       meta: {title: '文章', icon: 'eye'},
+  //       menu: 'article'
+  //     },
+  //   ]
+  // },
   {
     path: '/user',
     component: Layout,

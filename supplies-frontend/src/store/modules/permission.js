@@ -6,14 +6,15 @@ import {asyncRouterMap, constantRouterMap} from '@/router/index'
  * @param route
  */
 function hasPermission(menus, route) {
-  if (route.menu) {
-    /*
-    * 如果这个路由有menu属性,就需要判断用户是否拥有此menu权限
-    */
-    return menus.indexOf(route.menu) > -1;
-  } else {
-    return true
-  }
+  // if (route.menu) {
+  //   /*
+  //   * 如果这个路由有menu属性,就需要判断用户是否拥有此menu权限
+  //   */
+  //   return menus.indexOf(route.menu) > -1;
+  // } else {
+  //   return true
+  // }
+  return true;
 }
 
 /**
@@ -53,11 +54,14 @@ const permission = {
     GenerateRoutes({commit}, userPermission) {
       //生成路由
       return new Promise(resolve => {
-        const menus = userPermission.menuList;
+        // const menus = userPermission.menuList;
+        const menus=["role",
+        "user"]
         //声明 该角色可用的路由
         let accessedRouters
         //筛选出本角色可用的路由
         accessedRouters = filterAsyncRouter(asyncRouterMap, menus)
+        console.log("accessedRouters",accessedRouters);
         //执行设置路由的方法
         commit('SET_ROUTERS', accessedRouters)
         resolve()

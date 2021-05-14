@@ -1,6 +1,11 @@
 /**
  * Created by jiachenpan on 16/11/18.
  */
+ import moment from 'moment'
+
+ export function formateDate (time) {
+   return  moment(time).format("YYYY-MM-DD")
+ }
 
  export function parseTime(time, cFormat) {
    if (arguments.length === 0) {

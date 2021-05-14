@@ -57,9 +57,7 @@ export default {
           const tHeader = ["Id", "Title", "Author", "Readings", "Date"];
           const filterVal = ['Id', 'Title', 'Author', 'Readings', 'Date'];
           const list = this.tableData;
-          console.log('list',list);
           const data = this.formatJson(filterVal, list);
-           console.log('data',data);
           excel.export_json_to_excel({
             header: tHeader,
             data,
@@ -91,7 +89,6 @@ export default {
       return false;
     },
     handleSuccess({ results, header }) {
-      console.log("results", results);
       this.tableData = results;
       this.tableHeader = header;
     },

@@ -1,30 +1,24 @@
-import {removeToken, setToken} from '@/utils/auth'
+import {removeToken,setUserId,removeUserId, setToken} from '@/utils/auth'
 import {default as api} from '../../utils/api'
 import store from '../../store'
 import router from '../../router'
 
 const user = {
   state: {
-    nickname: "",
-    userId: "",
-    roleIds: [],
-    menus: [],
-    permissions: [],
+    id: "",
+    name: "",
+    workNumber: ""
   },
   mutations: {
     SET_USER: (state, userInfo) => {
-      state.nickname = userInfo.nickname;
-      state.userId = userInfo.userId;
-      state.roleIds = userInfo.roleIds;
-      state.menus = userInfo.menuList;
-      state.permissions = userInfo.permissionList;
+      state.id = userInfo.id;
+      state.name = userInfo.name;
+      state.workNumber = userInfo.workNumber;
     },
     RESET_USER: (state) => {
-      state.nickname = "";
-      state.userId = "";
-      state.roleIds = [];
-      state.menus = [];
-      state.permissions = [];
+      state.id = "";
+      state.name = "";
+      state.workNumber ="";
     }
   },
   actions: {
@@ -36,9 +30,11 @@ const user = {
           method: "post",
           data: loginForm
         }).then(data => {
-          console.log('data',data.data);
           //localstorage中保存token
-          setToken(data.token);
+          setToken(data.data.data.token);
+          setUserId(data.data.data.admin.id);
+          //储存用户信息
+          commit('SET_USER', data.data.data.admin);
           resolve(data);
         }).catch(err => {
           reject(err)
@@ -49,11 +45,13 @@ const user = {
     GetInfo({commit, state}) {
       return new Promise((resolve, reject) => {
         api({
-          url: '/login/getInfo',
-          method: 'post'
+          url: '/admin/refreshToken',
+          method: 'get'
         }).then(data => {
           //储存用户信息
-          commit('SET_USER', data);
+          // commit('SET_USER', data);
+          //存储 token
+          // setToken(data.data.data.token);
           //生成路由
           store.dispatch('GenerateRoutes', data).then(() => {
             //生成该用户的新路由json操作完毕之后,调用vue-router的动态新增路由方法,将新路由添加
@@ -77,7 +75,8 @@ const user = {
           resolve(data);
         }).catch(() => {
           commit('RESET_USER')
-          removeToken()
+          removeToken();
+          removeUserId();
         })
       })
     },
