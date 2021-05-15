@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.time.LocalDateTime;
@@ -99,5 +101,16 @@ public class GoodsService extends BaseCommon {
 
     public List<GoodsSelect> getPartNumberTitle() {
         return goodsMapper.getPartNumberTitle();
+    }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public synchronized Boolean updateInventory(Integer goodsId, Integer amount) {
+        Integer inventory = goodsMapper.selectInventory(goodsId);
+        if (inventory == null || inventory < Math.abs(amount)) {
+            log.warn("出库失败，商品编号: " + goodsId + " ,现有库存: " + inventory + " ,出库数量: " + amount);
+            return false;
+        }
+        goodsMapper.updateInventory(goodsId, amount);
+        return true;
     }
 }

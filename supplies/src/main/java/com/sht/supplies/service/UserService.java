@@ -84,4 +84,8 @@ public class UserService extends BaseCommon {
     public List<User> selectUser() {
         return userMapper.selectUser();
     }
+
+    public Boolean existsByUserId(Integer id) {
+        return userMapper.existsWithPrimaryKey(id);
+    }
 }

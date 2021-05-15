@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
@@ -37,11 +38,15 @@ public class OutStock {
     private Integer goodsId;
 
     @ApiModelProperty(notes = "数量")
-    @NotNull(message = "数量不能为null")
-    @Size(min = 1, max = 999999, message = "领取数量应在1-999999之间")
+    @NotNull(message = "出库数量不能为空")
+    @Size(min = 1, max = 999999, message = "数量应在1-999999之间")
     private Integer amount;
 
+    @ApiModelProperty(notes = "管理员id，后台可以从token中获取")
+    private Integer adminId;
+
     @ApiModelProperty(notes = "备注")
+    @Length(max = 200, message = "备注最多200字符")
     private String remark;
 
     private LocalDateTime inDate;

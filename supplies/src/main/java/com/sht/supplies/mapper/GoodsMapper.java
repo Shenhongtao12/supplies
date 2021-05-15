@@ -17,8 +17,8 @@ public interface GoodsMapper extends Mapper<Goods> {
 
     /**
      * 更新库存
-     * @param id
-     * @param amount
+     * @param id goodsId
+     * @param amount num
      */
     @Update("UPDATE goods SET inventory = (inventory + #{amount}) WHERE id = #{id}")
     void updateInventory(Integer id, Integer amount);
@@ -31,4 +31,7 @@ public interface GoodsMapper extends Mapper<Goods> {
 
     @Select("select id, part_number AS partNumber, title from goods")
     List<GoodsSelect> getPartNumberTitle();
+
+    @Select("select inventory from goods WHERE id = #{id}")
+    Integer selectInventory(Integer id);
 }
