@@ -50,10 +50,12 @@ public class GoodsService extends BaseCommon {
     }
 
     public RestResponse update(Goods goods) {
-        if (goods.getPartNumber() != null && !goods.getId().equals(goodsMapper.existsPartNumber(goods.getPartNumber()))) {
+        Integer id = goodsMapper.existsPartNumber(goods.getPartNumber());
+        if (goods.getPartNumber() != null && id != null && !goods.getId().equals(id)) {
             return ERROR(goods.getPartNumber() + " 物料编号已存在");
         }
-        if (!goods.getId().equals(goodsMapper.existsTitle(goods.getTitle()))) {
+        Integer goodsId = goodsMapper.existsTitle(goods.getTitle());
+        if (goodsId != null && !goods.getId().equals(goodsId)) {
             return ERROR(goods.getTitle() + " 物料名称已存在");
         }
         goods.setInDate(null);
@@ -94,6 +96,7 @@ public class GoodsService extends BaseCommon {
         if (StringUtils.isNotEmpty(category)) {
             criteria.andEqualTo("category", category);
         }
+        example.setOrderByClause("inDate DESC");
         PageHelper.startPage(page, size);
         Page<Goods> goodsPage = (Page<Goods>) goodsMapper.selectByExample(example);
         return new PageResult<>(goodsPage.getTotal(), goodsPage.getPages(), goodsPage.getResult());
@@ -105,6 +108,9 @@ public class GoodsService extends BaseCommon {
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public synchronized Boolean updateInventory(Integer goodsId, Integer amount) {
+        if (amount == 0) {
+            return true;
+        }
         Integer inventory = goodsMapper.selectInventory(goodsId);
         if (inventory == null || inventory < Math.abs(amount)) {
             log.warn("出库失败，商品编号: " + goodsId + " ,现有库存: " + inventory + " ,出库数量: " + amount);

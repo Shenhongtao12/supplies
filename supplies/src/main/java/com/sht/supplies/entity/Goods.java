@@ -8,9 +8,7 @@ import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -44,7 +42,8 @@ public class Goods {
     private String unit;
 
     @ApiModelProperty(notes = "总库存，根据进货量计算，库存最小值为0，最大值为999999")
-    @Size(min = 0, max = 999999, message = "库存最小值为0，最大值为999999")
+    @Max(value = 999999, message = "最大值为999999")
+    @Min(value = 0, message = "最小值为0")
     private Integer inventory;
 
     @ApiModelProperty(notes = "类别，就是Excel中每一页的标题")

@@ -39,7 +39,7 @@ public class BaseController extends BaseCommon {
     /**
      * 将前台传递过来的日期格式的字符串，自动转化为Date类型
      */
-    @InitBinder
+    /*@InitBinder
     public void initBinder(WebDataBinder binder)
     {
         // Date 类型转换
@@ -51,5 +51,5 @@ public class BaseController extends BaseCommon {
                 setValue(DateUtils.parseDate(text));
             }
         });
-    }
+    }*/
 }

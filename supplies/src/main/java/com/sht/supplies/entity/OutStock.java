@@ -10,9 +10,7 @@ import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 /**
@@ -30,16 +28,19 @@ public class OutStock {
     private Integer id;
 
     @ApiModelProperty(notes = "员工id")
-    @NotBlank(message = "员工Id不能为空")
+    @NotNull(message = "员工Id不能为空")
+    @Min(value = 1, message = "员工id必须大于0")
     private Integer userId;
 
     @ApiModelProperty(notes = "物料id")
-    @NotBlank(message = "物料Id不能为空")
+    @NotNull(message = "物料Id不能为空")
+    @Min(value = 1, message = "物料id必须大于0")
     private Integer goodsId;
 
     @ApiModelProperty(notes = "数量")
     @NotNull(message = "出库数量不能为空")
-    @Size(min = 1, max = 999999, message = "数量应在1-999999之间")
+    @Max(value = 999999, message = "最大值为999999")
+    @Min(value = 1, message = "最小值为1")
     private Integer amount;
 
     @ApiModelProperty(notes = "管理员id，后台可以从token中获取")
