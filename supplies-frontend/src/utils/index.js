@@ -4,8 +4,12 @@
  import moment from 'moment'
 
  export function formateDate (time) {
-   return  moment(time).format("YYYY-MM-DD")
+   return  moment(time).format("YYYY-MM-DD HH:MM")
  }
+
+ export function formateDates (time) {
+  return  moment(time).format("YYYY-MM-DD")
+}
 
  export function parseTime(time, cFormat) {
    if (arguments.length === 0) {

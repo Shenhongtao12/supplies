@@ -39,19 +39,51 @@ export const constantRouterMap = [
   {
     path: '/system',
     component: Layout,
-    redirect: '/system/importExcel',
+    redirect: '/system/putstorage',
     name: '功能模块',
     meta: {title: '功能模块', icon: 'tree'},
     children: [
       {
-        path: 'import',
-        name: '导入',
-        component: _import('importExcel/import'),
-        meta: {title: '导入', icon: 'example'},
-        menu: 'import'
+        path: 'putstorage',
+        name: '物料管理',
+        component: _import('putstorage/putstorage'),
+        meta: {title: '物料管理', icon: 'example'},
+        menu: 'putstorage'
       },
     ]
   },
+  {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/outbound',
+    name: '功能模块',
+    meta: {title: '功能模块', icon: 'tree'},
+    children: [
+      {
+        path: 'outbound',
+        name: '出库管理',
+        component: _import('outbound/outbound'),
+        meta: {title: '出库管理', icon: 'example'},
+        menu: 'outbound'
+      },
+    ]
+  },
+  // {
+  //   path: '/system',
+  //   component: Layout,
+  //   redirect: '/system/importExcel',
+  //   name: '功能模块',
+  //   meta: {title: '功能模块', icon: 'tree'},
+  //   children: [
+  //     {
+  //       path: 'import',
+  //       name: '导入',
+  //       component: _import('importExcel/import'),
+  //       meta: {title: '导入', icon: 'example'},
+  //       menu: 'import'
+  //     },
+  //   ]
+  // },
   {
     path: '/system',
     component: Layout,
@@ -65,22 +97,6 @@ export const constantRouterMap = [
         component: _import('administrator/administrator'),
         meta: {title: '管理员', icon: 'example'},
         menu: 'administrator'
-      },
-    ]
-  },
-  {
-    path: '/system',
-    component: Layout,
-    redirect: '/system/putstorage',
-    name: '功能模块',
-    meta: {title: '功能模块', icon: 'tree'},
-    children: [
-      {
-        path: 'putstorage',
-        name: '物料入库',
-        component: _import('putstorage/putstorage'),
-        meta: {title: '物料入库', icon: 'example'},
-        menu: 'putstorage'
       },
     ]
   },

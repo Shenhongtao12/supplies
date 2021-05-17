@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sht.supplies.mapper.InStockMapper">
+
+    <resultMap type="com.sht.supplies.entity.OutStockResponse" id="OutStockResult">
+        <id     property="id"     column="id"     />
+        <result property="userId"   column="userId"   />
+        <result property="userWorkNumber"  column="work_number"   />
+        <result property="userName"  column="name"   />
+        <result property="goodsId"   column="goodsId"   />
+        <result property="partNumber"   column="part_number"   />
+        <result property="title"     column="title"      />
+        <result property="amount"      column="amount"       />
+        <result property="adminId"      column="admin_id"       />
+        <result property="remark"     column="remark"      />
+        <result property="inDate"    column="in_date"    />
+    </resultMap>
+
+    <sql id="selectOutStock">
+        select A.id, A.goods_id AS goodsId, C.part_number, C.title, A.amount, A.admin_id, A.remark, A.in_date
+        from in_stock AS A
+        LEFT JOIN goods AS C
+            ON A.goods_id = C.id
+    </sql>
+
+    <insert id="batchInsert">
+        insert into in_stock(
+            goods_id,
+            amount,
+            admin_id,
+            remark,
+            in_date
+        )
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (
+            #{item.goodsId},
+            #{item.amount},
+            #{item.adminId},
+            #{item.remark},
+            #{item.inDate}
+            )
+        </foreach>
+    </insert>
+
+    <select id="findByPage" parameterType="com.sht.supplies.entity.QueryEntity" resultMap="OutStockResult">
+        <include refid="selectOutStock"/>
+        where 1 = 1
+        <if test="goodsId != null and goodsId != 0">
+            AND A.goods_id = #{goodsId}
+        </if>
+        <if test="startDateTime != null and endDateTime != null">
+            AND #{endDateTime} >= A.in_date AND A.in_date >= #{startDateTime}
+        </if>
+        order by A.in_date DESC
+    </select>
+
+
+</mapper>

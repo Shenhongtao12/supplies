@@ -14,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -75,12 +76,12 @@ public class OutStockController extends BaseController {
     public RestResponse findByPage(
             @RequestParam(name = "goodsId", required = false, defaultValue = "0") Integer goodsId,
             @RequestParam(name = "userId", required = false, defaultValue = "0") Integer userId,
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam(name = "startDateTime", required = false) LocalDateTime startDateTime,
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam(name = "endDateTime", required = false) LocalDateTime endDateTime,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "startDateTime", required = false) LocalDate startDateTime,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "endDateTime", required = false) LocalDate endDateTime,
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "size", defaultValue = "20") Integer size
     ) {
-        if (endDateTime.isBefore(startDateTime)) {
+        if (startDateTime != null && endDateTime != null && endDateTime.isBefore(startDateTime)) {
             return ERROR("开始时间不能小于结束时间");
         }
         return SUCCESS(outStockService.findByPage(goodsId, userId, startDateTime, endDateTime, page, size));

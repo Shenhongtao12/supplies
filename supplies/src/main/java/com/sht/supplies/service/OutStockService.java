@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -94,7 +95,7 @@ public class OutStockService {
         return outStockMapper.existsWithPrimaryKey(id);
     }
 
-    public PageResult<OutStockResponse> findByPage(Integer goodsId, Integer userId, LocalDateTime startDateTime, LocalDateTime endDateTime, Integer page, Integer size) {
+    public PageResult<OutStockResponse> findByPage(Integer goodsId, Integer userId, LocalDate startDateTime, LocalDate endDateTime, Integer page, Integer size) {
         if (size > 100) {
             size = 100;
         }

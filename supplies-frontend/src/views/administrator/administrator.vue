@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-row>
-        <el-col :span="13">
+        <el-col :span="15">
           <el-button type="primary" icon="plus" @click="showCreate"
             >添加管理员
           </el-button>
@@ -14,7 +14,7 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="" prop="name">
               <el-input
                 class="input"
@@ -45,24 +45,32 @@
       :default-sort="{ prop: 'date', order: 'descending' }"
       highlight-current-row
     >
-      <el-table-column align="center" sortable label="序号" width="80">
+      <el-table-column align="center" label="序号" width="80">
         <template slot-scope="scope">
           <span v-text="getIndex(scope.$index)"> </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="workNumber" label="工号" sortable />
+      <el-table-column
+        align="center"
+        prop="workNumber"
+        label="工号"
+        sortable
+        column-key="workNumber"
+      />
       <el-table-column
         align="center"
         prop="name"
         sortable
         label="姓名"
-        width="170"
+        column-key="name"
       />
       <el-table-column
         align="center"
         prop="inDate"
         label="创建时间"
+        :formatter="formatterTime"
         sortable
+        column-key="inDate"
       ></el-table-column>
       <el-table-column
         align="center"
@@ -98,7 +106,7 @@
       layout="total, sizes, prev, pager, next, jumper"
     >
     </el-pagination>
-    <el-dialog title="添加管理员" :visible.sync="dialogFormAdd">
+    <el-dialog title="添加管理员" :visible.sync="dialogFormAdd" width="40%">
       <el-form
         :rules="dataVerify"
         class="small-space"
@@ -138,7 +146,7 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item class="dialog_footer">
+        <el-form-item >
           <el-button @click="dialogFormAdd = false">取 消</el-button>
           <el-button type="success" @click="createEmployee('tempArticle')"
             >创 建</el-button
@@ -147,7 +155,7 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog title="编辑" :visible.sync="dialogFormUpdate">
+    <el-dialog title="编辑" :visible.sync="dialogFormUpdate" width="36%">
       <el-form
         class="small-space"
         :model="tempArticle"
@@ -170,7 +178,7 @@
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item class="dialog_footer">
+        <el-form-item >
           <el-button @click="dialogFormUpdate = false">取 消</el-button>
           <el-button type="success" @click="updateAdministrator('tempArticle')"
             >修改</el-button
@@ -181,6 +189,9 @@
   </div>
 </template>
 <script>
+import { formateDate } from "@/utils/index";
+import { Base64 } from "js-base64";
+
 export default {
   data() {
     return {
@@ -195,7 +206,6 @@ export default {
       dialogStatus: "create",
       dialogFormAdd: false,
       dialogFormUpdate: false,
-
       textMap: {
         update: "编辑",
         create: "创建文章",
@@ -275,6 +285,11 @@ export default {
         this.totalCount = data.totalCount;
       });
     },
+
+    formatterTime(row, column) {
+      return formateDate(row.inDate);
+    },
+
     queryList(listQuery) {
       this.listLoading = true;
       this.$refs[listQuery].validate((valid) => {
@@ -328,23 +343,34 @@ export default {
       this.tempArticle.phone = this.list[$index].phone;
       // this.tempArticle.password = this.list[$index].password;
       this.tempArticle.password = "******";
-
       this.dialogStatus = "update";
       this.dialogFormUpdate = true;
     },
     createEmployee(tempArticle) {
-      delete this.tempArticle.id;
-      delete this.tempArticle.inDate;
+      let tempArticleData = {
+        name: this.tempArticle.name,
+        password: Base64.encode(this.tempArticle.password),
+        phone: this.tempArticle.phone,
+        workNumber: this.tempArticle.workNumber,
+      };
       this.$refs[tempArticle].validate((valid) => {
         console.log("valid", valid);
         if (valid) {
           this.api({
             url: "/admin/add",
             method: "post",
-            data: this.tempArticle,
-          }).then(() => {
-            this.getList();
-            this.dialogFormVisible = false;
+            data: tempArticleData,
+          }).then((data) => {
+            if (data.data.code == 200) {
+              this.$message({
+                message: "添加成功！",
+                type: "success",
+              });
+              this.getList();
+              this.dialogFormAdd = false;
+            } else {
+              this.$message.error(data.data);
+            }
           });
         }
       });
@@ -356,28 +382,48 @@ export default {
         if (valid) {
           this.api({
             url: "/admin",
-            method: "post",
+            method: "put",
             data: this.tempArticle,
-          }).then(() => {
-            this.getList();
-            this.dialogFormVisible = false;
+          }).then((data) => {
+            if (data.data.code == 200) {
+              this.$message({
+                message: "修改成功！",
+                type: "success",
+              });
+              this.getList();
+              this.dialogFormUpdate = false;
+            } else {
+              this.$message.error(data.data);
+            }
           });
         }
       });
     },
-    deleteAdministrator(id) {
-      this.api({
-        url: `/admin?id=${id}`,
-        method: "post",
+    deleteAdministrator($index) {
+      this.$confirm("确定删除此管理员吗?", "提示", {
+        confirmButtonText: "确定",
+        showCancelButton: false,
+        type: "warning",
       }).then(() => {
-        this.getList();
-        this.dialogFormVisible = false;
-        if (data.data.code == 200) {
-          this.$message({
-            message: "删除成功！",
-            type: "success",
+        this.api({
+          url: "/admin",
+          method: "delete",
+          params: {
+            id: this.list[$index].id,
+          },
+        })
+          .then((data) => {
+            this.getList();
+            if (data.data.code == 200) {
+              this.$message({
+                message: "删除成功！",
+                type: "success",
+              });
+            }
+          })
+          .catch(() => {
+            this.$message.error("删除失败");
           });
-        }
       });
     },
   },

@@ -96,7 +96,7 @@ public class GoodsService extends BaseCommon {
         if (StringUtils.isNotEmpty(category)) {
             criteria.andEqualTo("category", category);
         }
-        example.setOrderByClause("inDate DESC");
+        example.setOrderByClause("in_date DESC");
         PageHelper.startPage(page, size);
         Page<Goods> goodsPage = (Page<Goods>) goodsMapper.selectByExample(example);
         return new PageResult<>(goodsPage.getTotal(), goodsPage.getPages(), goodsPage.getResult());
@@ -111,12 +111,28 @@ public class GoodsService extends BaseCommon {
         if (amount == 0) {
             return true;
         }
-        Integer inventory = goodsMapper.selectInventory(goodsId);
-        if (inventory == null || inventory < Math.abs(amount)) {
-            log.warn("出库失败，商品编号: " + goodsId + " ,现有库存: " + inventory + " ,出库数量: " + amount);
-            return false;
+        if (amount < 0) {
+            Integer inventory = goodsMapper.selectInventory(goodsId);
+            if (inventory == null || inventory < Math.abs(amount)) {
+                log.warn("出库失败，商品编号: " + goodsId + " ,现有库存: " + inventory + " ,出库数量: " + amount);
+                return false;
+            }
         }
         goodsMapper.updateInventory(goodsId, amount);
         return true;
+    }
+
+    public Integer saveOne(Goods goods) {
+        goods.setId(null);
+        goods.setInventory(0);
+        goods.setInDate(LocalDateTime.now());
+        try {
+            goodsMapper.insertSelective(goods);
+            return goods.getId();
+        } catch (Exception e) {
+            log.warn("batch save one: " + e.getMessage());
+            return 0;
+        }
+
     }
 }

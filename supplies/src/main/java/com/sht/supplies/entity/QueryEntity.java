@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -20,7 +21,7 @@ public class QueryEntity {
     private int goodsId;
     private int userId;
 
-    private LocalDateTime startDateTime;
-    private LocalDateTime endDateTime;
+    private LocalDate startDateTime;
+    private LocalDate endDateTime;
 
 }

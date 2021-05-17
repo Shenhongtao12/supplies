@@ -7,6 +7,8 @@ import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Base64Utils;
 
+import java.time.LocalDate;
+
 /**
  * @author Aaron
  * @date 2021/5/9 17:53
@@ -35,5 +37,12 @@ public class Base64Test {
         System.out.println(new String(decrypt));
 
         System.out.println(DigestUtil.md5Hex("123456"));
+    }
+
+    @Test
+    public void test() {
+        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = endDate.minusMonths(1);
+        System.out.println(startDate);
     }
 }
