@@ -21,12 +21,8 @@ public class StatisticalService {
      * 每月1号自动统计当月用货量、库存量
      * 10 10 00 1 * ?
      */
-    @Scheduled(cron = "10 10 00 1 * ?")
+    @Scheduled(cron = "00 00 00 1 * ?")
     public void autoStatistical() {
-        LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusMonths(1);
-
-
-
+        statisticalMapper.autoStatistical();
     }
 }

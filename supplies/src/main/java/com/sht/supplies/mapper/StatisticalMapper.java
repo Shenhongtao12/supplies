@@ -22,4 +22,8 @@ public interface StatisticalMapper extends Mapper<Statistical> {
             "where in_date >= #{startDate} and in_date < #{endDate}")
     Integer sumOutStock(LocalDate startDate, LocalDate endDate);
 
+    /**
+     * 执行存储过程统计每月数据
+     */
+    void autoStatistical();
 }

@@ -23,7 +23,11 @@ public class Statistical {
     @KeySql(useGeneratedKeys = true)
     private Integer id;
 
-    private LocalDate date;
+    private String date;
+
+    private String partNumber;
+
+    private String title;
 
     private Integer outStock;
 
