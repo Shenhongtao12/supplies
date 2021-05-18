@@ -18,7 +18,7 @@
       <el-table-column align="center" prop="name" label="姓名" width="170"/>
       <el-table-column align="center" prop="workNumber" label="工号" width="170"/>
       <el-table-column align="center" prop="inDate" label="创建时间" style="width: 60px;"></el-table-column>
-      <el-table-column align="center" label="管理" width="200" v-permission="'article:update'" >
+      <el-table-column align="center" label="管理1" width="200" v-permission="'article:update'" >
         <template slot-scope="scope">
           <el-button type="primary" icon="edit" @click="showUpdate(scope.$index)">修改</el-button>
         </template>
