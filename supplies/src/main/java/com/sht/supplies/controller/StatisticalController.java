@@ -2,6 +2,7 @@ package com.sht.supplies.controller;
 
 import com.sht.supplies.common.RestResponse;
 import com.sht.supplies.service.StatisticalService;
+import io.swagger.annotations.Api;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("api/statistical")
+@Api(tags = "数据统计")
 public class StatisticalController extends BaseController {
 
     @Autowired

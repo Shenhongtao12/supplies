@@ -84,7 +84,7 @@
       <el-table-column
         align="center"
         prop="partNumber"
-        label="物料编号"
+        label="物料编码"
         width="170"
         sortable
       />
@@ -98,7 +98,7 @@
       <el-table-column
         align="center"
         prop="amount"
-        label="数量"
+        label="领用数量"
         sortable
       ></el-table-column>
       <el-table-column
@@ -113,6 +113,12 @@
         :formatter="formatterTime"
         sortable
         column-key="inDate"
+      ></el-table-column>
+      <el-table-column
+        align="center"
+        prop="inventory"
+        label="库存数量"
+        sortable
       ></el-table-column>
       <el-table-column align="center" label="管理" width="200">
         <template slot-scope="scope">
@@ -322,7 +328,7 @@ export default {
       },
       dataVerify: {
         partNumber: [
-          { message: "请输入物料编号", trigger: "blur" },
+          { message: "请输入物料编码", trigger: "blur" },
           {
             min: 4,
             max: 20,

@@ -22,10 +22,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="7">
-              <el-form-item label="物料编号">
+              <el-form-item label="物料编码">
                 <el-input
                   class="input"
-                  placeholder="请输入物料编号"
+                  placeholder="请输入物料编码"
                   v-model="listQuery.partNumber"
                 >
                 </el-input>
@@ -75,7 +75,7 @@
       <el-table-column
         align="center"
         prop="partNumber"
-        label="物料编号"
+        label="物料编码"
         sortable
       />
       <el-table-column
@@ -146,7 +146,7 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料编号">
+        <el-form-item label="物料编码">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.partNumber"
@@ -202,7 +202,7 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料编号">
+        <el-form-item label="物料编码">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.partNumber"
@@ -284,7 +284,7 @@ export default {
       },
       dataVerify: {
         partNumber: [
-          { message: "请输入物料编号", trigger: "blur" },
+          { message: "请输入物料编码", trigger: "blur" },
           {
             min: 4,
             max: 20,

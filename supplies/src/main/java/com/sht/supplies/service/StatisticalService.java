@@ -4,7 +4,6 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sht.supplies.common.PageResult;
 import com.sht.supplies.entity.Statistical;
-import com.sht.supplies.entity.User;
 import com.sht.supplies.mapper.StatisticalMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +25,9 @@ public class StatisticalService {
 
     /**
      * 每月1号自动统计当月用货量、库存量
-     * 10 10 00 1 * ?
+     * 0 0 0 1 * ?
      */
-    @Scheduled(cron = "00 00 00 1 * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void autoStatistical() {
         statisticalMapper.autoStatistical();
     }
@@ -38,7 +37,7 @@ public class StatisticalService {
             size = 100;
         }
         PageHelper.startPage(page, size);
-        Example example = new Example(User.class);
+        Example example = new Example(Statistical.class);
         Example.Criteria criteria = example.createCriteria();
         if (StringUtils.isNotEmpty(date)) {
             criteria.andEqualTo("date", date);
@@ -51,7 +50,7 @@ public class StatisticalService {
         if (StringUtils.isNotEmpty(title)) {
             criteria.andLike("title", "%" + title + "%");
         }
-        Page<Statistical> users = (Page<Statistical>) statisticalMapper.selectByExample(example);
-        return new PageResult<>(users.getTotal(), users.getPages(), users.getResult());
+        Page<Statistical> statisticals = (Page<Statistical>) statisticalMapper.selectByExample(example);
+        return new PageResult<>(statisticals.getTotal(), statisticals.getPages(), statisticals.getResult());
     }
 }

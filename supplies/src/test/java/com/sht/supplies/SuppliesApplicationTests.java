@@ -5,6 +5,7 @@ import com.sht.supplies.entity.OutStock;
 import com.sht.supplies.service.GoodsService;
 import com.sht.supplies.service.InStockService;
 import com.sht.supplies.service.OutStockService;
+import com.sht.supplies.service.StatisticalService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +18,9 @@ class SuppliesApplicationTests {
 
     @Autowired
     private GoodsService goodsService;
+
+    @Autowired
+    private StatisticalService statisticalService;
 
     @Test
     public void tranTest() {
@@ -39,6 +43,11 @@ class SuppliesApplicationTests {
         goods.setCategory("test");
         Integer integer = goodsService.saveOne(goods);
         System.out.println(integer);
+    }
+
+    @Test
+    public void statisticalServiceTest() {
+        statisticalService.autoStatistical();
     }
 
 }
