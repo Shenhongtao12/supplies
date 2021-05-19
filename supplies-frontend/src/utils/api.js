@@ -22,9 +22,11 @@ service.interceptors.request.use(config => {
 })
 //respone拦截器
 service.interceptors.response.use(
-  response => {
+  (response) => {
+    const code = response.cdoe || 200
     const res = response;
-    if (res.status == 200) {
+    const msg = res.data.message;
+    if (code === 200) {
       return res;
     } else if (res.status === "20011") {
       Message({
@@ -49,9 +51,12 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.error('err' + error)// for debug
+    let message = error.message
+    if(error.response.status === 400) {
+      message = error.response.data.message
+    }
     Message({
-      message: error.message,
+      message: message,
       type: 'error',
       duration: 3 * 1000
     })
