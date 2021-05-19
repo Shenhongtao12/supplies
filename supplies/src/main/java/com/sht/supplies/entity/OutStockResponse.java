@@ -1,18 +1,8 @@
 package com.sht.supplies.entity;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
-import tk.mybatis.mapper.annotation.KeySql;
-
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -32,6 +22,7 @@ public class OutStockResponse {
     private Integer goodsId;
     private String partNumber;
     private String title;
+    private Integer inventory;
 
     private Integer amount;
 

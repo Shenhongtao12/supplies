@@ -12,6 +12,7 @@
         <result property="goodsId"   column="goodsId"   />
         <result property="partNumber"   column="part_number"   />
         <result property="title"     column="title"      />
+        <result property="inventory"     column="inventory"      />
         <result property="amount"      column="amount"       />
         <result property="adminId"      column="admin_id"       />
         <result property="remark"     column="remark"      />
@@ -19,7 +20,7 @@
     </resultMap>
 
     <sql id="selectOutStock">
-        select A.id, A.goods_id AS goodsId, C.part_number, C.title, A.amount, A.admin_id, A.remark, A.in_date
+        select A.id, A.goods_id AS goodsId, C.part_number, C.title, C.inventory, A.amount, A.admin_id, A.remark, A.in_date
         from in_stock AS A
         LEFT JOIN goods AS C
             ON A.goods_id = C.id

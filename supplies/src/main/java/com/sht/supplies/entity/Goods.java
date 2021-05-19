@@ -1,15 +1,12 @@
 package com.sht.supplies.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
-import javax.persistence.Transient;
 import javax.validation.constraints.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
