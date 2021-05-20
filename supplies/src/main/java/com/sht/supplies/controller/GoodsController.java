@@ -64,6 +64,6 @@ public class GoodsController extends BaseController {
 
     @GetMapping("select-supplies")
     public RestResponse getPartNumberTitle() {
-        return SUCCESS(goodsService.getPartNumberTitle());
+        return SUCCESS(goodsService.getPartNumberTitle(""));
     }
 }

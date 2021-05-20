@@ -36,7 +36,8 @@ public class InStockService {
     private GoodsService goodsService;
 
     public List<BatchResponse> batchAdd(List<InStock> inStocks, Integer adminId) {
-        List<GoodsSelect> goodsList = goodsService.getPartNumberTitle();
+
+        List<GoodsSelect> goodsList = goodsService.getPartNumberTitle(inStocks.get(0).getGoods().getCategory());
         List<BatchResponse> responses = new ArrayList<>();
 
         for (InStock stock : inStocks) {
@@ -48,6 +49,7 @@ public class InStockService {
             Optional<GoodsSelect> select = goodsList.stream().filter(item -> item.getPartNumber().equals(stock.getGoods().getPartNumber()) || item.getTitle().equals(stock.getGoods().getTitle())).findFirst();
             if (select.isPresent()) {
                 stock.setGoodsId(select.get().getId());
+                stock.setAmount(stock.getAmount() * select.get().getRepertory());
             } else {
                 if (!checkGoods(stock.getGoods(), response)) {
                     continue;
@@ -61,6 +63,7 @@ public class InStockService {
                     continue;
                 } else {
                     stock.setGoodsId(id);
+                    stock.setAmount(stock.getAmount() * stock.getGoods().getRepertory());
                 }
             }
             response.setIsSuccess(true);

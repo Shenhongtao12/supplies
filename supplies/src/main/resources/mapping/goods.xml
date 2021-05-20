@@ -4,5 +4,23 @@
 
 <mapper namespace="com.sht.supplies.mapper.GoodsMapper">
 
+    <resultMap type="com.sht.supplies.entity.GoodsSelect" id="GoodsSelect">
+        <id     property="id"     column="id"     />
+        <result property="partNumber"   column="part_number"   />
+        <result property="title"  column="title"   />
+        <result property="bigUnit"  column="big_unit"   />
+        <result property="repertory"   column="repertory"   />
+        <result property="smallUnit"   column="small_unit"   />
+    </resultMap>
+
+    <select id="getPartNumberTitle" parameterType="com.sht.supplies.entity.Goods" resultMap="GoodsSelect">
+        select id, part_number AS partNumber, title, big_unit AS bigUnit, repertory, small_unit AS smallUnit
+        from goods
+        <where>
+            <if test="category != null and category != '' ">
+                 category = #{category}
+            </if>
+        </where>
+    </select>
 
 </mapper>

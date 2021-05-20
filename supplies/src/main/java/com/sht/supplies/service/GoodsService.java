@@ -102,8 +102,10 @@ public class GoodsService extends BaseCommon {
         return new PageResult<>(goodsPage.getTotal(), goodsPage.getPages(), goodsPage.getResult());
     }
 
-    public List<GoodsSelect> getPartNumberTitle() {
-        return goodsMapper.getPartNumberTitle();
+    public List<GoodsSelect> getPartNumberTitle(String category) {
+        Goods goods = new Goods();
+        goods.setCategory(category);
+        return goodsMapper.getPartNumberTitle(goods);
     }
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)

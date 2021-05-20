@@ -39,7 +39,7 @@ class SuppliesApplicationTests {
         Goods goods = new Goods();
         goods.setPartNumber("9999");
         goods.setTitle("9999test");
-        goods.setUnit("坐");
+        goods.setBigUnit("坐");
         goods.setCategory("test");
         Integer integer = goodsService.saveOne(goods);
         System.out.println(integer);

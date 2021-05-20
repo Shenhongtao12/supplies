@@ -33,10 +33,19 @@ public class Goods {
     @Length(min = 1, max = 50, message = "物料名称长度应在1-50字符")
     private String title;
 
-    @ApiModelProperty(notes = "计量单位")
-    @NotBlank(message = "计量单位不能为空")
+    @ApiModelProperty(notes = "大计量单位")
+    @NotBlank(message = "大计量单位不能为空")
     @Length(min = 1, max = 10, message = "计量单位长度应在1-10个字符")
-    private String unit;
+    private String bigUnit;
+
+    @ApiModelProperty(notes = "大件包含多少小件")
+    @NotBlank(message = "repertory不能为空")
+    @Min(value = 1, message = "最小值为1")
+    private Integer repertory;
+
+    @ApiModelProperty(notes = "小计量单位")
+    @Length(min = 1, max = 10, message = "计量单位长度应在1-10个字符")
+    private String smallUnit;
 
     @ApiModelProperty(notes = "总库存，根据进货量计算，库存最小值为0，最大值为999999")
     @Max(value = 999999, message = "最大值为999999")

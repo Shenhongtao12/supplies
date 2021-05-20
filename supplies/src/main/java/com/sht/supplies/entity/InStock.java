@@ -9,6 +9,7 @@ import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -48,5 +49,6 @@ public class InStock {
     private LocalDateTime inDate;
 
     @ApiModelProperty(notes = "批量和新增物料并且直接设置库存时需要该参数")
+    @Transient
     private Goods goods;
 }

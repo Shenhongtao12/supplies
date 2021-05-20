@@ -2,7 +2,6 @@ package com.sht.supplies.mapper;
 
 import com.sht.supplies.entity.Goods;
 import com.sht.supplies.entity.GoodsSelect;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import tk.mybatis.mapper.common.Mapper;
@@ -29,8 +28,11 @@ public interface GoodsMapper extends Mapper<Goods> {
     @Select("select id from goods where title = #{title} LIMIT 1")
     Integer existsTitle(String title);
 
-    @Select("select id, part_number AS partNumber, title from goods")
-    List<GoodsSelect> getPartNumberTitle();
+    /**
+     * goods select
+     * @return list
+     */
+    List<GoodsSelect> getPartNumberTitle(Goods goods);
 
     @Select("select inventory from goods WHERE id = #{id}")
     Integer selectInventory(Integer id);

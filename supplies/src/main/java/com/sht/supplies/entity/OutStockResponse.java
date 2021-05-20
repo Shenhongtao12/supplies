@@ -23,6 +23,9 @@ public class OutStockResponse {
     private String partNumber;
     private String title;
     private Integer inventory;
+    private String bigUnit;
+    private Integer repertory;
+    private String smallUnit;
 
     private Integer amount;
 
