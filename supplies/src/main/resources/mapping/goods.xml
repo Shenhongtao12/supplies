@@ -14,7 +14,7 @@
     </resultMap>
 
     <select id="getPartNumberTitle" parameterType="com.sht.supplies.entity.Goods" resultMap="GoodsSelect">
-        select id, part_number AS partNumber, title, big_unit AS bigUnit, repertory, small_unit AS smallUnit
+        select id, part_number, title, big_unit, repertory, small_unit
         from goods
         <where>
             <if test="category != null and category != '' ">

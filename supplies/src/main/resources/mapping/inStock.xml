@@ -6,10 +6,10 @@
 
     <resultMap type="com.sht.supplies.entity.OutStockResponse" id="OutStockResult">
         <id     property="id"     column="id"     />
-        <result property="userId"   column="userId"   />
+        <result property="userId"   column="user_id"   />
         <result property="userWorkNumber"  column="work_number"   />
         <result property="userName"  column="name"   />
-        <result property="goodsId"   column="goodsId"   />
+        <result property="goodsId"   column="goods_id"   />
         <result property="partNumber"   column="part_number"   />
         <result property="title"     column="title"      />
         <result property="inventory"     column="inventory"      />
@@ -23,7 +23,7 @@
     </resultMap>
 
     <sql id="selectOutStock">
-        select A.id, A.goods_id AS goodsId, C.part_number, C.title, C.inventory, C.big_unit AS bigUnit, C.repertory, C.small_unit AS smallUnit, A.amount, A.admin_id, A.remark, A.in_date
+        select A.id, A.goods_id, C.part_number, C.title, C.inventory, C.big_unit, C.repertory, C.small_unit, A.amount, A.admin_id, A.remark, A.in_date
         from in_stock AS A
         LEFT JOIN goods AS C
             ON A.goods_id = C.id
