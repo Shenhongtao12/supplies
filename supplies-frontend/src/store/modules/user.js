@@ -65,20 +65,23 @@ const user = {
     },
     // 登出
     LogOut({commit}) {
-      return new Promise((resolve) => {
-        api({
-          url: "login/logout",
-          method: "post"
-        }).then(data => {
-          commit('RESET_USER')
-          removeToken()
-          resolve(data);
-        }).catch(() => {
-          commit('RESET_USER')
-          removeToken();
-          removeUserId();
-        })
-      })
+      commit('RESET_USER')
+      removeToken();
+      removeUserId();
+      // return new Promise((resolve) => {
+      //   api({
+      //     url: "login/logout",
+      //     method: "post"
+      //   }).then(data => {
+      //     commit('RESET_USER')
+      //     removeToken()
+      //     resolve(data);
+      //   }).catch(() => {
+      //     commit('RESET_USER')
+      //     removeToken();
+      //     removeUserId();
+      //   })
+      // })
     },
     // 前端登出,不用调后端清除token的接口
     FedLogOut({commit}) {

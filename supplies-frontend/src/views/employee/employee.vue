@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="15">
           <el-button type="primary" icon="plus" @click="showCreate"
-            >添加员工
+            >添加管理员
           </el-button>
         </el-col>
         <el-form
@@ -101,7 +101,7 @@
       layout="total, sizes, prev, pager, next, jumper"
     >
     </el-pagination>
-    <el-dialog title="添加员工" :visible.sync="dialogFormAdd" width="36%">
+    <el-dialog title="添加管理员" :visible.sync="dialogFormAdd" width="36%">
       <el-form
         :rules="dataVerify"
         class="small-space"

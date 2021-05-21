@@ -13,7 +13,7 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="物料名称">
-                <el-select clearable
+                <el-select
                   v-model="listQuery.goodsId"
                   placeholder="请选择物料"
                   filterable
@@ -21,7 +21,7 @@
                   <el-option
                     v-for="item in goods"
                     :key="item.id"
-                    :label="item.partNumber + ' - ' +item.title"
+                    :label="item.title"
                     :value="item.id"
                   >
                   </el-option>
@@ -30,7 +30,7 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="员工姓名">
-                <el-select clearable
+                <el-select
                   v-model="listQuery.userId"
                   placeholder="请选择员工"
                   filterable
@@ -38,7 +38,7 @@
                   <el-option
                     v-for="item in users"
                     :key="item.id"
-                    :label="item.workNumber + ' - ' + item.name"
+                    :label="item.name"
                     :value="item.id"
                   >
                   </el-option>
@@ -84,7 +84,7 @@
       <el-table-column
         align="center"
         prop="partNumber"
-        label="物料编码"
+        label="物料编号"
         width="170"
         sortable
       />
@@ -98,7 +98,7 @@
       <el-table-column
         align="center"
         prop="amount"
-        label="领用数量"
+        label="数量"
         sortable
       ></el-table-column>
       <el-table-column
@@ -113,12 +113,6 @@
         :formatter="formatterTime"
         sortable
         column-key="inDate"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="inventory"
-        label="库存数量"
-        sortable
       ></el-table-column>
       <el-table-column align="center" label="管理" width="200">
         <template slot-scope="scope">
@@ -328,7 +322,7 @@ export default {
       },
       dataVerify: {
         partNumber: [
-          { message: "请输入物料编码", trigger: "blur" },
+          { message: "请输入物料编号", trigger: "blur" },
           {
             min: 4,
             max: 20,

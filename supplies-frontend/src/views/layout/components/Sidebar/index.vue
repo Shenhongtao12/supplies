@@ -1,5 +1,5 @@
 <template>
-  <scroll-bar>
+  <scroll-bar >
     <el-menu mode="vertical" unique-opened :default-active="$route.path" :collapse="isCollapse"
              background-color="#304156" text-color="#fff" active-text-color="#409EFF">
       <sidebar-item :routes="permission_routers"></sidebar-item>
@@ -24,3 +24,8 @@
     }
   }
 </script>
+<style scoped>
+.scroll{
+  margin-top: 50px;
+}
+</style>
