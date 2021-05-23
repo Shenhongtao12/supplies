@@ -4,49 +4,61 @@
       <el-form>
         <el-form-item>
           <el-button type="primary" icon="plus" @click="showCreate"
-            >添加物料
+            >物料出库
           </el-button>
         </el-form-item>
       </el-form>
       <div class="query">
         <el-form ref="form" :model="listQuery" label-width="80px">
           <el-row>
-            <el-col :span="7">
+            <el-col :span="5">
               <el-form-item label="物料名称">
-                <el-input
-                  class="input"
-                  placeholder="请输入物料名称"
-                  v-model="listQuery.title"
-                >
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="7">
-              <el-form-item label="物料编号">
-                <el-input
-                  class="input"
-                  placeholder="请输入物料编号"
-                  v-model="listQuery.partNumber"
-                >
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="7">
-              <el-form-item label="物料类别">
                 <el-select
-                  v-model="listQuery.category"
-                  placeholder="请选择物料类别"
-                  style="width: 100%"
-                  clearable
+                  v-model="listQuery.goodsId"
+                  placeholder="请选择物料"
+                  filterable
+                  size="small"
                 >
                   <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.value"
-                    :value="item.value"
+                    v-for="item in goods"
+                    :key="item.id"
+                    :label="item.title"
+                    :value="item.id"
                   >
                   </el-option>
                 </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="5">
+              <el-form-item label="员工姓名">
+                <el-select
+                  v-model="listQuery.userId"
+                  placeholder="请选择员工"
+                  filterable
+                  size="small"
+                >
+                  <el-option
+                    v-for="item in users"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="出库时间">
+                <el-date-picker
+                  v-model="listQuery.data"
+                  style="width: 100%"
+                  type="daterange"
+                  size="small"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                >
+                </el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="3">
@@ -67,7 +79,7 @@
       :default-sort="{ prop: 'date', order: 'descending' }"
       highlight-current-row
     >
-      <el-table-column align="center" sortable label="序号" width="80">
+      <el-table-column align="center" label="序号" width="80">
         <template slot-scope="scope">
           <span v-text="getIndex(scope.$index)"> </span>
         </template>
@@ -76,35 +88,30 @@
         align="center"
         prop="partNumber"
         label="物料编号"
-        sortable
+        width="170"
       />
+      <el-table-column align="center" prop="title" label="物料" />
       <el-table-column
         align="center"
-        prop="title"
-        label="物料名称"
+        prop="userName"
+        label="员工"
         width="170"
       />
       <el-table-column
         align="center"
-        prop="unit"
-        label="计量单位"
+        prop="amount"
+        label="数量"
       ></el-table-column>
       <el-table-column
         align="center"
-        prop="category"
-        label="物料类别"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="inventory"
-        label="总库存"
+        prop="remark"
+        label="备注"
       ></el-table-column>
       <el-table-column
         align="center"
         prop="inDate"
-        label="创建时间"
+        label="出库时间"
         :formatter="formatterTime"
-        sortable
         column-key="inDate"
       ></el-table-column>
       <el-table-column align="center" label="管理" width="200">
@@ -129,14 +136,14 @@
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="listQuery.pageNum"
-      :page-size="listQuery.pageRow"
+      :current-page="listQuery.page"
+      :page-size="listQuery.size"
       :total="totalCount"
       :page-sizes="[10, 20, 50, 100]"
       layout="total, sizes, prev, pager, next, jumper"
     >
     </el-pagination>
-    <el-dialog title="添加物料" :visible.sync="dialogFormAdd" width="40%">
+    <el-dialog title="添加出库信息" :visible.sync="dialogFormAdd" width="40%">
       <el-form
         :rules="dataVerify"
         class="small-space"
@@ -146,41 +153,54 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料编号">
-          <el-input
-            style="width: 100%"
-            v-model.trim="tempArticle.partNumber"
-            maxlength="100"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="物料名称">
-          <el-input
-            style="width: 100%"
-            v-model.trim="tempArticle.title"
-            maxlength="100"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="计量单位">
-          <el-input
-            style="width: 100%"
-            v-model.trim="tempArticle.unit"
-            maxlength="100"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="物料类别">
+        <el-form-item label="物料">
           <el-select
-            v-model="tempArticle.category"
-            placeholder="请选择物料类别"
+            v-model="tempArticle.goodsId"
+            placeholder="请选择物料"
             style="width: 100%"
+            filterable
           >
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.value"
-              :value="item.value"
+              v-for="item in goods"
+              :key="item.id"
+              :label="item.title"
+              :value="item.id"
             >
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="员工">
+          <el-select
+            v-model="tempArticle.userId"
+            placeholder="请选择员工"
+            style="width: 100%"
+            filterable
+          >
+            <el-option
+              v-for="item in users"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="数量">
+          <el-input
+            style="width: 100%"
+            v-model.trim="tempArticle.amount"
+            maxlength="100"
+            placeholder="请输入数量"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4 }"
+            placeholder="请输入备注"
+            v-model="tempArticle.remark"
+          >
+          </el-input>
         </el-form-item>
 
         <el-form-item class="dialog_footer">
@@ -192,7 +212,11 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog title="更新物料" :visible.sync="dialogFormUpdate" width="40%">
+    <el-dialog
+      title="修改出库信息"
+      :visible.sync="dialogFormUpdate"
+      width="40%"
+    >
       <el-form
         :rules="dataVerify"
         class="small-space"
@@ -202,43 +226,55 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料编号">
-          <el-input
-            style="width: 100%"
-            v-model.trim="tempArticle.partNumber"
-            maxlength="100"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="物料名称">
-          <el-input
-            style="width: 100%"
-            v-model.trim="tempArticle.title"
-            maxlength="100"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="计量单位">
-          <el-input
-            style="width: 100%"
-            v-model.trim="tempArticle.unit"
-            maxlength="100"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="物料类别">
+        <el-form-item label="物料">
           <el-select
-            v-model="tempArticle.category"
-            placeholder="请选择物料类别"
+            v-model="tempArticle.goodsId"
+            placeholder="请选择物料"
             style="width: 100%"
+            filterable
           >
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.value"
-              :value="item.value"
+              v-for="item in goods"
+              :key="item.id"
+              :label="item.title"
+              :value="item.id"
             >
             </el-option>
           </el-select>
         </el-form-item>
-
+        <el-form-item label="员工">
+          <el-select
+            v-model="tempArticle.userId"
+            placeholder="请选择员工"
+            style="width: 100%"
+            filterable
+          >
+            <el-option
+              v-for="item in users"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="数量">
+          <el-input
+            style="width: 100%"
+            v-model.trim="tempArticle.amount"
+            maxlength="100"
+            placeholder="请输入数量"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4 }"
+            placeholder="请输入备注"
+            v-model="tempArticle.remark"
+          >
+          </el-input>
+        </el-form-item>
         <el-form-item class="dialog_footer">
           <el-button @click="dialogFormUpdate = false">取 消</el-button>
           <el-button type="success" @click="updateAdministrator('tempArticle')"
@@ -250,7 +286,7 @@
   </div>
 </template>
 <script>
-import { formateDate } from "@/utils/index";
+import { formateDate, formateDates } from "@/utils/index";
 
 export default {
   data() {
@@ -259,11 +295,11 @@ export default {
       list: [], //表格的数据
       listLoading: false, //数据加载等待动画
       listQuery: {
-        pageNum: 1, //页码
-        pageRow: 10, //每页条数
-        partNumber: "",
-        title:"",
-        category:""
+        page: 1, //页码
+        size: 10, //每页条数
+        goodsId: "",
+        userId: "",
+        data: "",
       },
       dialogStatus: "create",
       dialogFormAdd: false,
@@ -274,13 +310,15 @@ export default {
       },
       tempArticle: {
         id: "",
+        amount: "",
         partNumber: "",
         title: "",
-        unit: "",
-        inventory: "",
-        category: "",
+        remark: "",
+        userId: "",
         adminId: "",
         inDate: "",
+        userName: "",
+        goodsId: "",
       },
       dataVerify: {
         partNumber: [
@@ -320,39 +358,48 @@ export default {
           },
         ],
       },
-      options: [
-        {
-          value: "蔬菜",
-        },
-        {
-          value: "食品",
-        },
-        {
-          value: "底料",
-        },
-        {
-          value: "冻货",
-        },
-        {
-          value: "杂货",
-        },
-      ],
+      goods: [],
+      users: [],
     };
   },
   created() {
     this.getList();
+    this.queryGoods();
+    this.queryUsers();
   },
   methods: {
     getList() {
       this.listLoading = true;
+      const requestBody = {
+        page: this.listQuery.page, //页码
+        size: this.listQuery.size, //每页条数
+        goodsId: this.listQuery.goodsId,
+        userId: this.listQuery.userId,
+      };
+
+      if (this.listQuery.data != "") {
+        requestBody.startDateTime = formateDates(this.listQuery.data[0]);
+        requestBody.endDateTime = formateDates(this.listQuery.data[1]);
+      }
+      console.log("listQuery", this.listQuery);
       this.api({
-        url: "/goods",
+        url: "/outStock",
         method: "get",
-        params: this.listQuery,
+        params: requestBody,
       }).then((data) => {
         this.listLoading = false;
         this.list = data.data.data.data;
-        this.totalCount = data.totalCount;
+        this.totalCount = data.data.data.total;
+      });
+    },
+    queryGoods() {
+      this.$store.dispatch("GueryGoods").then((data) => {
+        this.goods = data.data.data;
+      });
+    },
+    queryUsers() {
+      this.$store.dispatch("GueryUsers").then((data) => {
+        this.users = data.data.data;
       });
     },
     formatterTime(row, column) {
@@ -360,47 +407,49 @@ export default {
     },
     handleSizeChange(val) {
       //改变每页数量
-      this.listQuery.pageRow = val;
+      this.listQuery.size = val;
       this.handleFilter();
     },
     handleCurrentChange(val) {
       //改变页码
-      this.listQuery.pageNum = val;
+      this.listQuery.page = val;
       this.getList();
     },
     handleFilter() {
       //改变了查询条件,从第一页开始查询
-      this.listQuery.pageNum = 1;
+      this.listQuery.page = 1;
       this.getList();
     },
     getIndex($index) {
       //表格序号
-      return (this.listQuery.pageNum - 1) * this.listQuery.pageRow + $index + 1;
+      return (this.listQuery.page - 1) * this.listQuery.size + $index + 1;
     },
     showCreate() {
       //显示新增对话框
       this.tempArticle.id = "";
-      this.tempArticle.partNumber = "";
+      this.tempArticle.amount = "";
       this.tempArticle.title = "";
-      this.tempArticle.inventory = "";
-      this.tempArticle.category = "";
+      this.tempArticle.remark = "";
+      this.tempArticle.userId = "";
+      this.tempArticle.goodsId = "";
       this.tempArticle.inDate = "";
       this.tempArticle.adminId = "";
-      this.tempArticle.unit = "";
-
-      this.dialogStatus = "create";
+      this.tempArticle.partNumber = "";
+      (this.tempArticle.userName = ""), (this.dialogStatus = "create");
       this.dialogFormAdd = true;
     },
     showUpdate($index) {
+      console.log("xxxxxxxx", this.list[$index]);
       //显示修改对话框
       this.tempArticle.id = this.list[$index].id;
+      this.tempArticle.amount = this.list[$index].amount;
       this.tempArticle.partNumber = this.list[$index].partNumber;
       this.tempArticle.title = this.list[$index].title;
-      this.tempArticle.inventory = this.list[$index].inventory;
-      this.tempArticle.category = this.list[$index].category;
+      this.tempArticle.remark = this.list[$index].remark;
+      this.tempArticle.userId = this.list[$index].userId;
+      this.tempArticle.goodsId = this.list[$index].goodsId;
       this.tempArticle.inDate = this.list[$index].inDate;
-      // this.tempArticle.adminId = this.list[$index].adminId;
-      this.tempArticle.unit = this.list[$index].unit;
+      this.tempArticle.userName = this.list[$index].userName;
       this.dialogFormUpdate = true;
       this.dialogStatus = "update";
     },
@@ -408,13 +457,12 @@ export default {
       delete this.tempArticle.adminId;
       delete this.tempArticle.inDate;
       delete this.tempArticle.id;
-      delete this.tempArticle.inventory;
-
+      delete this.tempArticle.partNumber;
+      delete this.tempArticle.title;
       this.$refs[tempArticle].validate((valid) => {
-        console.log("valid", valid);
         if (valid) {
           this.api({
-            url: "/goods",
+            url: "/outStock",
             method: "post",
             data: this.tempArticle,
           }).then((data) => {
@@ -436,10 +484,9 @@ export default {
       delete this.tempArticle.adminId;
       delete this.tempArticle.inDate;
       this.$refs[tempArticle].validate((valid) => {
-        console.log("valid", valid);
         if (valid) {
           this.api({
-            url: "/goods",
+            url: "/outStock",
             method: "put",
             data: this.tempArticle,
           }).then((data) => {
@@ -458,13 +505,13 @@ export default {
       });
     },
     deleteAdministrator($index) {
-      this.$confirm("确定删除此物料吗?", "提示", {
+      this.$confirm("确定删除这条出库信息吗?", "提示", {
         confirmButtonText: "确定",
         showCancelButton: false,
         type: "warning",
       }).then(() => {
         this.api({
-          url: "/goods",
+          url: "/outStock",
           method: "delete",
           params: {
             id: this.list[$index].id,

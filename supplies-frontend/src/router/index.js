@@ -23,6 +23,54 @@ export const constantRouterMap = [
   {
     path: '/system',
     component: Layout,
+    redirect: '/system/outstorage',
+    name: '功能模块',
+    meta: {title: '功能模块', icon: 'tree'},
+    children: [
+      {
+        path: 'outstorage',
+        name: '出库管理',
+        component: _import('outstorage/outstorage'),
+        meta: {title: '出库管理', icon: 'example'},
+        menu: 'outstorage'
+      },
+    ]
+  },
+  {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/instorage',
+    name: '功能模块',
+    meta: {title: '功能模块', icon: 'tree'},
+    children: [
+      {
+        path: 'instorage',
+        name: '入库管理',
+        component: _import('instorage/instorage'),
+        meta: {title: '入库管理', icon: 'example'},
+        menu: 'instorage'
+      },
+    ]
+  },
+  {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/dataStatistics',
+    name: '功能模块',
+    meta: {title: '功能模块', icon: 'tree'},
+    children: [
+      {
+        path: 'dataStatistics',
+        name: '数据统计',
+        component: _import('dataStatistics/dataStatistics'),
+        meta: {title: '数据统计', icon: 'example'},
+        menu: 'dataStatistics'
+      },
+    ]
+  },
+  {
+    path: '/system',
+    component: Layout,
     redirect: '/system/employee',
     name: '功能模块',
     meta: {title: '功能模块', icon: 'tree'},
@@ -36,54 +84,6 @@ export const constantRouterMap = [
       },
     ]
   },
-  {
-    path: '/system',
-    component: Layout,
-    redirect: '/system/putstorage',
-    name: '功能模块',
-    meta: {title: '功能模块', icon: 'tree'},
-    children: [
-      {
-        path: 'putstorage',
-        name: '物料管理',
-        component: _import('putstorage/putstorage'),
-        meta: {title: '物料管理', icon: 'example'},
-        menu: 'putstorage'
-      },
-    ]
-  },
-  {
-    path: '/system',
-    component: Layout,
-    redirect: '/system/outbound',
-    name: '功能模块',
-    meta: {title: '功能模块', icon: 'tree'},
-    children: [
-      {
-        path: 'outbound',
-        name: '出库管理',
-        component: _import('outbound/outbound'),
-        meta: {title: '出库管理', icon: 'example'},
-        menu: 'outbound'
-      },
-    ]
-  },
-  // {
-  //   path: '/system',
-  //   component: Layout,
-  //   redirect: '/system/importExcel',
-  //   name: '功能模块',
-  //   meta: {title: '功能模块', icon: 'tree'},
-  //   children: [
-  //     {
-  //       path: 'import',
-  //       name: '导入',
-  //       component: _import('importExcel/import'),
-  //       meta: {title: '导入', icon: 'example'},
-  //       menu: 'import'
-  //     },
-  //   ]
-  // },
   {
     path: '/system',
     component: Layout,

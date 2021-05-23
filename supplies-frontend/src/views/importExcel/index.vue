@@ -101,7 +101,8 @@ export default {
           const worksheet = workbook.Sheets[firstSheetName];
           const header = this.getHeaderRow(worksheet);
           const results = XLSX.utils.sheet_to_json(worksheet);
-          this.generateData({ header, results });
+          console.log("results",results);
+          // this.generateData({ header, results });
           this.loading = false;
           resolve();
         };
