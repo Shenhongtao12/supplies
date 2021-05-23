@@ -39,7 +39,7 @@ public class Goods {
     private String bigUnit;
 
     @ApiModelProperty(notes = "大件包含多少小件")
-    @NotBlank(message = "repertory不能为空")
+    @NotNull(message = "repertory不能为空")
     @Min(value = 1, message = "最小值为1")
     private Integer repertory;
 
