@@ -15,6 +15,7 @@
         <result property="inventory"     column="inventory"      />
         <result property="bigUnit"     column="big_unit"      />
         <result property="repertory"     column="repertory"      />
+        <result property="image"     column="image"      />
         <result property="smallUnit"     column="small_unit"      />
         <result property="amount"      column="amount"       />
         <result property="adminId"      column="admin_id"       />
@@ -23,7 +24,7 @@
     </resultMap>
 
     <sql id="selectOutStock">
-        select A.id, A.user_id, B.work_number, B.name, A.goods_id, C.part_number, C.title, C.inventory, C.big_unit, C.repertory, C.small_unit, A.amount, A.admin_id, A.remark, A.in_date
+        select A.id, A.user_id, B.work_number, B.name, A.goods_id, C.part_number, C.title, C.inventory, C.image, C.big_unit, C.repertory, C.small_unit, A.amount, A.admin_id, A.remark, A.in_date
         from out_stock AS A
         LEFT JOIN `user` AS B
             ON A.user_id = B.id

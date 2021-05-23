@@ -26,6 +26,7 @@ public class OutStockResponse {
     private String bigUnit;
     private Integer repertory;
     private String smallUnit;
+    private String image;
 
     private Integer amount;
 

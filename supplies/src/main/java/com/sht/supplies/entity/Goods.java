@@ -60,6 +60,9 @@ public class Goods {
     @ApiModelProperty(notes = "不需要传该参数，从token中获取")
     private Integer adminId;
 
+    @ApiModelProperty(notes = "只返回图片名称，前台显示需要拼接http://47.98.128.88/supplies/images/xxx")
+    private String image;
+
     //@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime inDate;
 
