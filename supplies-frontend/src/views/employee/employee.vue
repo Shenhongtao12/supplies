@@ -2,38 +2,43 @@
   <div class="app-container">
     <div class="filter-container">
       <el-row>
-        <el-col :span="15">
+        <el-col :span="5">
           <el-button type="primary" icon="plus" @click="showCreate"
             >添加管理员
           </el-button>
         </el-col>
-        <el-form
-          :model="listQuery"
-          :rules="rules"
-          ref="listQuery"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
-          <el-col :span="5">
-            <el-form-item label="" prop="name">
-              <el-input
-                class="input"
-                placeholder="请输入姓名搜索"
-                v-model.trim="listQuery.name"
-              >
-              </el-input> </el-form-item
-          ></el-col>
-          <el-col :span="3">
-            <el-form-item>
-              <el-button
-                type="primary"
-                icon="plus"
-                @click="queryList('listQuery')"
-                >查询
-              </el-button>
-            </el-form-item>
-          </el-col>
-        </el-form>
+        <el-col :span="16">
+          <el-form
+            :model="listQuery"
+            :rules="rules"
+            ref="listQuery"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
+            <el-row>
+              <el-col :span="9">
+                <el-form-item label="" prop="name">
+                  <el-input
+                    class="input"
+                    placeholder="请输入姓名搜索"
+                    v-model.trim="listQuery.name"
+                  >
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="4">
+                <el-form-item>
+                  <el-button
+                    type="primary"
+                    icon="plus"
+                    @click="queryList('listQuery')"
+                    >查询
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-col>
       </el-row>
     </div>
     <br />
@@ -54,13 +59,11 @@
         align="center"
         prop="workNumber"
         label="工号"
-        sortable
         column-key="workNumber"
       />
       <el-table-column
         align="center"
         prop="name"
-        sortable
         label="姓名"
         column-key="name"
       />
@@ -69,7 +72,6 @@
         prop="inDate"
         label="创建时间"
         :formatter="formatterTime"
-        sortable
         column-key="inDate"
       ></el-table-column>
       <el-table-column align="center" label="管理" width="200">
@@ -94,8 +96,8 @@
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="listQuery.pageNum"
-      :page-size="listQuery.pageRow"
+      :current-page="listQuery.page"
+      :page-size="listQuery.size"
       :total="totalCount"
       :page-sizes="[10, 20, 50, 100]"
       layout="total, sizes, prev, pager, next, jumper"
@@ -173,8 +175,8 @@ export default {
       list: [], //表格的数据
       listLoading: false, //数据加载等待动画
       listQuery: {
-        pageNum: 1, //页码
-        pageRow: 10, //每页条数
+        page: 1, //页码
+        size: 10, //每页条数
         name: "",
       },
       dialogStatus: "create",
@@ -254,7 +256,7 @@ export default {
       }).then((data) => {
         this.listLoading = false;
         this.list = data.data.data.data;
-        this.totalCount = data.totalCount;
+        this.totalCount = data.data.data.total;
       });
     },
 
@@ -280,22 +282,22 @@ export default {
     },
     handleSizeChange(val) {
       //改变每页数量
-      this.listQuery.pageRow = val;
+      this.listQuery.size = val;
       this.handleFilter();
     },
     handleCurrentChange(val) {
       //改变页码
-      this.listQuery.pageNum = val;
+      this.listQuery.page = val;
       this.getList();
     },
     handleFilter() {
       //改变了查询条件,从第一页开始查询
-      this.listQuery.pageNum = 1;
+      this.listQuery.page = 1;
       this.getList();
     },
     getIndex($index) {
       //表格序号
-      return (this.listQuery.pageNum - 1) * this.listQuery.pageRow + $index + 1;
+      return (this.listQuery.page - 1) * this.listQuery.size + $index + 1;
     },
     showCreate() {
       //显示新增对话框
@@ -372,7 +374,8 @@ export default {
           params: {
             id: this.list[$index].id,
           },
-        }).then((data) => {
+        })
+          .then((data) => {
             this.getList();
             if (data.data.code == 200) {
               this.$message({
