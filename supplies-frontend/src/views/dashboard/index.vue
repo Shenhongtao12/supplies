@@ -296,7 +296,6 @@
             action=""
             multiple
             :on-change="handleChange"
-            :file-list="fileList"
           >
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">
@@ -383,7 +382,6 @@
             action=""
             multiple
             :on-change="handleChangeUpdate"
-            :file-list="fileList1"
           >
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">
@@ -684,7 +682,6 @@ export default {
       const name1 = {
         name: file.name,
       };
-      this.fileList.push(name1);
       this.uploadImage(fd);
     },
     handleChangeUpdate(file, fileList1) {
@@ -695,7 +692,6 @@ export default {
       const name = {
         name: file.name,
       };
-      this.fileList1.push(name);
       this.uploadImage(fd);
     },
     uploadImage(fileData) {
