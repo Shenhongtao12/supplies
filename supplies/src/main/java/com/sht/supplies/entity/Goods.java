@@ -39,7 +39,7 @@ public class Goods {
     private String bigUnit;
 
     @ApiModelProperty(notes = "大件包含多少小件")
-    @NotBlank(message = "repertory不能为空")
+    @NotNull(message = "repertory不能为空")
     @Min(value = 1, message = "最小值为1")
     private Integer repertory;
 
@@ -59,6 +59,9 @@ public class Goods {
 
     @ApiModelProperty(notes = "不需要传该参数，从token中获取")
     private Integer adminId;
+
+    @ApiModelProperty(notes = "只返回图片名称，前台显示需要拼接http://47.98.128.88/supplies/images/xxx")
+    private String image;
 
     //@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime inDate;
