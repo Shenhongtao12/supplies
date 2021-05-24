@@ -15,28 +15,22 @@
             label-width="100px"
             class="demo-ruleForm"
           >
-            <el-row>
-              <el-col :span="9">
-                <el-form-item label="" prop="name">
-                  <el-input
-                    class="input"
-                    placeholder="请输入姓名搜索"
-                    v-model.trim="listQuery.name"
-                  >
-                  </el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="4">
-                <el-form-item>
-                  <el-button
-                    type="primary"
-                    icon="plus"
-                    @click="queryList('listQuery')"
-                    >查询
-                  </el-button>
-                </el-form-item>
-              </el-col>
-            </el-row>
+            <el-form-item label="" prop="name">
+              <el-input
+                class="input"
+                placeholder="请输入姓名搜索"
+                v-model.trim="listQuery.name"
+                max="2"
+                min="0"
+              >
+              </el-input>
+              <el-button
+                type="primary"
+                icon="plus"
+                @click="queryList('listQuery')"
+                >查询
+              </el-button>
+            </el-form-item>
           </el-form>
         </el-col>
       </el-row>
@@ -113,13 +107,13 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="工号">
+        <el-form-item label="工号" prop="workNumber">
           <el-input
             v-model.trim="tempArticle.workNumber"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="姓名">
+        <el-form-item label="姓名" prop="name">
           <el-input v-model.trim="tempArticle.name" maxlength="100"></el-input>
         </el-form-item>
         <el-form-item class="dialog_footer">
@@ -138,16 +132,17 @@
         label-position="left"
         label-width="60px"
         style="margin: 10px"
+        :rules="dataVerify"
         ref="tempArticle"
       >
-        <el-form-item label="姓名">
+        <el-form-item label="姓名" prop="name">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.name"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="工号">
+        <el-form-item label="工号" prop="workNumber">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.workNumber"
@@ -219,24 +214,6 @@ export default {
             min: 2,
             max: 10,
             message: "长度在 2 到 10 个字符",
-            trigger: "blur",
-          },
-        ],
-        password: [
-          { message: "请输入密码", trigger: "blur" },
-          {
-            min: 6,
-            max: 20,
-            message: "长度在 6 到 20 个字符",
-            trigger: "blur",
-          },
-        ],
-        phone: [
-          { message: "请输入密码", trigger: "blur" },
-          {
-            min: 6,
-            max: 20,
-            message: "长度在 6 到 20 个字符",
             trigger: "blur",
           },
         ],
@@ -317,7 +294,6 @@ export default {
     },
     createEmployee(tempArticle) {
       this.$refs[tempArticle].validate((valid) => {
-        console.log("valid", valid);
         if (valid) {
           this.api({
             url: "/user/save",

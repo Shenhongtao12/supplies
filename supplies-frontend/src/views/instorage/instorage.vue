@@ -34,7 +34,7 @@
                   placeholder="请选择物料"
                   filterable
                   clearable
-                    size="small"
+                  size="small"
                 >
                   <el-option
                     v-for="item in goods"
@@ -137,7 +137,7 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料名称">
+        <el-form-item label="物料名称" prop="goodsId">
           <el-select
             v-model="tempArticle.goodsId"
             placeholder="请选择物料名称"
@@ -154,7 +154,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="数量" class="num">
+        <el-form-item label="数量" class="num" prop="amount">
           <el-row>
             <el-col :span="18">
               <el-input-number
@@ -202,7 +202,7 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料名称">
+        <el-form-item label="物料名称" prop="goodsId">
           <el-select
             v-model="tempArticle.goodsId"
             placeholder="请选择物料"
@@ -219,7 +219,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="数量" class="num">
+        <el-form-item label="数量" class="num" prop="amount">
           <el-row>
             <el-col :span="18">
               <el-input-number
@@ -308,41 +308,11 @@ export default {
         title: "",
       },
       dataVerify: {
-        partNumber: [
-          { message: "请输入物料编号", trigger: "blur" },
-          {
-            min: 4,
-            max: 20,
-            message: "长度在 4 到 20 个字符",
-            trigger: "blur",
-          },
-        ],
-        title: [
+        goodsId: [
           { required: true, message: "请输入物料名称", trigger: "blur" },
-          {
-            min: 1,
-            max: 50,
-            message: "长度在 1 到 50 个字符",
-            trigger: "blur",
-          },
         ],
-        unit: [
-          { required: true, message: "请输入计量单位", trigger: "blur" },
-          {
-            min: 1,
-            max: 10,
-            message: "长度在 1 到 10 个字符",
-            trigger: "blur",
-          },
-        ],
-        inventory: [
-          { required: true, message: "请输入总库存", trigger: "blur" },
-          {
-            min: 1,
-            max: 10,
-            message: "长度在 1 到 10 个字符",
-            trigger: "blur",
-          },
+        amount: [
+          { required: true, message: "请输入物料名称", trigger: "blur" },
         ],
       },
       goods: [],
@@ -457,11 +427,11 @@ export default {
     verify(data) {
       // console.log("length",data.goods.bigUnit.length);
       // if (
-      //   data.goods.partNumber.length > 20 
+      //   data.goods.partNumber.length > 20
       // ) {
       //   return false;
       // } else {
-        return true;
+      return true;
       // }
     },
     result1(value) {
@@ -612,7 +582,7 @@ export default {
           url: "/inStock",
           method: "post",
           // data: this.vegetables.slice(start, end),
-          data:body
+          data: body,
         }).then((data) => {
           if (data.data.code == 200) {
             this.$message({

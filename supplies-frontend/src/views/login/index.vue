@@ -158,7 +158,7 @@ export default {
                 });
                 this.$router.push({ path: "/" });
               } else {
-                this.$message.error(data.data);
+                this.$message.error(data.data.message);
               }
             })
             .catch(() => {

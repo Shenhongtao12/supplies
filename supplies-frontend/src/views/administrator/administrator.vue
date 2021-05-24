@@ -2,29 +2,26 @@
   <div class="app-container">
     <div class="filter-container">
       <el-row>
-        <el-col :span="10">
+        <el-col :span="4">
           <el-button type="primary" icon="plus" @click="showCreate"
             >添加管理员
           </el-button>
         </el-col>
-        <el-form
-          :model="listQuery"
-          :rules="rules"
-          ref="listQuery"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
-          <el-col :span="6">
+        <el-col :span="20">
+          <el-form
+            :model="listQuery"
+            :rules="rules"
+            ref="listQuery"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
             <el-form-item label="" prop="name">
               <el-input
                 class="input"
                 placeholder="请输入姓名搜索"
                 v-model.trim="listQuery.name"
               >
-              </el-input> </el-form-item
-          ></el-col>
-          <el-col :span="3">
-            <el-form-item>
+              </el-input>
               <el-button
                 type="primary"
                 icon="plus"
@@ -32,8 +29,8 @@
                 >查询
               </el-button>
             </el-form-item>
-          </el-col>
-        </el-form>
+          </el-form>
+        </el-col>
       </el-row>
     </div>
     <br />
@@ -74,21 +71,29 @@
         prop="phone"
         label="联系电话"
       ></el-table-column>
-      <el-table-column align="center" label="管理" width="200">
+      <el-table-column align="center" label="管理" width="260">
         <template slot-scope="scope">
           <el-button
             type="success"
-            size="small"
+            size="mini"
             icon="edit"
             @click="showUpdate(scope.$index)"
             >修改</el-button
           >
           <el-button
             type="danger"
-            size="small"
+            size="mini"
             icon="edit"
             @click="deleteAdministrator(scope.$index)"
             >删除</el-button
+          >
+          <el-button
+            plain
+            type="success"
+            size="mini"
+            icon="edit"
+            @click="showUpdatePassword(scope.$index)"
+            >修改密码</el-button
           >
         </template>
       </el-table-column>
@@ -113,21 +118,25 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="工号">
+        <el-form-item label="工号" prop="workNumber">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.workNumber"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="姓名">
+        <el-form-item label="姓名" prop="name">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.name"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item v-if="dialogStatus === 'create'" label="密码">
+        <el-form-item
+          v-if="dialogStatus === 'create'"
+          label="密码"
+          prop="password"
+        >
           <el-input
             show-password
             style="width: 100%"
@@ -135,7 +144,7 @@
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="电话">
+        <el-form-item label="电话" prop="phone">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.phone"
@@ -143,7 +152,7 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item >
+        <el-form-item>
           <el-button @click="dialogFormAdd = false">取 消</el-button>
           <el-button type="success" @click="createEmployee('tempArticle')"
             >创 建</el-button
@@ -160,24 +169,87 @@
         label-width="60px"
         style="margin: 10px"
         ref="tempArticle"
+        :rules="dataVerify"
       >
-        <el-form-item label="姓名">
+        <el-form-item label="姓名" prop="name">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.name"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="电话">
+        <el-form-item label="电话" prop="phone">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.phone"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item >
+        <el-form-item>
           <el-button @click="dialogFormUpdate = false">取 消</el-button>
           <el-button type="success" @click="updateAdministrator('tempArticle')"
+            >修改</el-button
+          >
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog
+      title="修改密码"
+      :visible.sync="dialogFormUpdatePassword"
+      width="36%"
+    >
+      <el-form
+        class="small-space"
+        :model="passwordform"
+        label-position="left"
+        label-width="80px"
+        style="margin: 10px"
+        ref="passwordform"
+        :rules="passwordrules"
+      >
+        <el-form-item
+          v-if="dialogStatus === 'create'"
+          label="原始密码"
+          prop="oldPassword"
+        >
+          <el-input
+            show-password
+            style="width: 100%"
+            v-model.trim="passwordform.oldPassword"
+            maxlength="100"
+            placeholder="请输入原密码"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          v-if="dialogStatus === 'create'"
+          label="新密码"
+          prop="password"
+        >
+          <el-input
+            show-password
+            style="width: 100%"
+            v-model.trim="passwordform.password"
+            maxlength="100"
+            placeholder="请设置新密码"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          v-if="dialogStatus === 'create'"
+          label="确认密码"
+          prop="qrpassword"
+        >
+          <el-input
+            show-password
+            style="width: 100%"
+            v-model.trim="passwordform.qrpassword"
+            maxlength="100"
+            placeholder="请确认新密码"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="dialogFormUpdatePassword = false">取 消</el-button>
+          <el-button type="success" @click="onSubmit('passwordform')"
             >修改</el-button
           >
         </el-form-item>
@@ -191,6 +263,21 @@ import { Base64 } from "js-base64";
 
 export default {
   data() {
+    let validateNewPassword = (rule, value, callback) => {
+      if (value === this.passwordform.oldPassword) {
+        callback(new Error("新密码不能与原密码相同!"));
+      } else {
+        callback();
+      }
+    };
+    //此处即表单发送之前验证  验证新密码与再次确认
+    let validateNewPassword2 = (rule, value, callback) => {
+      if (value !== this.passwordform.password) {
+        callback(new Error("与新密码不一致!"));
+      } else {
+        callback();
+      }
+    };
     return {
       totalCount: 0, //分页组件--数据总条数
       list: [], //表格的数据
@@ -203,6 +290,7 @@ export default {
       dialogStatus: "create",
       dialogFormAdd: false,
       dialogFormUpdate: false,
+      dialogFormUpdatePassword: false,
       textMap: {
         update: "编辑",
         create: "创建文章",
@@ -228,7 +316,7 @@ export default {
       },
       dataVerify: {
         workNumber: [
-          { message: "请输入工号", trigger: "blur" },
+          { required: true, message: "请输入工号", trigger: "blur" },
           {
             min: 4,
             max: 20,
@@ -237,7 +325,7 @@ export default {
           },
         ],
         name: [
-          { message: "请输入姓名", trigger: "blur" },
+          { required: true, message: "请输入姓名", trigger: "blur" },
           {
             min: 2,
             max: 10,
@@ -246,7 +334,7 @@ export default {
           },
         ],
         password: [
-          { message: "请输入密码", trigger: "blur" },
+          { required: true, message: "请输入密码", trigger: "blur" },
           {
             min: 6,
             max: 20,
@@ -255,11 +343,48 @@ export default {
           },
         ],
         phone: [
-          { message: "请输入密码", trigger: "blur" },
+          { required: true, message: "请输入电话", trigger: "blur" },
           {
             min: 6,
             max: 20,
             message: "长度在 6 到 20 个字符",
+            trigger: "blur",
+          },
+        ],
+      },
+      passwordform: {
+        oldPassword: "",
+        password: "",
+        qrpassword: "",
+      },
+      passwordrules: {
+        //验证规则
+        oldPassword: [
+          {
+            required: true,
+            message: "请输入原密码",
+            trigger: "blur",
+          },
+        ],
+        password: [
+          {
+            required: true,
+            message: "请设置新密码",
+            trigger: "blur",
+          },
+          {
+            validator: validateNewPassword,
+            trigger: "blur",
+          },
+        ],
+        qrpassword: [
+          {
+            required: true,
+            message: "请确认新密码",
+            trigger: "blur",
+          },
+          {
+            validator: validateNewPassword2,
             trigger: "blur",
           },
         ],
@@ -343,6 +468,16 @@ export default {
       this.dialogStatus = "update";
       this.dialogFormUpdate = true;
     },
+    showUpdatePassword($index) {
+      //显示修改密码对话框
+      this.tempArticle.id = this.list[$index].id;
+      this.tempArticle.name = this.list[$index].name;
+      this.tempArticle.workNumber = this.list[$index].workNumber;
+      this.tempArticle.phone = this.list[$index].phone;
+      // this.tempArticle.password = this.list[$index].password;
+      this.tempArticle.password = "******";
+      this.dialogFormUpdatePassword = true;
+    },
     createEmployee(tempArticle) {
       let tempArticleData = {
         name: this.tempArticle.name,
@@ -351,7 +486,6 @@ export default {
         workNumber: this.tempArticle.workNumber,
       };
       this.$refs[tempArticle].validate((valid) => {
-        console.log("valid", valid);
         if (valid) {
           this.api({
             url: "/admin/add",
@@ -375,7 +509,6 @@ export default {
     updateAdministrator(tempArticle) {
       delete this.tempArticle.inDate;
       this.$refs[tempArticle].validate((valid) => {
-        console.log("valid", valid);
         if (valid) {
           this.api({
             url: "/admin",
@@ -421,6 +554,32 @@ export default {
           .catch(() => {
             this.$message.error("删除失败");
           });
+      });
+    },
+    onSubmit(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const body={
+            oldPassword: Base64.encode(this.passwordform.oldPassword),
+            password: Base64.encode(this.passwordform.password)
+          }
+          this.api({
+            url: "/admin/updatePas",
+            method: "put",
+            params: body,
+          }).then((data) => {
+            if (data.data.code == 200) {
+              this.$message({
+                message: "修改密码成功，请重新登录",
+                type: "success",
+              });
+              this.getList();
+              this.dialogFormUpdatePassword = false;
+            } else {
+              this.$message.error(data.data);
+            }
+          });
+        }
       });
     },
   },

@@ -153,7 +153,7 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料">
+        <el-form-item label="物料" prop="goodsId">
           <el-select
             v-model="tempArticle.goodsId"
             placeholder="请选择物料"
@@ -169,7 +169,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="员工">
+        <el-form-item label="员工" prop="userId">
           <el-select
             v-model="tempArticle.userId"
             placeholder="请选择员工"
@@ -185,13 +185,15 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="数量">
-          <el-input
+        <el-form-item label="数量" prop="amount">
+          <el-input-number
             style="width: 100%"
             v-model.trim="tempArticle.amount"
             maxlength="100"
             placeholder="请输入数量"
-          ></el-input>
+            :min="1"
+            :max="999999"
+          ></el-input-number>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
@@ -226,7 +228,7 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料">
+        <el-form-item label="物料" prop="goodsId">
           <el-select
             v-model="tempArticle.goodsId"
             placeholder="请选择物料"
@@ -242,7 +244,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="员工">
+        <el-form-item label="员工" prop="userId">
           <el-select
             v-model="tempArticle.userId"
             placeholder="请选择员工"
@@ -258,13 +260,15 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="数量">
-          <el-input
+        <el-form-item label="数量" prop="amount">
+          <el-input-number
             style="width: 100%"
             v-model.trim="tempArticle.amount"
             maxlength="100"
             placeholder="请输入数量"
-          ></el-input>
+            :min="1"
+            :max="999999"
+          ></el-input-number>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
@@ -310,7 +314,7 @@ export default {
       },
       tempArticle: {
         id: "",
-        amount: "",
+        amount: 1,
         partNumber: "",
         title: "",
         remark: "",
@@ -321,41 +325,14 @@ export default {
         goodsId: "",
       },
       dataVerify: {
-        partNumber: [
-          { message: "请输入物料编号", trigger: "blur" },
-          {
-            min: 4,
-            max: 20,
-            message: "长度在 4 到 20 个字符",
-            trigger: "blur",
-          },
+        userId: [
+          { required: true, message: "请输入员工姓名", trigger: "blur" },
         ],
-        title: [
+        goodsId: [
           { required: true, message: "请输入物料名称", trigger: "blur" },
-          {
-            min: 1,
-            max: 50,
-            message: "长度在 1 到 50 个字符",
-            trigger: "blur",
-          },
         ],
-        unit: [
-          { required: true, message: "请输入计量单位", trigger: "blur" },
-          {
-            min: 1,
-            max: 10,
-            message: "长度在 1 到 10 个字符",
-            trigger: "blur",
-          },
-        ],
-        inventory: [
-          { required: true, message: "请输入总库存", trigger: "blur" },
-          {
-            min: 1,
-            max: 10,
-            message: "长度在 1 到 10 个字符",
-            trigger: "blur",
-          },
+        amount: [
+          { required: true, message: "请输入物料名称", trigger: "blur" },
         ],
       },
       goods: [],
@@ -381,7 +358,6 @@ export default {
         requestBody.startDateTime = formateDates(this.listQuery.data[0]);
         requestBody.endDateTime = formateDates(this.listQuery.data[1]);
       }
-      console.log("listQuery", this.listQuery);
       this.api({
         url: "/outStock",
         method: "get",
@@ -439,7 +415,6 @@ export default {
       this.dialogFormAdd = true;
     },
     showUpdate($index) {
-      console.log("xxxxxxxx", this.list[$index]);
       //显示修改对话框
       this.tempArticle.id = this.list[$index].id;
       this.tempArticle.amount = this.list[$index].amount;

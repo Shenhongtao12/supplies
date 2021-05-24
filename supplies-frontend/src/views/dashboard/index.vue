@@ -35,8 +35,7 @@
                   class="input"
                   placeholder="请输入物料编号"
                   v-model="listQuery.partNumber"
-                                    style="width: 80%"
-
+                  style="width: 80%"
                 >
                 </el-input>
               </el-form-item>
@@ -79,14 +78,25 @@
           >
             <template slot-scope="scope">
               <img
+                v-if="item.image"
+                :src="getImgUrl(item.image)"
+                class="image"
+                width="100%"
+                height="100%"
+              />
+              <img
+                v-if="!item.image"
                 src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
                 class="image"
               />
+
               <div style="padding: 14px" class="cardDiv">
                 <span>{{ item.title }}&nbsp;&nbsp;({{ item.partNumber }})</span>
                 <p>
                   总库存：
-                  <el-tag type="success">{{ item.inventory }}</el-tag>
+                  <el-tag type="success" size="small">{{
+                    item.inventory
+                  }}</el-tag>
                   &nbsp;&nbsp;&nbsp;{{ item.smallUnit }}
                 </p>
                 <p>
@@ -227,35 +237,35 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料编号">
+        <el-form-item label="物料编号" prop="partNumber">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.partNumber"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="物料名称">
+        <el-form-item label="物料名称" prop="title">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.title"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="计量单位（大）">
+        <el-form-item label="计量单位（大）" prop="bigUnit">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.bigUnit"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="计量单位（小）">
+        <el-form-item label="计量单位（小）" prop="smallUnit">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.smallUnit"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="转换量">
+        <el-form-item label="转换量" prop="repertory">
           <el-input-number
             style="width: 100%"
             v-model.trim="tempArticle.repertory"
@@ -265,7 +275,7 @@
             :max="999999"
           ></el-input-number>
         </el-form-item>
-        <el-form-item label="物料类别">
+        <el-form-item label="物料类别" prop="category">
           <el-select
             v-model="tempArticle.category"
             placeholder="请选择物料类别"
@@ -279,6 +289,20 @@
             >
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="物料图片">
+          <el-upload
+            class="upload-demo"
+            action=""
+            multiple
+            :on-change="handleChange"
+            :file-list="fileList"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">
+              只能上传jpg/png文件，且不超过500kb
+            </div>
+          </el-upload>
         </el-form-item>
 
         <el-form-item class="dialog_footer">
@@ -300,35 +324,35 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料编号">
+        <el-form-item label="物料编号" prop="partNumber">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.partNumber"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="物料名称">
+        <el-form-item label="物料名称" prop="title">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.title"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="计量单位（大）">
+        <el-form-item label="计量单位（大）" prop="bigUnit">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.bigUnit"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="计量单位（小）">
+        <el-form-item label="计量单位（小）" prop="smallUnit">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.smallUnit"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="转换量">
+        <el-form-item label="转换量" prop="repertory">
           <el-input-number
             style="width: 100%"
             v-model.trim="tempArticle.repertory"
@@ -338,7 +362,7 @@
             :max="999999"
           ></el-input-number>
         </el-form-item>
-        <el-form-item label="物料类别">
+        <el-form-item label="物料类别" prop="category">
           <el-select
             v-model="tempArticle.category"
             placeholder="请选择物料类别"
@@ -353,7 +377,20 @@
             </el-option>
           </el-select>
         </el-form-item>
-
+        <el-form-item label="物料图片">
+          <el-upload
+            class="upload-demo"
+            action=""
+            multiple
+            :on-change="handleChangeUpdate"
+            :file-list="fileList1"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">
+              只能上传jpg/png文件，且不超过500kb
+            </div>
+          </el-upload>
+        </el-form-item>
         <el-form-item class="dialog_footer">
           <el-button @click="dialogFormUpdate = false">取 消</el-button>
           <el-button type="success" @click="updateAdministrator('tempArticle')"
@@ -373,14 +410,14 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料编号">
+        <el-form-item label="物料编号" prop="partNumber">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.partNumber"
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item label="物料">
+        <el-form-item label="物料名称" prop="goodsId">
           <el-select
             v-model="tempArticle.goodsId"
             placeholder="请选择物料"
@@ -396,7 +433,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="员工">
+        <el-form-item label="员工" prop="userId">
           <el-select
             v-model="tempArticle.userId"
             placeholder="请选择员工"
@@ -413,7 +450,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="数量">
+        <el-form-item label="数量" prop="amount">
           <el-row>
             <el-col :span="18">
               <el-input-number
@@ -429,6 +466,21 @@
               &nbsp; &nbsp;{{ tempArticle.smallUnit }}
             </el-col>
           </el-row>
+        </el-form-item>
+        <el-form-item label="物料类别" prop="category">
+          <el-select
+            v-model="tempArticle.category"
+            placeholder="请选择物料类别"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.value"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
@@ -483,12 +535,13 @@ export default {
         inventory: "",
         category: "",
         adminId: "",
+        image: "",
         inDate: "",
         goodsId: "",
       },
       dataVerify: {
         partNumber: [
-          { message: "请输入物料编号", trigger: "blur" },
+          { required: true, message: "请输入物料编号", trigger: "blur" },
           {
             min: 4,
             max: 20,
@@ -497,7 +550,12 @@ export default {
           },
         ],
         title: [
-          { required: true, message: "请输入物料名称", trigger: "blur" },
+          {
+            required: true,
+            required: true,
+            message: "请输入物料名称",
+            trigger: "blur",
+          },
           {
             min: 1,
             max: 50,
@@ -505,8 +563,8 @@ export default {
             trigger: "blur",
           },
         ],
-        unit: [
-          { required: true, message: "请输入计量单位", trigger: "blur" },
+        bigUnit: [
+          { required: true, message: "请输入计量单位(大)", trigger: "blur" },
           {
             min: 1,
             max: 10,
@@ -514,8 +572,27 @@ export default {
             trigger: "blur",
           },
         ],
-        inventory: [
-          { required: true, message: "请输入总库存", trigger: "blur" },
+        smallUnit: [
+          { required: true, message: "请输入计量单位(小)", trigger: "blur" },
+          {
+            min: 1,
+            max: 10,
+            message: "长度在 1 到 10 个字符",
+            trigger: "blur",
+          },
+        ],
+        repertory: [{ required: true, message: "转换量", trigger: "blur" }],
+        userId: [
+          { required: true, message: "请输入员工姓名", trigger: "blur" },
+        ],
+        goodsId: [
+          { required: true, message: "请输入物料名称", trigger: "blur" },
+        ],
+        amount: [
+          { required: true, message: "请输入物料名称", trigger: "blur" },
+        ],
+        category: [
+          { required: true, message: "物料类别", trigger: "blur" },
           {
             min: 1,
             max: 10,
@@ -541,6 +618,8 @@ export default {
           value: "杂货",
         },
       ],
+      fileList: [],
+      fileList1: [],
       goods: [],
       users: [],
       outstorageData: {},
@@ -559,7 +638,6 @@ export default {
         method: "get",
         params: this.listQuery,
       }).then((data) => {
-        console.log("data", data.data.data.data);
         this.listLoading = false;
         this.list = data.data.data.data;
         this.totalCount = data.data.data.total;
@@ -597,6 +675,50 @@ export default {
       //表格序号
       return (this.listQuery.page - 1) * this.listQuery.size + $index + 1;
     },
+    //上传图片
+    handleChange(file, fileList1) {
+      let fd = new FormData();
+      fd.append("name", file.name);
+      fd.append("type", "类型一");
+      fd.append("file", file.raw);
+      const name1 = {
+        name: file.name,
+      };
+      this.fileList.push(name1);
+      this.uploadImage(fd);
+    },
+    handleChangeUpdate(file, fileList1) {
+      let fd = new FormData();
+      fd.append("name", file.name);
+      fd.append("type", "类型一");
+      fd.append("file", file.raw);
+      const name = {
+        name: file.name,
+      };
+      this.fileList1.push(name);
+      this.uploadImage(fd);
+    },
+    uploadImage(fileData) {
+      this.api({
+        url: `/upload/image`,
+        method: "post",
+        data: fileData,
+        headers: {
+          "Content-Type": "multipart/form-data; ",
+        },
+      }).then((data) => {
+        if (data.data.code == 200) {
+          this.tempArticle.image = data.data.data.thumbnailName;
+          this.$message.success(data.data.message);
+        } else {
+          this.$message.error(data.data.message);
+        }
+      });
+    },
+    getImgUrl(i) {
+      const url = "http://47.98.128.88:8888/supplies/images/" + i;
+      return url;
+    },
     showCreate() {
       //显示新增对话框
       this.tempArticle.id = "";
@@ -607,6 +729,8 @@ export default {
       this.tempArticle.inDate = "";
       this.tempArticle.adminId = "";
       this.tempArticle.bigUnit = "";
+      this.tempArticle.image = "";
+
       this.tempArticle.smallUnit = "";
       this.tempArticle.repertory = 0;
       this.dialogStatus = "create";
@@ -623,12 +747,11 @@ export default {
       this.tempArticle.bigUnit = this.list[$index].bigUnit;
       this.tempArticle.smallUnit = this.list[$index].smallUnit;
       this.tempArticle.repertory = this.list[$index].repertory;
+      this.tempArticle.image = this.list[$index].image;
       this.dialogFormUpdate = true;
-      this.dialogStatus = "update";
     },
 
     outstorage($index) {
-      console.log("$index", this.list[$index]);
       // 显示出库对话框
       this.tempArticle.id = this.list[$index].id;
       this.tempArticle.partNumber = this.list[$index].partNumber;
@@ -640,17 +763,14 @@ export default {
       this.tempArticle.bigUnit = this.list[$index].bigUnit;
       this.tempArticle.smallUnit = this.list[$index].smallUnit;
       this.tempArticle.repertory = this.list[$index].repertory;
-      console.log("tempArticle", this.tempArticle);
       this.dialogOutStorage = true;
     },
-
     createEmployee(tempArticle) {
       delete this.tempArticle.adminId;
       delete this.tempArticle.inDate;
       delete this.tempArticle.id;
       delete this.tempArticle.inventory;
       this.$refs[tempArticle].validate((valid) => {
-        console.log("valid", valid);
         if (valid) {
           this.api({
             url: "/goods",
@@ -664,6 +784,7 @@ export default {
               });
               this.getList();
               this.dialogFormAdd = false;
+              this.fileList = [];
             } else {
               this.$message.error(data.data);
             }
@@ -677,7 +798,6 @@ export default {
       delete this.tempArticle.id;
       delete this.tempArticle.partNumber;
       delete this.tempArticle.title;
-      console.log("this.tempArticle", this.tempArticle);
       this.$refs[tempArticle].validate((valid) => {
         if (valid) {
           this.api({
@@ -703,7 +823,6 @@ export default {
       delete this.tempArticle.adminId;
       delete this.tempArticle.inDate;
       this.$refs[tempArticle].validate((valid) => {
-        console.log("valid", valid);
         if (valid) {
           this.api({
             url: "/goods",
@@ -716,6 +835,7 @@ export default {
                 type: "success",
               });
               this.getList();
+              this.fileList = [];
               this.dialogFormUpdate = false;
             } else {
               this.$message.error(data.data);

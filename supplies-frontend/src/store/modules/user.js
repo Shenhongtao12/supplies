@@ -1,5 +1,5 @@
-import {removeToken,setUserId,removeUserId, setToken} from '@/utils/auth'
-import {default as api} from '../../utils/api'
+import { removeToken, setUserId, removeUserId, setToken } from '@/utils/auth'
+import { default as api } from '../../utils/api'
 import store from '../../store'
 import router from '../../router'
 
@@ -18,31 +18,36 @@ const user = {
     RESET_USER: (state) => {
       state.id = "";
       state.name = "";
-      state.workNumber ="";
+      state.workNumber = "";
     }
   },
   actions: {
     // 登录
-    Login({commit, state}, loginForm) {
+    Login({ commit, state }, loginForm) {
       return new Promise((resolve, reject) => {
         api({
           url: "admin/login",
           method: "post",
           data: loginForm
         }).then(data => {
+          if (data.data.code == 400) {
+            alert(data.data.message);
+            this.$message.error(data.data.message);
+          }
           //localstorage中保存token
           setToken(data.data.data.token);
           setUserId(data.data.data.admin.id);
           //储存用户信息
           commit('SET_USER', data.data.data.admin);
           resolve(data);
+
         }).catch(err => {
           reject(err)
         })
       })
     },
     // 获取用户信息
-    GetInfo({commit, state}) {
+    GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         api({
           url: '/admin/refreshToken',
@@ -64,7 +69,7 @@ const user = {
       })
     },
     // 登出
-    LogOut({commit}) {
+    LogOut({ commit }) {
       commit('RESET_USER')
       removeToken();
       removeUserId();
@@ -84,7 +89,7 @@ const user = {
       // })
     },
     // 前端登出,不用调后端清除token的接口
-    FedLogOut({commit}) {
+    FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('RESET_USER')
         removeToken()
