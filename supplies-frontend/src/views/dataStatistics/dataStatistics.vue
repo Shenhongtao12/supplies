@@ -37,7 +37,7 @@
               <el-form-item label="时间">
                 <el-date-picker
                   v-model="listQuery.data"
-                  type="date"
+                  type="month"
                   placeholder="选择日期"
                   style="width: 100%"
                 >

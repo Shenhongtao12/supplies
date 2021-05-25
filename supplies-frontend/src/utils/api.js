@@ -49,9 +49,12 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.error('err' + error)// for debug
+    let message = error.message;
+    if (error.response.status === 400) {
+      message = error.response.data.message
+    }
     Message({
-      message: error.message,
+      message: message,
       type: 'error',
       duration: 3 * 1000
     })

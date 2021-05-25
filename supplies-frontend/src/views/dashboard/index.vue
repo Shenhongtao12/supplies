@@ -454,6 +454,23 @@
               <el-input-number
                 style="width: 100%"
                 v-model.trim="tempArticle.amount"
+                placeholder="请输入数量（大计量单位）"
+                maxlength="100"
+                :min="1"
+                :max="999999"
+              ></el-input-number
+            ></el-col>
+            <el-col :span="5">
+              &nbsp; &nbsp;{{ tempArticle.bigUnit }}
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="数量" prop="amount">
+          <el-row>
+            <el-col :span="18">
+              <el-input-number
+                style="width: 100%"
+                v-model.trim="tempArticle.amount"
                 placeholder="请输入数量（小计量单位）"
                 maxlength="100"
                 :min="1"
