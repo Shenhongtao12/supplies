@@ -268,6 +268,7 @@ export default {
   },
   data() {
     return {
+      batch: 100,
       totalCount: 0, //分页组件--数据总条数
       list: [], //表格的数据
       listLoading: false, //数据加载等待动画
@@ -319,7 +320,7 @@ export default {
       users: [],
       chooseGoods: "",
       loading: false,
-      vegetables: [],
+      errorResponse: [],
     };
   },
   created() {
@@ -385,205 +386,117 @@ export default {
     },
     readerData(rawFile) {
       this.loading = true;
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const data = e.target.result;
-          const workbook = XLSX.read(data, { type: "array" });
-          const firstSheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheetName];
-          const header = this.getHeaderRow(worksheet);
-          const result1 = XLSX.utils.sheet_to_json(
-            workbook.Sheets[workbook.SheetNames[0]]
-          );
-          this.result1(result1);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = e.target.result;
+        const workbook = XLSX.read(data, { type: "array" });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const header = this.getHeaderRow(worksheet);
+        if (!this.checkHeader(header)) {
+            this.$message.error("Excel不正确，请下载正确的模板");
+            this.loading = false;
+            return;
+        }
+        let result1 = XLSX.utils.sheet_to_json(
+          workbook.Sheets[workbook.SheetNames[0]]
+        );
+        this.result(result1, "蔬菜");
 
-          const result2 = XLSX.utils.sheet_to_json(
-            workbook.Sheets[workbook.SheetNames[1]]
-          );
-          this.result2(result2);
+        /* let result2 = XLSX.utils.sheet_to_json(
+          workbook.Sheets[workbook.SheetNames[1]]
+        );
+        this.result(result2, "食品");
 
-          const result3 = XLSX.utils.sheet_to_json(
-            workbook.Sheets[workbook.SheetNames[2]]
-          );
-          this.result3(result3);
+        let result3 = XLSX.utils.sheet_to_json(
+          workbook.Sheets[workbook.SheetNames[2]]
+        );
+        this.result(result3, "底料");
 
-          const result4 = XLSX.utils.sheet_to_json(
-            workbook.Sheets[workbook.SheetNames[4]]
-          );
-          this.result4(result4);
+        let result4 = XLSX.utils.sheet_to_json(
+          workbook.Sheets[workbook.SheetNames[4]]
+        );
+        this.result(result4, "冻货");
 
-          const result5 = XLSX.utils.sheet_to_json(
-            workbook.Sheets[workbook.SheetNames[5]]
-          );
-          this.result5(result5);
-          // this.generateData({ header, results });
-          this.loading = false;
-          resolve();
-        };
-        reader.readAsArrayBuffer(rawFile);
-      });
+        let result5 = XLSX.utils.sheet_to_json(
+          workbook.Sheets[workbook.SheetNames[5]]
+        );
+        this.result(result5, "杂货"); */
+        // this.generateData({ header, results });
+        this.loading = false;
+      };
+      reader.readAsArrayBuffer(rawFile);
     },
     verify(data) {
-      // console.log("length",data.goods.bigUnit.length);
-      // if (
-      //   data.goods.partNumber.length > 20
-      // ) {
-      //   return false;
-      // } else {
-      return true;
-      // }
+      if (!data.goods.partNumber || data.goods.partNumber === "") {
+        data.isSuccess = false;
+        data.errorMessage = "物料编码不能为空";
+        return;
+      }
+      if (data.goods.partNumber.length > 20 || data.goods.partNumber.length < 4) {
+        data.isSuccess = false;
+        data.errorMessage = "物料编码长度应4-20字符";
+        return;
+      } 
+
+      if (!data.goods.title || data.goods.title === "") {
+        data.isSuccess = false;
+        data.errorMessage = "物料名称不能为空";
+        return;
+      } 
+      if (data.goods.title.length > 50 || data.goods.title.length < 1) {
+        data.isSuccess = false;
+        data.errorMessage = "物料名称长度应在1-50字符"
+        return;
+      } 
+
+      if (!data.goods.bigUnit || data.goods.bigUnit === "") {
+        data.isSuccess = false;
+        data.errorMessage = "计量单位不能为空";
+        return;
+      }
+      if (data.goods.bigUnit.length > 10 || data.goods.bigUnit.length < 1) {
+        data.isSuccess = false;
+        data.errorMessage = "计量单位长度应1-10字符";
+      } 
     },
-    result1(value) {
+
+    result(value, category) {
+      let request = [];
       value.forEach((data) => {
-        const goods = {
-          amount: data.来货 ? data.来货 : 10,
+        let req = {
+          amount: data['来货'] ? data['来货'] : 0,
           goods: {
-            partNumber: data.物料编码,
-            title: data.物料名称,
-            bigUnit: data.单位,
-            smallUnit: data.小计量单位 ? data.小计量单位 : "个",
-            repertory: data.转换量 ? data.转换量 : 10,
-            category: "蔬菜",
+            partNumber: this.strTrim(data['物料编码'].toString()),
+            title: this.strTrim(data['物料名称']),
+            bigUnit: this.strTrim(data['单位']),
+            smallUnit: this.strTrim(data['小计量单位']),
+            repertory: data['转换量'] ? data['转换量']  : 1,
+            category: category,
           },
+          isSuccess: true
         };
-        if (this.verify(goods)) {
-          this.vegetables.push(goods);
-        } else {
-          this.$message({
-            message: "字段太长",
-            type: "warning",
-          });
-          return;
-        }
+        this.verify(req);
+        request.push(req);
       });
-      if (this.vegetables.length > 0) {
-        this.batchInStore();
+      this.errorResponse = [...this.errorResponse, request.filter(x => !x.isSuccess)]
+      request = request.filter(x => x.isSuccess);
+      console.log(request)
+      if (request.length > 0) {
+        this.batchInStore(request);
       }
     },
-    result2(value) {
-      value.forEach((data) => {
-        const goods = {
-          amount: data.来货 ? data.来货 : 10,
-          goods: {
-            partNumber: data.物料编码,
-            title: data.物料名称,
-            bigUnit: data.单位,
-            smallUnit: data.小计量单位 ? data.小计量单位 : "个",
-            repertory: data.转换量 ? data.转换量 : 10,
-            category: "食品",
-          },
-        };
-        if (this.verify(goods)) {
-          this.vegetables.push(goods);
-        } else {
-          this.$message({
-            message: "字段太长",
-            type: "warning",
-          });
-          return;
-        }
-      });
-      if (this.vegetables.length > 0) {
-        this.batchInStore();
-      }
-    },
-    result3(value) {
-      value.forEach((data) => {
-        const goods = {
-          amount: data.来货 ? data.来货 : 10,
-          goods: {
-            partNumber: data.物料编码,
-            title: data.物料名称,
-            bigUnit: data.单位,
-            smallUnit: data.小计量单位 ? data.小计量单位 : "个",
-            repertory: data.转换量 ? data.转换量 : 10,
-            category: "底料",
-          },
-        };
-        if (this.verify(goods)) {
-          this.vegetables.push(goods);
-        } else {
-          this.$message({
-            message: "字段太长",
-            type: "warning",
-          });
-          return;
-        }
-      });
-      if (this.vegetables.length > 0) {
-        this.batchInStore();
-      }
-    },
-    result4(value) {
-      value.forEach((data) => {
-        const goods = {
-          amount: data.来货 ? data.来货 : 10,
-          goods: {
-            partNumber: data.物料编码,
-            title: data.物料名称,
-            bigUnit: data.单位,
-            smallUnit: data.小计量单位 ? data.小计量单位 : "个",
-            repertory: data.转换量 ? data.转换量 : 10,
-            category: "冻货",
-          },
-        };
-        if (this.verify(goods)) {
-          this.vegetables.push(goods);
-        } else {
-          this.$message({
-            message: "字段太长",
-            type: "warning",
-          });
-          return;
-        }
-      });
-      if (this.vegetables.length > 0) {
-        this.batchInStore();
-      }
-    },
-    result5(value) {
-      value.forEach((data) => {
-        const goods = {
-          amount: data.来货 ? data.来货 : 10,
-          goods: {
-            partNumber: data.物料编码,
-            title: data.物料名称,
-            bigUnit: data.单位,
-            smallUnit: data.小计量单位 ? data.小计量单位 : "个",
-            repertory: data.转换量 ? data.转换量 : 10,
-            category: "杂货",
-          },
-        };
-        if (this.verify(goods)) {
-          this.vegetables.push(goods);
-        } else {
-          this.$message({
-            message: "字段太长",
-            type: "warning",
-          });
-          return;
-        }
-      });
-      if (this.vegetables.length > 0) {
-        this.batchInStore();
-      }
-    },
-    batchInStore() {
-      const body = this.vegetables.slice(0, 30);
+    
+    batchInStore(request) {
       let num = 0;
-      if (this.vegetables.length > 100) {
-        num = this.vegetables.length / 100;
-      }
-      let start = 0;
-      let end = 100;
+      num = Math.round(request.length / this.batch) + 1;
       for (let i = 0; i < num; i++) {
         this.api({
           url: "/inStock",
           method: "post",
-          // data: this.vegetables.slice(start, end),
-          data: body,
+          data: request.slice(i * this.batch, (i+1) * this.batch - 1),
         }).then((data) => {
+          console.log(data)
           if (data.data.code == 200) {
             this.$message({
               message: "批量入库成功！",
@@ -591,13 +504,23 @@ export default {
             });
             this.getList();
             this.dialogFormAdd = false;
-            start = end;
-            end = this.vegetables.length;
           } else {
             this.$message.error(data.data.toString());
           }
         });
       }
+    },
+    checkHeader(header) {
+      if(header.length == 8 && header[0] == "物料编码" && header[1] == "物料名称" && header[2] == "单位" && header[3] == "来货" && header[6] == "小计量单位" && header[7] == "转换量") {
+        return true;
+      }
+      return false;
+    },
+    strTrim(str) {
+      if(!str || str == "") {
+        return null;
+      } 
+      return str.trim();
     },
     getHeaderRow(sheet) {
       const headers = [];

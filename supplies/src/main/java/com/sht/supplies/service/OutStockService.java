@@ -103,4 +103,8 @@ public class OutStockService {
         Page<OutStockResponse> outStockPage = (Page<OutStockResponse>) outStockMapper.findByPage(new QueryEntity(goodsId, userId, startDateTime, endDateTime));
         return new PageResult<>(outStockPage.getTotal(), outStockPage.getPages(), outStockPage.getResult());
     }
+
+    public boolean existsByGoods(Integer id) {
+        return outStockMapper.existsByGoods(id) != 0;
+    }
 }

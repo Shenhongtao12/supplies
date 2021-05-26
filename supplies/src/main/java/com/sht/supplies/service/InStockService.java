@@ -152,4 +152,8 @@ public class InStockService {
         Page<OutStockResponse> inStockPage = (Page<OutStockResponse>) inStockMapper.findByPage(new QueryEntity(goodsId, 0, startDateTime, endDateTime));
         return new PageResult<>(inStockPage.getTotal(), inStockPage.getPages(), inStockPage.getResult());
     }
+
+    public boolean existsByGoods(Integer id) {
+        return inStockMapper.existsByGoods(id) != 0;
+    }
 }

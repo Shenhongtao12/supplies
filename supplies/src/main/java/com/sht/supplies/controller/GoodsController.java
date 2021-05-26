@@ -56,7 +56,10 @@ public class GoodsController extends BaseController {
     @DeleteMapping
     public ResponseEntity<RestResponse> delete(@RequestParam(name = "id") Integer id) {
         if (goodsService.existsWithPrimaryKey(id)) {
-            goodsService.delete(id);
+
+            if (!goodsService.delete(id)) {
+                return ResponseEntity.ok().body(ERROR("该物料存在入库或出库记录，请先删除相关记录"));
+            }
             return ResponseEntity.ok().body(SUCCESS("删除成功"));
         }
         return ResponseEntity.ok().body(ERROR("该物料不存在"));

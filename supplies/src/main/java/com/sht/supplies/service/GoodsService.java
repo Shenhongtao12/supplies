@@ -29,6 +29,10 @@ public class GoodsService extends BaseCommon {
 
     @Autowired
     private GoodsMapper goodsMapper;
+    @Autowired
+    private InStockService inStockService;
+    @Autowired
+    private OutStockService outStockService;
 
     public RestResponse save(Goods goods) {
         if (StringUtils.isNotEmpty(goods.getPartNumber()) && goodsMapper.existsPartNumber(goods.getPartNumber()) != null) {
@@ -73,10 +77,12 @@ public class GoodsService extends BaseCommon {
         return goodsMapper.existsWithPrimaryKey(id);
     }
 
-    public void delete(Integer id) {
-        Goods goods = goodsMapper.selectByPrimaryKey(id);
+    public boolean delete(Integer id) {
+        if (inStockService.existsByGoods(id) || outStockService.existsByGoods(id)) {
+            return false;
+        }
         goodsMapper.deleteByPrimaryKey(id);
-        goods.setId(id);
+        return true;
     }
 
     public PageResult<Goods> findGoodsPage(String partNumber, String title, String category, Integer page, Integer size) {
@@ -90,7 +96,7 @@ public class GoodsService extends BaseCommon {
         }
 
         if (StringUtils.isNotEmpty(title)) {
-            criteria.andLike("title", "%" + title + "%");
+            criteria.andEqualTo("title", title);
         }
 
         if (StringUtils.isNotEmpty(category)) {

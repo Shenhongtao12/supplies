@@ -27,7 +27,7 @@ public class StatisticalService {
      * 每月1号自动统计当月用货量、库存量
      * 0 0 0 1 * ?
      */
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 0 1 * ?")
     public void autoStatistical() {
         statisticalMapper.autoStatistical();
     }
@@ -48,7 +48,7 @@ public class StatisticalService {
         }
 
         if (StringUtils.isNotEmpty(title)) {
-            criteria.andLike("title", "%" + title + "%");
+            criteria.andEqualTo("title", title);
         }
         Page<Statistical> statisticals = (Page<Statistical>) statisticalMapper.selectByExample(example);
         return new PageResult<>(statisticals.getTotal(), statisticals.getPages(), statisticals.getResult());

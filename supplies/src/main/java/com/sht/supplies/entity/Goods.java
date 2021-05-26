@@ -24,8 +24,8 @@ public class Goods {
     @KeySql(useGeneratedKeys = true)
     private Integer id;
 
-    @ApiModelProperty(notes = "物料编号")
-    @Length(min = 4, max = 20, message = "物料编号长度应4-20字符")
+    @ApiModelProperty(notes = "物料编码")
+    @Length(min = 4, max = 20, message = "物料编码长度应4-20字符")
     private String partNumber;
 
     @ApiModelProperty(notes = "物料名称")

@@ -3,6 +3,7 @@ package com.sht.supplies.mapper;
 import com.sht.supplies.entity.OutStock;
 import com.sht.supplies.entity.OutStockResponse;
 import com.sht.supplies.entity.QueryEntity;
+import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.time.LocalDateTime;
@@ -20,4 +21,7 @@ public interface OutStockMapper extends Mapper<OutStock> {
      * @return list
      */
     List<OutStockResponse> findByPage(QueryEntity queryParam);
+
+    @Select("select count(1) from out_stock where goods_id = #{id}")
+    Integer existsByGoods(Integer id);
 }
