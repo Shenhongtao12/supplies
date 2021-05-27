@@ -23,10 +23,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="物料编号">
+              <el-form-item label="物料编码">
                 <el-input
                   class="input"
-                  placeholder="请输入物料编号"
+                  placeholder="请输入物料编码"
                   v-model="listQuery.partNumber"
                   style="width: 100%"
                 >
@@ -70,7 +70,7 @@
       <el-table-column
         align="center"
         prop="partNumber"
-        label="物料编号"
+        label="物料编码"
         column-key="partNumber"
       />
       <el-table-column

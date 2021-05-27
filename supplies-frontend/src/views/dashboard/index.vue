@@ -30,10 +30,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="物料编号">
+              <el-form-item label="物料编码">
                 <el-input
                   class="input"
-                  placeholder="请输入物料编号"
+                  placeholder="请输入物料编码"
                   v-model="listQuery.partNumber"
                   style="width: 80%"
                 >
@@ -159,7 +159,7 @@
             <span v-text="getIndex(scope.$index)"> </span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="partNumber" label="物料编号" />
+        <el-table-column align="center" prop="partNumber" label="物料编码" />
         <el-table-column align="center" prop="title" label="物料名称" />
         <el-table-column align="center" prop="bigUnit" label="计量单位（大）" />
         <el-table-column
@@ -237,7 +237,7 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料编号" prop="partNumber">
+        <el-form-item label="物料编码" prop="partNumber">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.partNumber"
@@ -323,7 +323,7 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料编号" prop="partNumber">
+        <el-form-item label="物料编码" prop="partNumber">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.partNumber"
@@ -408,7 +408,7 @@
         style="margin: 10px"
         ref="tempArticle"
       >
-        <el-form-item label="物料编号" prop="partNumber">
+        <el-form-item label="物料编码" prop="partNumber">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.partNumber"
@@ -556,7 +556,7 @@ export default {
       },
       dataVerify: {
         partNumber: [
-          { required: true, message: "请输入物料编号", trigger: "blur" },
+          { required: true, message: "请输入物料编码", trigger: "blur" },
           {
             min: 4,
             max: 20,

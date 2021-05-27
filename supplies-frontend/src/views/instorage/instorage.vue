@@ -83,7 +83,7 @@
           <span v-text="getIndex(scope.$index)"> </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="partNumber" label="物料编号" />
+      <el-table-column align="center" prop="partNumber" label="物料编码" />
       <el-table-column align="center" prop="title" label="物料名称" />
       <el-table-column align="center" prop="amount" label="入库数量" />
       <el-table-column align="center" prop="inventory" label="总库存" />
@@ -505,7 +505,7 @@ export default {
             this.getList();
             this.dialogFormAdd = false;
           } else {
-            this.$message.error(data.data.toString());
+            this.$message.error(data.data.message);
           }
         });
       }

@@ -3,7 +3,7 @@
     <div class="block">
       <div class="demonstration">
         <img style="width: 50px; height: 50px" src="./log.png" />
-        <div class="text">海底捞 | 智慧运营管理平台</div>
+        <div class="text">海底捞 | 智慧库房管理平台</div>
       </div>
       <img class="logo" style="width: 500px; height: 400px" src="./logo.png" />
     </div>
