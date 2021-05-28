@@ -302,6 +302,11 @@
               只能上传jpg/png文件，且不超过500kb
             </div>
           </el-upload>
+          <el-image
+            v-if="imageUrl !== ''"
+            style="width: 100px; height: 100px"
+            :src="imageUrl"
+          ></el-image>
         </el-form-item>
 
         <el-form-item class="dialog_footer">
@@ -388,6 +393,11 @@
               只能上传jpg/png文件，且不超过500kb
             </div>
           </el-upload>
+          <el-image
+            v-if="tempArticle.image"
+            style="width: 100px; height: 100px"
+            :src="getImgUrl(tempArticle.image)"
+          ></el-image>
         </el-form-item>
         <el-form-item class="dialog_footer">
           <el-button @click="dialogFormUpdate = false">取 消</el-button>
@@ -421,6 +431,7 @@
             placeholder="请选择物料"
             style="width: 100%"
             filterable
+            @change="changeGoodsName"
           >
             <el-option
               v-for="item in goods"
@@ -454,33 +465,19 @@
               <el-input-number
                 style="width: 100%"
                 v-model.trim="tempArticle.amount"
-                placeholder="请输入数量（大计量单位）"
                 maxlength="100"
                 :min="1"
                 :max="999999"
               ></el-input-number
             ></el-col>
-            <el-col :span="5">
-              &nbsp; &nbsp;{{ tempArticle.bigUnit }}
-            </el-col>
+            <el-col :span="5"> &nbsp; &nbsp;{{ tempArticle.bigUnit }} </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item label="数量" prop="amount">
-          <el-row>
-            <el-col :span="18">
-              <el-input-number
-                style="width: 100%"
-                v-model.trim="tempArticle.amount"
-                placeholder="请输入数量（小计量单位）"
-                maxlength="100"
-                :min="1"
-                :max="999999"
-              ></el-input-number
-            ></el-col>
-            <el-col :span="5">
-              &nbsp; &nbsp;{{ tempArticle.smallUnit }}
-            </el-col>
-          </el-row>
+        <el-form-item label="计量单位" prop="unit">
+          <el-radio-group v-model="tempArticle.unit">
+            <el-radio :label="2">大计量单位</el-radio>
+            <el-radio :label="1">小计量单位</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="物料类别" prop="category">
           <el-select
@@ -527,7 +524,7 @@ export default {
       listLoading: false, //数据加载等待动画
       listQuery: {
         page: 1, //页码
-        size: 10, //每页条数
+        size: 12, //每页条数
         partNumber: "",
         title: "",
         category: "",
@@ -553,6 +550,8 @@ export default {
         image: "",
         inDate: "",
         goodsId: "",
+        amount:0,
+        unit: 2,
       },
       dataVerify: {
         partNumber: [
@@ -606,6 +605,7 @@ export default {
         amount: [
           { required: true, message: "请输入物料名称", trigger: "blur" },
         ],
+        unit: [{ required: true, message: "请选择计量单位", trigger: "blur" }],
         category: [
           { required: true, message: "物料类别", trigger: "blur" },
           {
@@ -633,6 +633,7 @@ export default {
           value: "杂货",
         },
       ],
+      imageUrl: "",
       fileList: [],
       fileList1: [],
       goods: [],
@@ -696,9 +697,6 @@ export default {
       fd.append("name", file.name);
       fd.append("type", "类型一");
       fd.append("file", file.raw);
-      const name1 = {
-        name: file.name,
-      };
       this.uploadImage(fd);
     },
     handleChangeUpdate(file, fileList1) {
@@ -722,7 +720,8 @@ export default {
       }).then((data) => {
         if (data.data.code == 200) {
           this.tempArticle.image = data.data.data.thumbnailName;
-          this.$message.success(data.data.message);
+          this.imageUrl = this.getImgUrl(this.tempArticle.image);
+          // this.$message.success(data.data.message);
         } else {
           this.$message.error(data.data.message);
         }
@@ -743,7 +742,6 @@ export default {
       this.tempArticle.adminId = "";
       this.tempArticle.bigUnit = "";
       this.tempArticle.image = "";
-
       this.tempArticle.smallUnit = "";
       this.tempArticle.repertory = 0;
       this.dialogStatus = "create";
@@ -805,18 +803,31 @@ export default {
         }
       });
     },
+    changeGoodsName(value) {
+      this.goods.forEach((data) => {
+        if (data.id == value) {
+          this.tempArticle.repertory = data.repertory;
+        }
+      });
+    },
     createoutstorages(tempArticle) {
-      delete this.tempArticle.adminId;
-      delete this.tempArticle.inDate;
-      delete this.tempArticle.id;
-      delete this.tempArticle.partNumber;
-      delete this.tempArticle.title;
+      let num = this.tempArticle.amount;
+      if (this.tempArticle.unit == 2) {
+        num = this.tempArticle.amount * this.tempArticle.repertory;
+      }
+      console.log("repertory",this.tempArticle.repertory);
+      const body = {
+        amount: num,
+        goodsId: this.tempArticle.goodsId,
+        remark: this.tempArticle.remark,
+        userId: this.tempArticle.userId,
+      };
       this.$refs[tempArticle].validate((valid) => {
         if (valid) {
           this.api({
             url: "/outStock",
             method: "post",
-            data: this.tempArticle,
+            data: body,
           }).then((data) => {
             if (data.data.code == 200) {
               this.$message({
@@ -924,7 +935,7 @@ export default {
 
 .image {
   width: 100%;
-  display: block;
+  height: 300px;
 }
 
 .clearfix:before,

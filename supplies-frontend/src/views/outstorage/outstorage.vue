@@ -54,7 +54,7 @@
                   style="width: 100%"
                   type="daterange"
                   size="small"
-                  range-separator="至"
+                  range-separator=""
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                 >
@@ -164,11 +164,12 @@
             placeholder="请选择物料"
             style="width: 100%"
             filterable
+            @change="changeGoodsName"
           >
             <el-option
               v-for="item in goods"
               :key="item.id"
-              :label="item.title"
+              :label="getGoodsName(item)"
               :value="item.id"
             >
             </el-option>
@@ -199,6 +200,12 @@
             :min="1"
             :max="999999"
           ></el-input-number>
+        </el-form-item>
+        <el-form-item label="计量单位" prop="unit">
+          <el-radio-group v-model="tempArticle.unit">
+            <el-radio :label="2">大计量单位</el-radio>
+            <el-radio :label="1">小计量单位</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
@@ -239,11 +246,12 @@
             placeholder="请选择物料"
             style="width: 100%"
             filterable
+            @change="changeGoodsName"
           >
             <el-option
               v-for="item in goods"
               :key="item.id"
-              :label="item.title"
+              :label="getGoodsName(item)"
               :value="item.id"
             >
             </el-option>
@@ -274,6 +282,12 @@
             :min="1"
             :max="999999"
           ></el-input-number>
+        </el-form-item>
+        <el-form-item label="计量单位" prop="unit">
+          <el-radio-group v-model="tempArticle.unit">
+            <el-radio :label="2">大计量单位</el-radio>
+            <el-radio :label="1">小计量单位</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
@@ -328,6 +342,8 @@ export default {
         inDate: "",
         userName: "",
         goodsId: "",
+        unit: 2,
+        repertory: "",
       },
       dataVerify: {
         userId: [
@@ -338,6 +354,9 @@ export default {
         ],
         amount: [
           { required: true, message: "请输入物料名称", trigger: "blur" },
+        ],
+        unit: [
+          { required: true, message: "请输入选择计量单位", trigger: "blur" },
         ],
       },
       goods: [],
@@ -383,6 +402,13 @@ export default {
         this.users = data.data.data;
       });
     },
+    changeGoodsName(value) {
+      this.goods.forEach((data) => {
+        if (data.id == value) {
+          this.tempArticle.repertory = data.repertory;
+        }
+      });
+    },
     formatterTime(row, column) {
       return formateDate(row.inDate);
     },
@@ -405,6 +431,9 @@ export default {
       //表格序号
       return (this.listQuery.page - 1) * this.listQuery.size + $index + 1;
     },
+    getGoodsName(item) {
+      return "【" + item.partNumber + "】 " + item.title;
+    },
     showCreate() {
       //显示新增对话框
       this.tempArticle.id = "";
@@ -416,7 +445,7 @@ export default {
       this.tempArticle.inDate = "";
       this.tempArticle.adminId = "";
       this.tempArticle.partNumber = "";
-      (this.tempArticle.userName = ""), (this.dialogStatus = "create");
+      this.tempArticle.userName = "";
       this.dialogFormAdd = true;
     },
     showUpdate($index) {
@@ -430,21 +459,26 @@ export default {
       this.tempArticle.goodsId = this.list[$index].goodsId;
       this.tempArticle.inDate = this.list[$index].inDate;
       this.tempArticle.userName = this.list[$index].userName;
+      this.tempArticle.repertory = this.list[$index].repertory;
       this.dialogFormUpdate = true;
-      this.dialogStatus = "update";
     },
     createEmployee(tempArticle) {
-      delete this.tempArticle.adminId;
-      delete this.tempArticle.inDate;
-      delete this.tempArticle.id;
-      delete this.tempArticle.partNumber;
-      delete this.tempArticle.title;
+      let num = this.tempArticle.amount;
+      if (this.tempArticle.unit == 2) {
+        num = this.tempArticle.amount * this.tempArticle.repertory;
+      }
+      const body = {
+        amount: num,
+        goodsId: this.tempArticle.goodsId,
+        remark: this.tempArticle.remark,
+        userId: this.tempArticle.userId,
+      };
       this.$refs[tempArticle].validate((valid) => {
         if (valid) {
           this.api({
             url: "/outStock",
             method: "post",
-            data: this.tempArticle,
+            data: body,
           }).then((data) => {
             if (data.data.code == 200) {
               this.$message({
@@ -461,14 +495,23 @@ export default {
       });
     },
     updateAdministrator(tempArticle) {
-      delete this.tempArticle.adminId;
-      delete this.tempArticle.inDate;
+      let num = this.tempArticle.amount;
+      if (this.tempArticle.unit == 2) {
+        num = this.tempArticle.amount * this.tempArticle.repertory;
+      }
+      const body = {
+        amount: num,
+        goodsId: this.tempArticle.goodsId,
+        remark: this.tempArticle.remark,
+        userId: this.tempArticle.userId,
+        id: this.tempArticle.id,
+      };
       this.$refs[tempArticle].validate((valid) => {
         if (valid) {
           this.api({
             url: "/outStock",
             method: "put",
-            data: this.tempArticle,
+            data: body,
           }).then((data) => {
             if (data.data.code == 200) {
               this.$message({

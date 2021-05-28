@@ -133,7 +133,6 @@
           ></el-input>
         </el-form-item>
         <el-form-item
-          v-if="dialogStatus === 'create'"
           label="密码"
           prop="password"
         >
@@ -209,7 +208,6 @@
         :rules="passwordrules"
       >
         <el-form-item
-          v-if="dialogStatus === 'create'"
           label="原始密码"
           prop="oldPassword"
         >
@@ -222,7 +220,6 @@
           ></el-input>
         </el-form-item>
         <el-form-item
-          v-if="dialogStatus === 'create'"
           label="新密码"
           prop="password"
         >
@@ -235,7 +232,6 @@
           ></el-input>
         </el-form-item>
         <el-form-item
-          v-if="dialogStatus === 'create'"
           label="确认密码"
           prop="qrpassword"
         >
@@ -287,7 +283,6 @@ export default {
         size: 10, //每页条数
         name: "",
       },
-      dialogStatus: "create",
       dialogFormAdd: false,
       dialogFormUpdate: false,
       dialogFormUpdatePassword: false,
@@ -454,7 +449,6 @@ export default {
       this.tempArticle.workNumber = "";
       this.tempArticle.phone = "";
       this.tempArticle.password = "";
-      this.dialogStatus = "create";
       this.dialogFormAdd = true;
     },
     showUpdate($index) {
@@ -465,7 +459,6 @@ export default {
       this.tempArticle.phone = this.list[$index].phone;
       // this.tempArticle.password = this.list[$index].password;
       this.tempArticle.password = "******";
-      this.dialogStatus = "update";
       this.dialogFormUpdate = true;
     },
     showUpdatePassword($index) {

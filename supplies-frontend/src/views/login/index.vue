@@ -1,12 +1,16 @@
 <template>
   <div class="login">
+    <el-row :gutter="20">
+  <el-col :span="10">
     <div class="block">
       <div class="demonstration">
-        <img style="width: 50px; height: 50px" src="./log.png" />
+        <img style="width: 18%; height: 18%" src="./log.png" />
         <div class="text">海底捞 | 智慧库房管理平台</div>
       </div>
-      <img class="logo" style="width: 500px; height: 400px" src="./logo.png" />
+      <img class="logo" style="width: 100%; height: 100%" src="./logo.png" />
     </div>
+  </el-col>
+  <el-col :span="10">
     <el-form
       ref="loginForm"
       :model="loginForm"
@@ -75,6 +79,10 @@
         </el-button>
       </el-form-item>
     </el-form>
+  </el-col>
+</el-row>
+
+
     <!--  底部  -->
     <div class="el-login-footer">
       <span>Copyright © 2018-2021 ruoyi.vip All Rights Reserved.</span>
@@ -174,16 +182,8 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-.login {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  // background-image: url("./login-background.jpg");
-  background-size: cover;
-  background-size: 100% 100%;
-  position: absolute;
+.login{
+padding-top: 15%;
 }
 .title {
   margin: 0px auto 30px auto;
@@ -194,10 +194,11 @@ export default {
 .login-form {
   margin: auto;
   border-radius: 6px;
-  margin-left: 15%;
+  margin-left: 30%;
+  margin-top: 5%;
   background: #ffffff;
   border: solid 1px gainsboro;
-  width: 400px;
+  width: 80%;
   padding: 25px 25px 5px 25px;
   .el-input {
     height: 38px;
@@ -241,17 +242,13 @@ export default {
   height: 38px;
 }
 .block {
-  margin-left: 10%;
+  margin-left: 20%;
 }
-.demonstration {
-  margin-top: -10px;
-}
-
 .text {
-  margin-top: -40px;
-  margin-left: 60px;
+  margin-top: -13%;
+  margin-left: 20%;
 }
 .logo {
-  margin-top: 20px;
+  margin-top: 10%;
 }
 </style>

@@ -17,7 +17,7 @@ export const constantRouterMap = [
     hidden: false,
     children: [{
       path: 'dashboard', component: _import('dashboard/index'),
-      meta: {title: '首页', icon: 'user'},
+      meta: {title: '首页', icon: 'example'},
     }]
   },
   {
@@ -79,7 +79,7 @@ export const constantRouterMap = [
         path: 'employee',
         name: '员工管理',
         component: _import('employee/employee'),
-        meta: {title: '员工管理', icon: 'example'},
+        meta: {title: '员工管理', icon: 'user'},
         menu: 'employee'
       },
     ]
@@ -95,7 +95,7 @@ export const constantRouterMap = [
         path: 'administrator',
         name: '管理员',
         component: _import('administrator/administrator'),
-        meta: {title: '管理员', icon: 'example'},
+        meta: {title: '管理员', icon: 'user'},
         menu: 'administrator'
       },
     ]
