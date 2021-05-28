@@ -14,11 +14,10 @@
             @change="handleClick"
           />
           <el-button
-            :loading="loading"
             style="margin-left: 16px"
             size="medium"
             type="primary"
-            @click="handleUpload"
+            @click="showExcelDiglog()"
           >
             Excel 导入
           </el-button>
@@ -255,6 +254,34 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog title="Excel导入" :loading="loading"
+      :before-close="handleClose" :visible.sync="showExcelDig">
+      <el-button
+          style="margin-left: 16px"
+          size="medium"
+          type="primary"
+          @click="handleUpload"
+        >
+          上传Excel
+        </el-button>
+      <el-table :data="errorResponse" >
+        <el-table-column label="错误提示信息" width="150">
+          <template slot-scope="scope">
+            <span>{{scope.errorMessage}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="物料编码" width="200">
+          <template slot-scope="scope">
+            <span>{{scope.goods.partNumber}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column property="title" label="物料名称">
+          <template slot-scope="scope">
+            <span>{{scope.goods.title}}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -281,6 +308,7 @@ export default {
       dialogStatus: "create",
       dialogFormAdd: false,
       dialogFormUpdate: false,
+      showExcelDig: false,
       textMap: {
         update: "编辑",
         create: "创建文章",
@@ -328,6 +356,16 @@ export default {
     this.queryGoods();
   },
   methods: {
+    showExcelDiglog() {
+      this.showExcelDig = true;
+    },
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
+    },
     getList() {
       this.listLoading = true;
       const requestBody = {
@@ -389,6 +427,7 @@ export default {
     },
     readerData(rawFile) {
       this.loading = true;
+      return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const data = e.target.result;
@@ -404,9 +443,8 @@ export default {
         let result1 = XLSX.utils.sheet_to_json(
           workbook.Sheets[workbook.SheetNames[0]]
         );
-        this.result(result1, "蔬菜");
-
-        /* let result2 = XLSX.utils.sheet_to_json(
+        this.result(result1, "蔬菜"); 
+        let result2 = XLSX.utils.sheet_to_json(
           workbook.Sheets[workbook.SheetNames[1]]
         );
         this.result(result2, "食品");
@@ -417,28 +455,27 @@ export default {
         this.result(result3, "底料");
 
         let result4 = XLSX.utils.sheet_to_json(
-          workbook.Sheets[workbook.SheetNames[4]]
+          workbook.Sheets[workbook.SheetNames[3]]
         );
         this.result(result4, "冻货");
-
+ 
         let result5 = XLSX.utils.sheet_to_json(
-          workbook.Sheets[workbook.SheetNames[5]]
+          workbook.Sheets[workbook.SheetNames[4]]
         );
-        this.result(result5, "杂货"); */
-        // this.generateData({ header, results });
+        this.result(result5, "杂货");
         this.loading = false;
+        resolve();
       };
       reader.readAsArrayBuffer(rawFile);
+      });
     },
     verify(data) {
-      if (!data.goods.partNumber || data.goods.partNumber === "") {
-        data.isSuccess = false;
-        data.errorMessage = "物料编码不能为空";
+      if(!data.goods.partNumber && !data.goods.title){
         return;
       }
-      if (
+      if (data.goods.partNumber && (
         data.goods.partNumber.length > 20 ||
-        data.goods.partNumber.length < 4
+        data.goods.partNumber.length < 4)
       ) {
         data.isSuccess = false;
         data.errorMessage = "物料编码长度应4-20字符";
@@ -473,7 +510,7 @@ export default {
         let req = {
           amount: data["来货"] ? data["来货"] : 0,
           goods: {
-            partNumber: this.strTrim(data["物料编码"].toString()),
+            partNumber: data["物料编码"] ? this.strTrim(data["物料编码"].toString()) : null,
             title: this.strTrim(data["物料名称"]),
             bigUnit: this.strTrim(data["单位"]),
             smallUnit: this.strTrim(data["小计量单位"]),
@@ -485,20 +522,21 @@ export default {
         this.verify(req);
         request.push(req);
       });
+      let error = request.filter(x => (!x.isSuccess));
+      console.log(error)
       this.errorResponse = [
-        ...this.errorResponse,
-        request.filter((x) => !x.isSuccess),
+        ...this.errorResponse, error
       ];
       request = request.filter((x) => x.isSuccess);
-      console.log(request);
+      console.log(this.errorResponse)
       if (request.length > 0) {
-        this.batchInStore(request);
+        //this.batchInStore(request);
       }
     },
 
     batchInStore(request) {
       let num = 0;
-      num = Math.round(request.length / this.batch) + 1;
+      num = Math.ceil(request.length / this.batch);
       for (let i = 0; i < num; i++) {
         this.api({
           url: "/inStock",
@@ -511,8 +549,8 @@ export default {
               message: "批量入库成功！",
               type: "success",
             });
-            this.getList();
-            this.dialogFormAdd = false;
+            //this.getList();
+            //this.dialogFormAdd = false;
           } else {
             this.$message.error(data.data.message);
           }

@@ -8,6 +8,7 @@ import com.sht.supplies.entity.*;
 import com.sht.supplies.mapper.InStockMapper;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +47,7 @@ public class InStockService {
             response.setPartNumber(stock.getGoods().getPartNumber());
             response.setTitle(stock.getGoods().getTitle());
             responses.add(response);
-            Optional<GoodsSelect> select = goodsList.stream().filter(item -> item.getPartNumber().equals(stock.getGoods().getPartNumber()) || item.getTitle().equals(stock.getGoods().getTitle())).findFirst();
+            Optional<GoodsSelect> select = goodsList.stream().filter(item -> StringUtils.equals(item.getPartNumber(),stock.getGoods().getPartNumber()) || item.getTitle().equals(stock.getGoods().getTitle())).findFirst();
             if (select.isPresent()) {
                 stock.setGoodsId(select.get().getId());
                 stock.setAmount(stock.getAmount() * select.get().getRepertory());
@@ -71,9 +72,11 @@ public class InStockService {
             stock.setInDate(LocalDateTime.now());
 
         }
-        List<InStock> stocks = inStocks.stream().filter(item -> item.getGoodsId() != 0).collect(Collectors.toList());
-        if (!batchInsert(stocks)) {
-            return null;
+        List<InStock> stocks = inStocks.stream().filter(item -> (item.getGoodsId() != 0 && item.getAmount() > 0)).collect(Collectors.toList());
+        if (stocks.size() > 0) {
+            if (!batchInsert(stocks)) {
+                return null;
+            }
         }
         return responses;
     }
@@ -91,13 +94,14 @@ public class InStockService {
     }
 
     public boolean checkGoods(Goods goods, BatchResponse response) {
-        if (goods.getPartNumber().length() > 20 || goods.getPartNumber().length() < 4) {
+        boolean bool = StringUtils.isNotEmpty(goods.getPartNumber()) && (goods.getPartNumber().length() > 20 || goods.getPartNumber().length() < 4);
+        if (bool) {
             response.setIsSuccess(false);
             response.setErrorMessage("物料编号长度错误");
             return false;
         }
 
-        if (goods.getTitle().length() > 50 || goods.getPartNumber().length() < 1) {
+        if (StringUtils.isEmpty(goods.getTitle()) || goods.getTitle().length() > 50 || goods.getTitle().length() < 1) {
             response.setIsSuccess(false);
             response.setErrorMessage("物料名称长度错误");
             return false;

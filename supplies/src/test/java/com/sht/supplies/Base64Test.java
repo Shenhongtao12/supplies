@@ -4,6 +4,7 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import com.sht.supplies.entity.InStock;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Base64Utils;
 
@@ -44,5 +45,13 @@ public class Base64Test {
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusMonths(1);
         System.out.println(startDate);
+    }
+
+    @Test
+    public void eqTest() {
+        InStock inStock = new InStock();
+        inStock.setRemark(null);
+        inStock.setGoodsId(123);
+        System.out.println("123".equals(inStock.getRemark()));
     }
 }
