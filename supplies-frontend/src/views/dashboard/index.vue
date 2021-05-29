@@ -458,26 +458,27 @@
             </el-option>
           </el-select>
         </el-form-item>
-
-        <el-form-item label="数量" prop="amount">
-          <el-row>
-            <el-col :span="18">
-              <el-input-number
-                style="width: 100%"
-                v-model.trim="tempArticle.amount"
-                maxlength="100"
-                :min="1"
-                :max="999999"
-              ></el-input-number
-            ></el-col>
-            <el-col :span="5"> &nbsp; &nbsp;{{ tempArticle.bigUnit }} </el-col>
-          </el-row>
+        <el-form-item label="数量(大)" prop="amount">
+          <el-input-number
+            style="width: 80%"
+            v-model.trim="tempArticle.bigAmount"
+            maxlength="100"
+            placeholder="请输入大计量单位数量"
+            :min="0"
+            :max="999999"
+          ></el-input-number>
+          &nbsp;&nbsp;{{ tempArticle.bigUnit }}
         </el-form-item>
-        <el-form-item label="计量单位" prop="unit">
-          <el-radio-group v-model="tempArticle.unit">
-            <el-radio :label="2">大计量单位</el-radio>
-            <el-radio :label="1">小计量单位</el-radio>
-          </el-radio-group>
+        <el-form-item label="数量(小)" prop="amount">
+          <el-input-number
+            style="width: 80%"
+            v-model.trim="tempArticle.amount"
+            maxlength="100"
+            placeholder="请输入小计量单位数量"
+            :min="0"
+            :max="999999"
+          ></el-input-number>
+          &nbsp;&nbsp; {{ tempArticle.smallUnit }}
         </el-form-item>
         <el-form-item label="物料类别" prop="category">
           <el-select
@@ -550,8 +551,8 @@ export default {
         image: "",
         inDate: "",
         goodsId: "",
-        amount:0,
-        unit: 2,
+        amount: 0,
+        bigAmount: "",
       },
       dataVerify: {
         partNumber: [
@@ -807,15 +808,15 @@ export default {
       this.goods.forEach((data) => {
         if (data.id == value) {
           this.tempArticle.repertory = data.repertory;
+          this.tempArticle.bigUnit = data.bigUnit;
+          this.tempArticle.smallUnit = data.smallUnit;
         }
       });
     },
     createoutstorages(tempArticle) {
-      let num = this.tempArticle.amount;
-      if (this.tempArticle.unit == 2) {
-        num = this.tempArticle.amount * this.tempArticle.repertory;
-      }
-      console.log("repertory",this.tempArticle.repertory);
+      const num =
+        this.tempArticle.amount +
+        this.tempArticle.bigAmount * this.tempArticle.repertory;
       const body = {
         amount: num,
         goodsId: this.tempArticle.goodsId,
@@ -844,8 +845,16 @@ export default {
       });
     },
     updateAdministrator(tempArticle) {
-      delete this.tempArticle.adminId;
-      delete this.tempArticle.inDate;
+      const num =
+        this.tempArticle.amount +
+        this.tempArticle.bigAmount * this.tempArticle.repertory;
+      const body = {
+        amount: num,
+        goodsId: this.tempArticle.goodsId,
+        remark: this.tempArticle.remark,
+        userId: this.tempArticle.userId,
+        id: this.tempArticle.id,
+      };
       this.$refs[tempArticle].validate((valid) => {
         if (valid) {
           this.api({

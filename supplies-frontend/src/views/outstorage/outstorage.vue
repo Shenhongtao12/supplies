@@ -154,7 +154,7 @@
         class="small-space"
         :model="tempArticle"
         label-position="left"
-        label-width="80px"
+        label-width="100px"
         style="margin: 10px"
         ref="tempArticle"
       >
@@ -191,21 +191,27 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="数量" prop="amount">
+        <el-form-item label="数量(大)" prop="amount">
           <el-input-number
-            style="width: 100%"
-            v-model.trim="tempArticle.amount"
+            style="width: 80%"
+            v-model.trim="tempArticle.bigAmount"
             maxlength="100"
-            placeholder="请输入数量"
+            placeholder="请输入大计量单位数量"
             :min="1"
             :max="999999"
           ></el-input-number>
+          &nbsp;&nbsp;{{ tempArticle.bigUnit }}
         </el-form-item>
-        <el-form-item label="计量单位" prop="unit">
-          <el-radio-group v-model="tempArticle.unit">
-            <el-radio :label="2">大计量单位</el-radio>
-            <el-radio :label="1">小计量单位</el-radio>
-          </el-radio-group>
+        <el-form-item label="数量(小)" prop="amount">
+          <el-input-number
+            style="width: 80%"
+            v-model.trim="tempArticle.amount"
+            maxlength="100"
+            placeholder="请输入小计量单位数量"
+            :min="1"
+            :max="999999"
+          ></el-input-number>
+          &nbsp;&nbsp; {{ tempArticle.smallUnit }}
         </el-form-item>
         <el-form-item label="备注">
           <el-input
@@ -273,21 +279,27 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="数量" prop="amount">
+        <el-form-item label="数量(大)" prop="amount">
           <el-input-number
-            style="width: 100%"
-            v-model.trim="tempArticle.amount"
+            style="width: 80%"
+            v-model.trim="tempArticle.bigAmount"
             maxlength="100"
-            placeholder="请输入数量"
-            :min="1"
+            placeholder="请输入大计量单位数量"
+            :min="0"
             :max="999999"
           ></el-input-number>
+          &nbsp;&nbsp;{{ tempArticle.bigUnit }}
         </el-form-item>
-        <el-form-item label="计量单位" prop="unit">
-          <el-radio-group v-model="tempArticle.unit">
-            <el-radio :label="2">大计量单位</el-radio>
-            <el-radio :label="1">小计量单位</el-radio>
-          </el-radio-group>
+        <el-form-item label="数量(小)" prop="amount">
+          <el-input-number
+            style="width: 80%"
+            v-model.trim="tempArticle.amount"
+            maxlength="100"
+            placeholder="请输入小计量单位数量"
+            :min="0"
+            :max="999999"
+          ></el-input-number>
+          &nbsp;&nbsp; {{ tempArticle.smallUnit }}
         </el-form-item>
         <el-form-item label="备注">
           <el-input
@@ -342,8 +354,10 @@ export default {
         inDate: "",
         userName: "",
         goodsId: "",
-        unit: 2,
+        bigAmount: "",
         repertory: "",
+        bigUnit: "",
+        smallUnit: "",
       },
       dataVerify: {
         userId: [
@@ -353,10 +367,10 @@ export default {
           { required: true, message: "请输入物料名称", trigger: "blur" },
         ],
         amount: [
-          { required: true, message: "请输入物料名称", trigger: "blur" },
+          { required: true, message: "请输入物料数量", trigger: "blur" },
         ],
-        unit: [
-          { required: true, message: "请输入选择计量单位", trigger: "blur" },
+        bigAmount: [
+          { required: true, message: "请输入物料数量", trigger: "blur" },
         ],
       },
       goods: [],
@@ -405,7 +419,10 @@ export default {
     changeGoodsName(value) {
       this.goods.forEach((data) => {
         if (data.id == value) {
+          console.log("data", data);
           this.tempArticle.repertory = data.repertory;
+          this.tempArticle.bigUnit = data.bigUnit;
+          this.tempArticle.smallUnit = data.smallUnit;
         }
       });
     },
@@ -460,13 +477,14 @@ export default {
       this.tempArticle.inDate = this.list[$index].inDate;
       this.tempArticle.userName = this.list[$index].userName;
       this.tempArticle.repertory = this.list[$index].repertory;
+      this.tempArticle.bigUnit = this.list[$index].bigUnit;
+      this.tempArticle.smallUnit = this.list[$index].smallUnit;
       this.dialogFormUpdate = true;
     },
     createEmployee(tempArticle) {
-      let num = this.tempArticle.amount;
-      if (this.tempArticle.unit == 2) {
-        num = this.tempArticle.amount * this.tempArticle.repertory;
-      }
+      const num =
+        this.tempArticle.amount +
+        this.tempArticle.bigAmount * this.tempArticle.repertory;
       const body = {
         amount: num,
         goodsId: this.tempArticle.goodsId,
@@ -495,10 +513,9 @@ export default {
       });
     },
     updateAdministrator(tempArticle) {
-      let num = this.tempArticle.amount;
-      if (this.tempArticle.unit == 2) {
-        num = this.tempArticle.amount * this.tempArticle.repertory;
-      }
+      const num =
+        this.tempArticle.amount +
+        this.tempArticle.bigAmount * this.tempArticle.repertory;
       const body = {
         amount: num,
         goodsId: this.tempArticle.goodsId,
