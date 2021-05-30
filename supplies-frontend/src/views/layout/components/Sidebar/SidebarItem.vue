@@ -2,7 +2,7 @@
   <div class="menu-wrapper">
     <div class="content">
        <img class="logo" style="width: 40px; height: 40px" src="./log.png" />
-       <div class="text"> 运营管理平台</div>
+       <div class="text"> 智慧库房管理平台</div>
      </div>
     <template v-for="item in routes" v-if="!item.hidden&&item.children">
       

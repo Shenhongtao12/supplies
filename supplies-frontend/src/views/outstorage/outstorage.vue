@@ -419,7 +419,6 @@ export default {
     changeGoodsName(value) {
       this.goods.forEach((data) => {
         if (data.id == value) {
-          console.log("data", data);
           this.tempArticle.repertory = data.repertory;
           this.tempArticle.bigUnit = data.bigUnit;
           this.tempArticle.smallUnit = data.smallUnit;

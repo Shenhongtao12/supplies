@@ -85,13 +85,14 @@
                 height="100%"
               />
               <img
-                v-if="!item.image"
-                src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+                v-else
+                src="../login/log.png"
                 class="image"
               />
 
               <div style="padding: 14px" class="cardDiv">
-                <span>{{ item.title }}&nbsp;&nbsp;({{ item.partNumber }})</span>
+                <span>{{ item.title }}&nbsp;&nbsp;</span>
+                <span v-if="item.partNumber">({{ item.partNumber }})</span>
                 <p>
                   总库存：
                   <el-tag type="success" size="small">{{
@@ -99,11 +100,12 @@
                   }}</el-tag>
                   &nbsp;&nbsp;&nbsp;{{ item.smallUnit }}
                 </p>
-                <p>
+                <p v-if="item.smallUnit">
                   转换量： &nbsp;&nbsp;&nbsp;一{{ item.bigUnit }}有{{
                     item.repertory
                   }}{{ item.smallUnit }}
                 </p>
+                <p v-else>转换量： &nbsp;&nbsp;&nbsp;{{ item.repertory }}</p>
                 <div class="bottom clearfix">
                   <time class="time"></time>
                   <el-row>
@@ -469,7 +471,7 @@
           ></el-input-number>
           &nbsp;&nbsp;{{ tempArticle.bigUnit }}
         </el-form-item>
-        <el-form-item label="数量(小)" prop="amount">
+        <el-form-item v-if="tempArticle.smallUnit" label="数量(小)" prop="amount">
           <el-input-number
             style="width: 80%"
             v-model.trim="tempArticle.amount"
