@@ -17,7 +17,7 @@ export const constantRouterMap = [
     hidden: false,
     children: [{
       path: 'dashboard', component: _import('dashboard/index'),
-      meta: {title: '首页', icon: 'example'},
+      meta: {title: '首页', icon: 'table'},
     }]
   },
   {
@@ -47,7 +47,7 @@ export const constantRouterMap = [
         path: 'instorage',
         name: '入库管理',
         component: _import('instorage/instorage'),
-        meta: {title: '入库管理', icon: 'example'},
+        meta: {title: '入库管理', icon: 'form'},
         menu: 'instorage'
       },
     ]
@@ -63,7 +63,7 @@ export const constantRouterMap = [
         path: 'dataStatistics',
         name: '数据统计',
         component: _import('dataStatistics/dataStatistics'),
-        meta: {title: '数据统计', icon: 'example'},
+        meta: {title: '数据统计', icon: 'tree'},
         menu: 'dataStatistics'
       },
     ]

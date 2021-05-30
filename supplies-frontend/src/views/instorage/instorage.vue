@@ -270,7 +270,7 @@
         >
           上传<i class="el-icon-upload el-icon--right"></i>
         </el-button>
-        <a href="../../assets/template.xlsx" style="color: #79BBFF; margin-top: 12px" download="新开货模板.xlsx">
+        <a href="../../../static/template.xlsx" style="color: #79BBFF; margin-top: 12px" download="新开货模板.xlsx">
           下载Excel模板<i class="el-icon-download"></i>
         </a>
       </div>
