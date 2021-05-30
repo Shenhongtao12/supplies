@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * @author Aaron
@@ -32,6 +34,11 @@ public class UserController extends BaseController {
     @PostMapping("save")
     public ResponseEntity<RestResponse> saveUser(@Valid @RequestBody User user) {
         return ResponseEntity.ok(userService.save(user));
+    }
+
+    @PostMapping("batchSave")
+    public ResponseEntity<RestResponse> batchSave(@Validated @Size(max = 100, min = 1, message = "批量一次请求最多100条数据") @RequestBody List<User> users) {
+        return ResponseEntity.ok(userService.batchSave(users));
     }
 
 

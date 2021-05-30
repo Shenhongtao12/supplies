@@ -2,9 +2,16 @@
   <div class="app-container">
     <div class="filter-container">
       <el-row>
-        <el-col :span="5">
+        <el-col :span="6">
           <el-button type="primary" icon="plus" @click="showCreate"
             >添加员工
+          </el-button>
+          <el-button
+            style="margin-left: 16px"
+            type="primary"
+            @click="showExcelDiglog()"
+          >
+            Excel 导入
           </el-button>
         </el-col>
         <el-col :span="16">
@@ -157,11 +164,50 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog title="Excel导入"
+      :before-close="handleClose" :visible.sync="showExcelDig">
+      <div style="display: flex; flex-direction: row;">
+        <el-input style="width: 35%"
+        placeholder="请上传文件"
+        v-model="excelName"
+        :disabled="true">
+      </el-input>
+      <input
+        ref="excel-upload"
+        class="excel-upload-input"
+        type="file"
+        accept=".xlsx, .xls"
+        @change="handleClick"
+      />
+      <el-button
+          style="margin-left: 16px; margin-right: 16px;"
+          type="primary"
+          plain
+          @click="handleUpload"
+          :loading="loading"
+        >
+          上传<i class="el-icon-upload el-icon--right"></i>
+        </el-button>
+        <a href="../../assets/batchUser.xlsx" style="color: #79BBFF; margin-top: 12px" download="员工信息模板.xlsx">
+          下载Excel模板<i class="el-icon-download"></i>
+        </a>
+      </div>
+      
+      <el-table :data="errorResponse" max-height="320">
+        <el-table-column property="workNumber" label="员工工号" width="100px">
+        </el-table-column>
+        <el-table-column property="name" label="姓名" width="100px">
+        </el-table-column>
+        <el-table-column property="errorMessage" label="错误提示信息" width="200px">
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 <script>
 import { formateDate } from "@/utils/index";
-import { Base64 } from "js-base64";
+import XLSX from "xlsx";
 
 export default {
   data() {
@@ -174,6 +220,11 @@ export default {
         size: 10, //每页条数
         name: "",
       },
+      batch: 100,
+      loading: false,
+      errorResponse: [],
+      excelName: "",
+      showExcelDig: false,
       dialogStatus: "create",
       dialogFormAdd: false,
       dialogFormUpdate: false,
@@ -224,6 +275,192 @@ export default {
     this.getList();
   },
   methods: {
+    handleUpload() {
+      this.$refs["excel-upload"].click();
+    },
+    handleClick(e) {
+      const files = e.target.files;
+      const rawFile = files[0]; // only use files[0]
+      if (!rawFile) return;
+      if (!this.isExcel(rawFile)) {
+        this.$message.error("请选择正确的Excel文件");
+        this.loading = false;
+        return;
+      }
+      this.upload(rawFile);
+    },
+    async upload(rawFile) {
+      this.$refs["excel-upload"].value = null; // fix can't select the same excel
+      this.excelName = rawFile.name;
+      if (this.beforeUpload(rawFile)) {
+        let data = await this.readerData(rawFile);
+        if (data.length <= 0) {
+          this.$message.error("Excel数据为空");
+           this.loading = false;
+          return;
+        }
+        let apiList = [];
+        let errorList = [];
+        let request = this.result(data)
+        let error = request.filter(x => (!x.isSuccess));
+        if (error && error.length > 0) {
+          errorList = error;
+        }
+        
+        request = request.filter((x) => x.isSuccess);
+        if (request.length > 0) {
+          this.batchInStore(request, apiList);
+        } 
+        let response = await this.batchHttp(apiList);
+        for (let res of response) {
+          let errorRes = res.data.data.filter(x => !x.isSuccess);
+          if (errorRes && errorRes[0]) {
+            errorList = [
+              ...errorList, errorRes
+            ];
+          }
+        }
+        this.errorResponse = errorList;
+        this.loading = false;
+        this.$message({
+                message: "导入成功！",
+                type: "success",
+              });
+        this.getList();
+      } 
+    },
+    readerData(rawFile) {
+      this.loading = true;
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const data = e.target.result;
+          const workbook = XLSX.read(data, { type: "array" });
+          const firstSheet = workbook.SheetNames[0];
+          const result1 = workbook.Sheets[firstSheet];
+          let header = this.getHeaderRow(result1);
+          if (header[0] !== "员工工号" ||
+              header[1] !== "姓名") {
+            this.$message.error("Excel不正确，请下载正确的模板");
+            this.loading = false;
+            return;
+          }
+          resolve(XLSX.utils.sheet_to_json(result1));
+        };
+        reader.readAsArrayBuffer(rawFile);
+      })
+    },
+    getHeaderRow(sheet) {
+      const headers = [];
+      const range = XLSX.utils.decode_range(sheet["!ref"]);
+      let C;
+      const R = range.s.r;
+      /* start in the first row */
+      for (C = range.s.c; C <= range.e.c; ++C) {
+        /* walk every column in the range */
+        const cell = sheet[XLSX.utils.encode_cell({ c: C, r: R })];
+        /* find the cell in the first row */
+        let hdr = "UNKNOWN " + C; // <-- replace with your desired default
+        if (cell && cell.t) hdr = XLSX.utils.format_cell(cell);
+        headers.push(hdr);
+      }
+      return headers;
+    },
+    result(value) {
+      let request = [];
+      value.forEach((data) => {
+        let req = {
+          workNumber: data["员工工号"] ? this.strTrim(data["员工工号"].toString()) : null,
+          name: data["姓名"] ? this.strTrim(data["姓名"].toString()) : null,
+          isSuccess: true,
+        };
+        this.verify(req);
+        request.push(req);
+      });
+      return request.filter(x => !(!x.workNumber && !x.name));
+    },
+    verify(data) {
+      if(!data.workNumber && !data.name){
+        return;
+      }
+      if (!data.workNumber) {
+        data.isSuccess = false;
+        data.errorMessage = "员工工号不能为空";
+        return;
+      }
+      if (data.workNumber && (
+        data.workNumber.length > 20 ||
+        data.workNumber.length < 4)
+      ) {
+        data.isSuccess = false;
+        data.errorMessage = "员工工号长度应4-20字符";
+        return;
+      }
+
+      if (!data.name) {
+        data.isSuccess = false;
+        data.errorMessage = "姓名不能为空";
+        return;
+      }
+      if (data.name.length > 10 || data.name.length < 2) {
+        data.isSuccess = false;
+        data.errorMessage = "姓名长度应在2-10字符";
+        return;
+      }
+    },
+    isExcel(file) {
+      return /\.(xlsx|xls|csv)$/.test(file.name);
+    },
+    batchHttp(apiList) {
+      return new Promise((resolve, reject) => {
+        this.api.all(apiList).then(res => {
+          resolve(res);
+        })
+      })
+      
+    },
+    batchInStore(request, apiList) {
+      let num = 0;
+      num = Math.ceil(request.length / this.batch);
+      for (let i = 0; i < num; i++) {
+        apiList.push(
+          this.api({
+            url: "/user/batchSave",
+            method: "post",
+            data: request.slice(i * this.batch, (i + 1) * this.batch - 1),
+          })
+        )
+      }
+    },
+    showExcelDiglog() {
+      this.showExcelDig = true;
+    },
+    strTrim(str) {
+      if (!str || str == "") {
+        return null;
+      }
+      return str.trim();
+    },
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          this.errorResponse = [];
+          this.excelName = "";
+          done();
+        })
+        .catch(_ => {});
+    },
+    beforeUpload(file) {
+      const isLt3M = file.size / 1024 / 1024 < 3;
+      if (isLt3M) {
+        return true;
+      }
+      this.$message({
+        message: "文件过大，请删减至3M以内",
+        type: "warning",
+      });
+      return false;
+    },
     getList() {
       this.listLoading = true;
       this.api({
@@ -317,7 +554,6 @@ export default {
     updateAdministrator(tempArticle) {
       delete this.tempArticle.inDate;
       this.$refs[tempArticle].validate((valid) => {
-        console.log("valid", valid);
         if (valid) {
           this.api({
             url: "/user",
@@ -392,6 +628,10 @@ export default {
   padding-top: 20px;
   border: solid 1px rgb(243, 242, 242);
   border-radius: 3px;
+}
+.excel-upload-input {
+  display: none;
+  z-index: -9999;
 }
 /* .dialog_footer {
   margin-left: 40%;

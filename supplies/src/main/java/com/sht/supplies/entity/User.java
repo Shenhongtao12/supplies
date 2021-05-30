@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
 import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -39,5 +40,8 @@ public class User {
     private String name;
 
     private LocalDateTime inDate;
+
+    @Transient
+    private Boolean flag;
 
 }

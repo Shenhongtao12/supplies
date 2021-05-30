@@ -1,25 +1,20 @@
 package com.sht.supplies.service;
 
-import com.alibaba.druid.sql.visitor.functions.If;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sht.supplies.common.PageResult;
 import com.sht.supplies.entity.*;
 import com.sht.supplies.mapper.InStockMapper;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import sun.rmi.runtime.Log;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -36,8 +31,8 @@ public class InStockService {
     @Autowired
     private GoodsService goodsService;
 
-    public List<BatchResponse> batchAdd(List<InStock> inStocks, Integer adminId) {
-
+    public BatchResult batchAdd(List<InStock> inStocks, Integer adminId) {
+        BatchResult result = new BatchResult();
         List<GoodsSelect> goodsList = goodsService.getPartNumberTitle(inStocks.get(0).getGoods().getCategory());
         List<BatchResponse> responses = new ArrayList<>();
 
@@ -72,13 +67,16 @@ public class InStockService {
             stock.setInDate(LocalDateTime.now());
 
         }
+        result.setResponses(responses);
         List<InStock> stocks = inStocks.stream().filter(item -> (item.getGoodsId() != 0 && item.getAmount() > 0)).collect(Collectors.toList());
         if (stocks.size() > 0) {
             if (!batchInsert(stocks)) {
-                return null;
+                result.setSuccess(false);
+                return result;
             }
         }
-        return responses;
+        result.setSuccess(true);
+        return result;
     }
 
     @Transactional(rollbackFor = Exception.class)

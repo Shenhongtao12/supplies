@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sht.supplies.mapper.UserMapper">
+
+    <insert id="batchSave">
+        insert into user(
+        work_number,
+        name,
+        in_date
+        )
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (
+            #{item.workNumber},
+            #{item.name},
+            #{item.inDate}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

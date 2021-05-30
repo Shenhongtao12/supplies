@@ -6,16 +6,8 @@
           <el-button type="primary" icon="plus" @click="showCreate"
             >物料入库
           </el-button>
-          <input
-            ref="excel-upload-input"
-            class="excel-upload-input"
-            type="file"
-            accept=".xlsx, .xls"
-            @change="handleClick"
-          />
           <el-button
             style="margin-left: 16px"
-            size="medium"
             type="primary"
             @click="showExcelDiglog()"
           >
@@ -254,31 +246,41 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <el-dialog title="Excel导入" :loading="loading"
+    <el-dialog title="Excel导入"
       :before-close="handleClose" :visible.sync="showExcelDig">
+      <div style="display: flex; flex-direction: row;">
+        <el-input style="width: 35%"
+        placeholder="请上传文件"
+        v-model="excelName"
+        :disabled="true">
+      </el-input>
+      <input
+        ref="excel-upload-input"
+        class="excel-upload-input"
+        type="file"
+        accept=".xlsx, .xls"
+        @change="handleClick"
+      />
       <el-button
-          style="margin-left: 16px"
-          size="medium"
+          style="margin-left: 16px; margin-right: 16px;"
           type="primary"
+          plain
           @click="handleUpload"
+          :loading="loading"
         >
-          上传Excel
+          上传<i class="el-icon-upload el-icon--right"></i>
         </el-button>
-      <el-table :data="errorResponse" >
-        <el-table-column label="错误提示信息" width="150">
-          <template slot-scope="scope">
-            <span>{{scope.errorMessage}}</span>
-          </template>
+        <a href="../../assets/template.xlsx" style="color: #79BBFF; margin-top: 12px" download="新开货模板.xlsx">
+          下载Excel模板<i class="el-icon-download"></i>
+        </a>
+      </div>
+      
+      <el-table :data="errorResponse" max-height="320">
+        <el-table-column property="partNumber" label="物料编码" width="100px">
         </el-table-column>
-        <el-table-column label="物料编码" width="200">
-          <template slot-scope="scope">
-            <span>{{scope.goods.partNumber}}</span>
-          </template>
+        <el-table-column property="title" label="物料名称" width="150px">
         </el-table-column>
-        <el-table-column property="title" label="物料名称">
-          <template slot-scope="scope">
-            <span>{{scope.goods.title}}</span>
-          </template>
+        <el-table-column property="errorMessage" label="错误提示信息" width="200px">
         </el-table-column>
       </el-table>
     </el-dialog>
@@ -289,10 +291,6 @@ import { formateDate, formateDates } from "@/utils/index";
 import XLSX from "xlsx";
 
 export default {
-  props: {
-    beforeUpload: Function, // eslint-disable-line
-    onSuccess: Function, // eslint-disable-line
-  },
   data() {
     return {
       batch: 100,
@@ -349,6 +347,8 @@ export default {
       chooseGoods: "",
       loading: false,
       errorResponse: [],
+      excelTitle:["蔬菜", "食品", "底料", "冻货", "杂货"],
+      excelName: ""
     };
   },
   created() {
@@ -362,9 +362,22 @@ export default {
     handleClose(done) {
       this.$confirm('确认关闭？')
         .then(_ => {
+          this.errorResponse = [];
+          this.excelName = "";
           done();
         })
         .catch(_ => {});
+    },
+    beforeUpload(file) {
+      const isLt3M = file.size / 1024 / 1024 < 3;
+      if (isLt3M) {
+        return true;
+      }
+      this.$message({
+        message: "文件过大，请删减至3M以内",
+        type: "warning",
+      });
+      return false;
     },
     getList() {
       this.listLoading = true;
@@ -412,61 +425,125 @@ export default {
       const files = e.target.files;
       const rawFile = files[0]; // only use files[0]
       if (!rawFile) return;
-      this.upload(rawFile);
-    },
-    upload(rawFile) {
-      this.$refs["excel-upload-input"].value = null; // fix can't select the same excel
-      if (!this.beforeUpload) {
-        this.readerData(rawFile);
+      if (!this.isExcel(rawFile)) {
+        this.$message.error("请选择正确的Excel文件");
+        this.loading = false;
         return;
       }
-      const before = this.beforeUpload(rawFile);
-      if (before) {
-        this.readerData(rawFile);
-      }
+      this.upload(rawFile);
+    },
+    async upload(rawFile) {
+      this.$refs["excel-upload-input"].value = null; // fix can't select the same excel
+      this.excelName = rawFile.name;
+      if (this.beforeUpload(rawFile)) {
+        let data = await this.readerData(rawFile);
+        let apiList = [];
+        let errorList = [];
+        for (let i = 0; i < this.excelTitle.length; i++) {
+          let request = this.result(data['result' + (i+1)], this.excelTitle[i]);
+          let error = request.filter(x => (!x.isSuccess));
+          if (error && error.length > 0) {
+            for (let err of error) {
+              errorList.push({
+                isSuccess: err.isSuccess,
+                errorMessage: err.errorMessage,
+                partNumber: err.goods.partNumber,
+                title: err.goods.title
+              })
+            }
+          }
+          request = request.filter((x) => x.isSuccess);
+          if (request.length > 0) {
+            this.batchInStore(request, apiList);
+          }
+        }
+        let response = await this.batchHttp(apiList);
+        for (let res of response) {
+          let errorRes = res.data.data.filter(x => !x.isSuccess);
+          if (errorRes && errorRes[0]) {
+            errorList = [
+              ...errorList, errorRes
+            ];
+          }
+          if (res.data.code !== 200) {
+             this.$message({
+                message: res.data.message,
+                type: "error",
+                duration: 0
+              });
+          }
+        }
+        this.errorResponse = errorList;
+        this.loading = false;
+        this.$message({
+                message: "导入成功！",
+                type: "success",
+              });
+        this.getList();
+      } 
     },
     readerData(rawFile) {
       this.loading = true;
+      let excelData = {};
       return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const data = e.target.result;
-        const workbook = XLSX.read(data, { type: "array" });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const header = this.getHeaderRow(worksheet);
-        if (!this.checkHeader(header)) {
-          this.$message.error("Excel不正确，请下载正确的模板");
-          this.loading = false;
-          return;
-        }
-        let result1 = XLSX.utils.sheet_to_json(
-          workbook.Sheets[workbook.SheetNames[0]]
-        );
-        this.result(result1, "蔬菜"); 
-        let result2 = XLSX.utils.sheet_to_json(
-          workbook.Sheets[workbook.SheetNames[1]]
-        );
-        this.result(result2, "食品");
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const data = e.target.result;
+          const workbook = XLSX.read(data, { type: "array" });
+          const title = workbook.SheetNames;
+          const firstSheetName = workbook.SheetNames[0];
+          const result1 = workbook.Sheets[firstSheetName];
+          let header = this.getHeaderRow(result1);
+          if (!this.checkExcelTitle(title) && !this.checkHeader(header)) {
+            this.$message.error("Excel不正确，请下载正确的模板");
+            this.loading = false;
+            return;
+          }
+          excelData.result1 = XLSX.utils.sheet_to_json(result1);
+          let result2 = workbook.Sheets[workbook.SheetNames[1]];
+          header = this.getHeaderRow(result2);
+          if (!this.checkHeader(header)) {
+            this.$message.error("Excel'食品'页格式不正确，请下载正确的模板");
+            this.loading = false;
+            return;
+          }
+          excelData.result2 = XLSX.utils.sheet_to_json(result2);
 
-        let result3 = XLSX.utils.sheet_to_json(
-          workbook.Sheets[workbook.SheetNames[2]]
-        );
-        this.result(result3, "底料");
+          let result3 = workbook.Sheets[workbook.SheetNames[2]];
+          header = this.getHeaderRow(result3);
+          if (!this.checkHeader(header)) {
+            this.$message.error("Excel'底料'页格式不正确，请下载正确的模板");
+            this.loading = false;
+            return;
+          }
+          excelData.result3 = XLSX.utils.sheet_to_json(result3);
 
-        let result4 = XLSX.utils.sheet_to_json(
-          workbook.Sheets[workbook.SheetNames[3]]
-        );
-        this.result(result4, "冻货");
- 
-        let result5 = XLSX.utils.sheet_to_json(
-          workbook.Sheets[workbook.SheetNames[4]]
-        );
-        this.result(result5, "杂货");
-        this.loading = false;
-        resolve();
-      };
-      reader.readAsArrayBuffer(rawFile);
+          let result4 = workbook.Sheets[workbook.SheetNames[3]];
+          header = this.getHeaderRow(result4);
+          if (!this.checkHeader(header)) {
+            this.$message.error("Excel'冻货'页格式不正确，请下载正确的模板");
+            this.loading = false;
+            return;
+          }
+          excelData.result4 = XLSX.utils.sheet_to_json(result4);
+
+          let result5 = workbook.Sheets[workbook.SheetNames[4]];
+          header = this.getHeaderRow(result5);
+          if (
+              header[0] !== "物料名称" ||
+              header[1] !== "单位" ||
+              header[2] !== "来货" ||
+              header[5] !== "小计量单位" ||
+              header[6] !== "转换量") 
+            {
+            this.$message.error("Excel杂货页格式不正确，请下载正确的模板");
+            this.loading = false;
+            return;
+          }
+          excelData.result5 = XLSX.utils.sheet_to_json(result5);
+          resolve(excelData);
+        };
+        reader.readAsArrayBuffer(rawFile);
       });
     },
     verify(data) {
@@ -511,7 +588,7 @@ export default {
           amount: data["来货"] ? data["来货"] : 0,
           goods: {
             partNumber: data["物料编码"] ? this.strTrim(data["物料编码"].toString()) : null,
-            title: this.strTrim(data["物料名称"]),
+            title: data["物料名称"] ? this.strTrim(data["物料名称"].toString()) : null,
             bigUnit: this.strTrim(data["单位"]),
             smallUnit: this.strTrim(data["小计量单位"]),
             repertory: data["转换量"] ? data["转换量"] : 1,
@@ -522,44 +599,47 @@ export default {
         this.verify(req);
         request.push(req);
       });
-      let error = request.filter(x => (!x.isSuccess));
-      console.log(error)
-      this.errorResponse = [
-        ...this.errorResponse, error
-      ];
-      request = request.filter((x) => x.isSuccess);
-      console.log(this.errorResponse)
-      if (request.length > 0) {
-        //this.batchInStore(request);
-      }
+      return request.filter(x => !(!x.goods.partNumber && !x.goods.title));
     },
 
-    batchInStore(request) {
+    batchHttp(apiList) {
+      return new Promise((resolve, reject) => {
+        this.api.all(apiList).then(res => {
+          resolve(res);
+        })
+      })
+      
+    },
+
+    batchInStore(request, apiList) {
       let num = 0;
       num = Math.ceil(request.length / this.batch);
       for (let i = 0; i < num; i++) {
-        this.api({
-          url: "/inStock",
-          method: "post",
-          data: request.slice(i * this.batch, (i + 1) * this.batch - 1),
-        }).then((data) => {
-          console.log(data);
-          if (data.data.code == 200) {
-            this.$message({
-              message: "批量入库成功！",
-              type: "success",
-            });
-            //this.getList();
-            //this.dialogFormAdd = false;
-          } else {
-            this.$message.error(data.data.message);
-          }
-        });
+        apiList.push(
+          this.api({
+            url: "/inStock",
+            method: "post",
+            data: request.slice(i * this.batch, (i + 1) * this.batch - 1),
+          })
+        )
       }
+    },
+    checkExcelTitle(title) {
+      if (
+        title.length >= 5 &&
+        title[0] == this.excelTitle[0] &&
+        title[1] == this.excelTitle[1] &&
+        title[2] == this.excelTitle[2] &&
+        title[3] == this.excelTitle[3] &&
+        title[4] == this.excelTitle[4]
+      ) {
+        return true;
+      }
+      return false;
     },
     checkHeader(header) {
       if (
-        header.length == 8 &&
+        header.length >= 8 &&
         header[0] == "物料编码" &&
         header[1] == "物料名称" &&
         header[2] == "单位" &&

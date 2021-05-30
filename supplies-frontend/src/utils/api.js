@@ -61,5 +61,7 @@ service.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+service.all = axios.all;
+service.spread = axios.spread;
 export default service
 

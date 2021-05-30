@@ -2,10 +2,12 @@ package com.sht.supplies.controller;
 
 import com.sht.supplies.common.RestResponse;
 import com.sht.supplies.entity.BatchResponse;
+import com.sht.supplies.entity.BatchResult;
 import com.sht.supplies.entity.InStock;
 import com.sht.supplies.service.GoodsService;
 import com.sht.supplies.service.InStockService;
 import io.swagger.annotations.Api;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Aaron
@@ -42,11 +46,15 @@ public class InStockController extends BaseController {
             }
             return ERROR("数据异常，请刷新页面重试");
         } else {
-            List<BatchResponse> responses = inStockService.batchAdd(inStocks, userId);
-            if (responses == null) {
-                return ERROR("数据异常导致批处理失败");
+            BatchResult result = inStockService.batchAdd(inStocks, userId);
+            if (!result.getSuccess()) {
+                result.getResponses().forEach(x -> {
+                    x.setIsSuccess(false);
+                    x.setErrorMessage("入库批处理失败");
+                });
+                return ERROR(response, inStocks.get(0).getGoods().getCategory() + "页数据异常导致该表格页: "+ inStocks.size() +"条数据入库批处理失败");
             }
-            return SUCCESS(responses);
+            return SUCCESS(result.getResponses());
         }
     }
 

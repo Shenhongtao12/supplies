@@ -20,6 +20,9 @@ public class BaseCommon {
     public RestResponse ERROR(String message) {
         return new RestResponse(400, message);
     }
+    public RestResponse ERROR(Object data, String message) {
+        return new RestResponse(400, data, message);
+    }
 
     public RestResponse ERROR(Integer code, String message) {
         return new RestResponse(code, message);

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.sht.supplies.common.BaseCommon;
 import com.sht.supplies.common.PageResult;
 import com.sht.supplies.common.RestResponse;
+import com.sht.supplies.entity.BatchUserResponse;
 import com.sht.supplies.entity.User;
 import com.sht.supplies.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,10 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Aaron
@@ -87,5 +91,40 @@ public class UserService extends BaseCommon {
 
     public Boolean existsByUserId(Integer id) {
         return userMapper.existsWithPrimaryKey(id);
+    }
+
+    public RestResponse batchSave(List<User> users) {
+        List<BatchUserResponse> responses = new ArrayList<>();
+        List<User> userList = selectUser();
+        for (User user : users) {
+            BatchUserResponse response = new BatchUserResponse();
+            response.setWorkNumber(user.getWorkNumber());
+            response.setWorkNumber(user.getName());
+            if (!checkDataLength(user)) {
+                user.setFlag(true);
+                response.setErrorMessage("数据长度错误");
+                responses.add(response);
+                continue;
+            }
+            Optional<User> first = userList.stream().filter(x -> StringUtils.equals(x.getWorkNumber(), user.getWorkNumber())).findFirst();
+            if (first.isPresent()) {
+                user.setFlag(true);
+                continue;
+            }
+            user.setInDate(LocalDateTime.now());
+            user.setFlag(false);
+        }
+        userMapper.batchSave(users.stream().filter(x -> !x.getFlag()).collect(Collectors.toList()));
+        return SUCCESS(responses, "导入成功");
+    }
+
+    public boolean checkDataLength(User user) {
+        if (StringUtils.isEmpty(user.getWorkNumber()) || user.getWorkNumber().length() > 20 || user.getWorkNumber().length() < 4) {
+            return false;
+        }
+        if (StringUtils.isEmpty(user.getName()) || user.getName().length() > 10 || user.getName().length() < 2) {
+            return false;
+        }
+        return true;
     }
 }

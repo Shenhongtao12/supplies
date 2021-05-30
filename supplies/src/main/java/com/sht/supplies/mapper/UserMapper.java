@@ -22,4 +22,6 @@ public interface UserMapper extends Mapper<User> {
 
     @Select("select id, work_number AS workNumber, name from user")
     List<User> selectUser();
+
+    int batchSave(List<User> users);
 }
