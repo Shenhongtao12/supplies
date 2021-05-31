@@ -10,8 +10,8 @@
       </el-form>
       <div class="query">
         <el-form ref="form" :model="listQuery" label-width="80px">
-          <el-row>
-            <el-col :span="6">
+          <el-row :gutter="10">
+            <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6" :span="6">
               <el-form-item label="物料名称">
                 <el-select
                   v-model="listQuery.title"
@@ -29,18 +29,17 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :xs="12" :sm="12" :md="12" :lg="8" :xl="8">
               <el-form-item label="物料编码">
                 <el-input
-                  class="input"
+                  class="input" 
                   placeholder="请输入物料编码"
                   v-model="listQuery.partNumber"
-                  style="width: 80%"
                 >
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
               <el-form-item label="物料类别">
                 <el-select
                   v-model="listQuery.category"
@@ -57,7 +56,7 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="3">
+            <el-col :xs="12" :sm="12" :md="12" :lg="2" :xl="2">
               <el-form-item>
                 <el-button type="primary" @click="getList">查询</el-button>
               </el-form-item>
@@ -68,8 +67,8 @@
     </div>
     <br />
     <div>
-      <el-row>
-        <el-col :span="6" v-for="(item, index) in list" :key="item.id">
+      <el-row :gutter="10">
+        <el-col :xs="12" :sm="12" :md="8" :lg="6" :xl="6" v-for="(item, index) in list" :key="item.id">
           <el-card
             :body-style="{ padding: '0px' }"
             class="card"
@@ -942,7 +941,7 @@ export default {
   width: 260px;
 }
 .query {
-  height: 80px;
+  height: auto;
   line-height: 80px;
   padding-top: 20px;
   border: solid 1px rgb(243, 242, 242);
@@ -960,7 +959,7 @@ export default {
 
 .image {
   width: 100%;
-  height: 300px;
+  height: 220px;
 }
 
 .clearfix:before,
@@ -980,7 +979,8 @@ export default {
   font-size: 13px;
 }
 .cardDiv {
-  height: 180px;
+  height: 160px;
   padding: 10px;
 }
+
 </style>

@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-row>
-        <el-col :span="6">
+      <el-row :gutter="10">
+        <el-col  :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
           <el-button type="primary" icon="plus" @click="showCreate"
             >添加员工
           </el-button>
@@ -13,8 +13,8 @@
           >
             Excel 导入
           </el-button>
-        </el-col>
-        <el-col :span="16">
+        </el-col><br/>
+        <!-- <el-col  :xs="12" :sm="12" :md="12" :lg="6" :xl="6"> -->
           <el-form
             :model="listQuery"
             :rules="rules"
@@ -39,7 +39,7 @@
               </el-button>
             </el-form-item>
           </el-form>
-        </el-col>
+        <!-- </el-col> -->
       </el-row>
     </div>
     <br />
@@ -633,7 +633,8 @@ export default {
   display: none;
   z-index: -9999;
 }
-/* .dialog_footer {
-  margin-left: 40%;
-} */
+.demo-ruleForm{
+ margin-top: -14px;
+}
+
 </style>

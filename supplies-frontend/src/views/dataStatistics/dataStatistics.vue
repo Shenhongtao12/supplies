@@ -3,8 +3,8 @@
     <div class="filter-container">
       <div class="query">
         <el-form ref="form" :model="listQuery" label-width="80px">
-          <el-row>
-            <el-col :span="6">
+          <el-row :gutter="10">
+            <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
               <el-form-item label="物料名称">
                 <el-select
                   v-model="listQuery.goodsId"
@@ -22,7 +22,7 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
               <el-form-item label="物料编码">
                 <el-input
                   class="input"
@@ -33,7 +33,7 @@
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
               <el-form-item label="时间">
                 <el-date-picker
                   v-model="listQuery.data"
@@ -44,7 +44,7 @@
                 </el-date-picker>
               </el-form-item>
             </el-col>
-            <el-col :span="3">
+            <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
               <el-form-item>
                 <el-button type="primary" @click="getList">查询</el-button>
               </el-form-item>
@@ -232,7 +232,7 @@ export default {
   width: 260px;
 }
 .query {
-  height: 80px;
+  height: auto;
   line-height: 80px;
   padding-top: 20px;
   border: solid 1px rgb(243, 242, 242);
