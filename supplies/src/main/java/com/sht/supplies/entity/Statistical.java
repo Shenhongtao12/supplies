@@ -32,4 +32,8 @@ public class Statistical {
     private Integer outStock;
 
     private Integer inventory;
+
+    private String bigUnit;
+    private Integer repertory;
+    private String smallUnit;
 }

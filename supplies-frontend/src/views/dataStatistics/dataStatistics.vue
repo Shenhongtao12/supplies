@@ -81,16 +81,22 @@
       />
       <el-table-column
         align="center"
-        prop="outStock"
         label="出库量"
-        column-key="outStock"
-      />
+      >
+       <template slot-scope="scope">
+          <span v-if="parseInt(scope.row.outStock / scope.row.repertory) > 0">{{parseInt(scope.row.outStock / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
+          <span v-if="(scope.row.outStock % scope.row.repertory) > 0">{{scope.row.outStock % scope.row.repertory}} {{scope.row.smallUnit}}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         align="center"
-        prop="inventory"
-        label="总库存"
-        column-key="inventory"
-      />
+        label="库存数量"
+      >
+        <template slot-scope="scope">
+          <span v-if="parseInt(scope.row.inventory / scope.row.repertory) > 0">{{parseInt(scope.row.inventory / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
+          <span v-if="(scope.row.inventory % scope.row.repertory) > 0">{{scope.row.inventory % scope.row.repertory}} {{scope.row.smallUnit}}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         align="center"
         prop="date"

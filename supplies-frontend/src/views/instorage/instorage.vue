@@ -76,8 +76,18 @@
       </el-table-column>
       <el-table-column align="center" prop="partNumber" label="物料编码" />
       <el-table-column align="center" prop="title" label="物料名称" />
-      <el-table-column align="center" prop="amount" label="入库数量" />
-      <el-table-column align="center" prop="inventory" label="总库存" />
+      <el-table-column align="center" label="库存数量" >
+        <template slot-scope="scope">
+          <span v-if="parseInt(scope.row.inventory / scope.row.repertory) > 0">{{parseInt(scope.row.inventory / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
+          <span v-if="(scope.row.inventory % scope.row.repertory) > 0">{{scope.row.inventory % scope.row.repertory}} {{scope.row.smallUnit}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="入库数量" >
+        <template slot-scope="scope">
+          <span v-if="parseInt(scope.row.amount / scope.row.repertory) > 0">{{parseInt(scope.row.amount / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
+          <span v-if="(scope.row.amount % scope.row.repertory) > 0">{{scope.row.amount % scope.row.repertory}} {{scope.row.smallUnit}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" prop="repertory" label="转换量" />
       <el-table-column align="center" prop="bigUnit" label="计量单位（大）" />
       <el-table-column align="center" prop="smallUnit" label="计量单位（小）" />

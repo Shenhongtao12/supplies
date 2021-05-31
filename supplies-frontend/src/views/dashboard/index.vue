@@ -94,18 +94,32 @@
                 <span>{{ item.title }}&nbsp;&nbsp;</span>
                 <span v-if="item.partNumber">({{ item.partNumber }})</span>
                 <p>
-                  总库存：
-                  <el-tag type="success" size="small">{{
-                    item.inventory
-                  }}</el-tag>
-                  &nbsp;&nbsp;&nbsp;{{ item.smallUnit }}
+                  库存数量：
+                  <span v-if="item.inventory > 0">
+                    <el-tag type="success" v-if="parseInt(item.inventory / item.repertory) > 0" size="small">
+                      {{parseInt(item.inventory / item.repertory)}} {{item.bigUnit}}
+                    </el-tag>
+                    <span v-if="(item.inventory % item.repertory) > 0">
+                      <el-tag type="warning" size="small">
+                        零
+                      </el-tag>
+                      <el-tag type="primary" size="small">
+                        {{item.inventory % item.repertory}} {{item.smallUnit}}
+                      </el-tag>
+                    </span>
+                  </span>
+                  <span v-else>
+                    <el-tag type="success" size="small">
+                        0 {{item.bigUnit}}
+                      </el-tag> 
+                  </span>
                 </p>
                 <p v-if="item.smallUnit">
-                  转换量： &nbsp;&nbsp;&nbsp;一{{ item.bigUnit }}有{{
+                  转换量： &nbsp;一{{ item.bigUnit }}有{{
                     item.repertory
                   }}{{ item.smallUnit }}
                 </p>
-                <p v-else>转换量： &nbsp;&nbsp;&nbsp;{{ item.repertory }}</p>
+                <p v-else>转换量： &nbsp;{{ item.repertory }}</p>
                 <div class="bottom clearfix">
                   <time class="time"></time>
                   <el-row>

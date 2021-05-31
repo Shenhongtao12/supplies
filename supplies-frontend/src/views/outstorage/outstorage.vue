@@ -90,7 +90,16 @@
         label="物料编码"
         width="170"
       />
-      <el-table-column align="center" prop="title" label="物料" />
+      <el-table-column align="center" prop="title" label="物料名称" />
+      <el-table-column
+        align="center"
+        label="库存数量"
+      >
+        <template slot-scope="scope">
+          <span v-if="parseInt(scope.row.inventory / scope.row.repertory) > 0">{{parseInt(scope.row.inventory / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
+          <span v-if="(scope.row.inventory % scope.row.repertory) > 0">{{scope.row.inventory % scope.row.repertory}} {{scope.row.smallUnit}}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         align="center"
         prop="userName"
@@ -99,9 +108,13 @@
       />
       <el-table-column
         align="center"
-        prop="amount"
         label="领用数量"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          <span v-if="parseInt(scope.row.amount / scope.row.repertory) > 0">{{parseInt(scope.row.amount / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
+          <span v-if="(scope.row.amount % scope.row.repertory) > 0">{{scope.row.amount % scope.row.repertory}} {{scope.row.smallUnit}}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         align="center"
         prop="remark"
@@ -113,11 +126,6 @@
         label="出库时间"
         :formatter="formatterTime"
         column-key="inDate"
-      ></el-table-column>
-      <el-table-column
-        align="center"
-        prop="inventory"
-        label="库存数量"
       ></el-table-column>
       <el-table-column align="center" label="管理" width="200">
         <template slot-scope="scope">
@@ -202,7 +210,7 @@
           ></el-input-number>
           &nbsp;&nbsp;{{ tempArticle.bigUnit }}
         </el-form-item>
-        <el-form-item label="数量(小)" prop="amount">
+        <el-form-item v-if="tempArticle.smallUnit" label="数量(小)" prop="amount">
           <el-input-number
             style="width: 80%"
             v-model.trim="tempArticle.amount"
@@ -290,7 +298,7 @@
           ></el-input-number>
           &nbsp;&nbsp;{{ tempArticle.bigUnit }}
         </el-form-item>
-        <el-form-item label="数量(小)" prop="amount">
+        <el-form-item v-if="tempArticle.smallUnit" label="数量(小)" prop="amount">
           <el-input-number
             style="width: 80%"
             v-model.trim="tempArticle.amount"
