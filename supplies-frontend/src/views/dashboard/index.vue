@@ -129,7 +129,7 @@
                         plain
                         class="button"
                         @click="outstorage(index)"
-                        >点击出库</el-button
+                        >点击领用</el-button
                       >
                     </el-col>
                     <el-col :span="7">
@@ -423,7 +423,7 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog title="物料出库" :visible.sync="dialogOutStorage" width="40%">
+    <el-dialog title="物料领用" :visible.sync="dialogOutStorage" width="40%">
       <el-form
         :rules="dataVerify"
         class="small-space"
@@ -594,7 +594,7 @@ export default {
           },
         ],
         bigUnit: [
-          { message: "请输入计量单位(大)", trigger: "blur" },
+          { required: true, message: "请输入计量单位(大)", trigger: "blur" },
           {
             min: 0,
             max: 10,
@@ -847,7 +847,7 @@ export default {
           }).then((data) => {
             if (data.data.code == 200) {
               this.$message({
-                message: "出库成功！",
+                message: "领用出库成功！",
                 type: "success",
               });
               this.getList();

@@ -4,7 +4,7 @@
       <el-form>
         <el-form-item>
           <el-button type="primary" icon="plus" @click="showCreate"
-            >物料出库
+            >物料领用
           </el-button>
         </el-form-item>
       </el-form>
@@ -48,7 +48,7 @@
               </el-form-item>
             </el-col>
             <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
-              <el-form-item label="出库时间">
+              <el-form-item label="领用时间">
                 <el-date-picker
                   v-model="listQuery.data"
                   style="width: 100%"
@@ -121,7 +121,7 @@
       <el-table-column
         align="center"
         prop="inDate"
-        label="出库时间"
+        label="领用时间"
         :formatter="formatterTime"
         column-key="inDate"
       ></el-table-column>
@@ -154,7 +154,7 @@
       layout="total, sizes, prev, pager, next, jumper"
     >
     </el-pagination>
-    <el-dialog title="添加出库信息" :visible.sync="dialogFormAdd" width="40%">
+    <el-dialog title="添加领用信息" :visible.sync="dialogFormAdd" width="40%">
       <el-form
         :rules="dataVerify"
         class="small-space"
@@ -203,7 +203,7 @@
             v-model.trim="tempArticle.bigAmount"
             maxlength="100"
             placeholder="请输入大计量单位数量"
-            :min="1"
+            :min="0"
             :max="999999"
           ></el-input-number>
           &nbsp;&nbsp;{{ tempArticle.bigUnit }}
@@ -214,7 +214,7 @@
             v-model.trim="tempArticle.amount"
             maxlength="100"
             placeholder="请输入小计量单位数量"
-            :min="1"
+            :min="0"
             :max="999999"
           ></el-input-number>
           &nbsp;&nbsp; {{ tempArticle.smallUnit }}
@@ -239,7 +239,7 @@
     </el-dialog>
 
     <el-dialog
-      title="修改出库信息"
+      title="修改领用信息"
       :visible.sync="dialogFormUpdate"
       width="40%"
     >
@@ -351,7 +351,7 @@ export default {
       },
       tempArticle: {
         id: "",
-        amount: 1,
+        amount: 0,
         partNumber: "",
         title: "",
         remark: "",
@@ -550,7 +550,7 @@ export default {
       });
     },
     deleteAdministrator($index) {
-      this.$confirm("确定删除这条出库信息吗?", "提示", {
+      this.$confirm("确定删除这条领用记录吗?", "提示", {
         confirmButtonText: "确定",
         showCancelButton: false,
         type: "warning",

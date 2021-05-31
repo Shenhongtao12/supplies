@@ -29,9 +29,9 @@ export const constantRouterMap = [
     children: [
       {
         path: 'outstorage',
-        name: '出库管理',
+        name: '领用管理',
         component: _import('outstorage/outstorage'),
-        meta: {title: '出库管理', icon: 'example'},
+        meta: {title: '领用管理', icon: 'example'},
         menu: 'outstorage'
       },
     ]

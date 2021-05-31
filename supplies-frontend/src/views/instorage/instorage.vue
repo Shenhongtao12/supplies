@@ -38,7 +38,7 @@
               </el-form-item>
             </el-col>
             <el-col :xs="12" :sm="8" :md="8" :lg="8" :xl="8">
-              <el-form-item label="出库时间">
+              <el-form-item label="领用时间">
                 <el-date-picker
                   v-model="listQuery.data"
                   style="width: 100%"
@@ -88,9 +88,18 @@
           <span v-if="(scope.row.amount % scope.row.repertory) > 0">{{scope.row.amount % scope.row.repertory}} {{scope.row.smallUnit}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="repertory" label="转换量" />
-      <el-table-column align="center" prop="bigUnit" label="计量单位（大）" />
-      <el-table-column align="center" prop="smallUnit" label="计量单位（小）" />
+      <el-table-column align="center" prop="repertory" label="转换量">
+        <template slot-scope="scope">
+          <p v-if="scope.row.smallUnit">
+            转换量：一{{ scope.row.bigUnit }}有{{
+              scope.row.repertory
+            }}{{ scope.row.smallUnit }}
+          </p>
+          <p v-else>转换量：{{ scope.row.repertory }}</p>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column align="center" prop="bigUnit" label="计量单位（大）" />
+      <el-table-column align="center" prop="smallUnit" label="计量单位（小）" /> -->
       <el-table-column align="center" prop="remark" label="备注" />
       <el-table-column
         align="center"

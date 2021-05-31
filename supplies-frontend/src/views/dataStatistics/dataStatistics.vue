@@ -81,7 +81,7 @@
       />
       <el-table-column
         align="center"
-        label="出库量"
+        label="领用数量"
       >
        <template slot-scope="scope">
           <span v-if="parseInt(scope.row.outStock / scope.row.repertory) > 0">{{parseInt(scope.row.outStock / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
