@@ -571,7 +571,7 @@ export default {
       },
       dataVerify: {
         partNumber: [
-          { required: true, message: "请输入物料编码", trigger: "blur" },
+          { message: "请输入物料编码", trigger: "blur" },
           {
             min: 4,
             max: 20,
@@ -594,18 +594,18 @@ export default {
           },
         ],
         bigUnit: [
-          { required: true, message: "请输入计量单位(大)", trigger: "blur" },
+          { message: "请输入计量单位(大)", trigger: "blur" },
           {
-            min: 1,
+            min: 0,
             max: 10,
             message: "长度在 1 到 10 个字符",
             trigger: "blur",
           },
         ],
         smallUnit: [
-          { required: true, message: "请输入计量单位(小)", trigger: "blur" },
+          { message: "请输入计量单位(小)", trigger: "blur" },
           {
-            min: 1,
+            min: 0,
             max: 10,
             message: "长度在 1 到 10 个字符",
             trigger: "blur",
@@ -621,7 +621,7 @@ export default {
         amount: [
           { required: true, message: "请输入物料名称", trigger: "blur" },
         ],
-        unit: [{ required: true, message: "请选择计量单位", trigger: "blur" }],
+        unit: [{ message: "请选择计量单位", trigger: "blur" }],
         category: [
           { required: true, message: "物料类别", trigger: "blur" },
           {
