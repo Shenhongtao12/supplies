@@ -88,9 +88,13 @@
         align="center"
         prop="partNumber"
         label="物料编码"
-        width="170"
       />
       <el-table-column align="center" prop="title" label="物料名称" />
+      <el-table-column
+        align="center"
+        prop="userName"
+        label="员工"
+      />
       <el-table-column
         align="center"
         label="库存数量"
@@ -100,12 +104,6 @@
           <span v-if="(scope.row.inventory % scope.row.repertory) > 0">{{scope.row.inventory % scope.row.repertory}} {{scope.row.smallUnit}}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        align="center"
-        prop="userName"
-        label="员工"
-        width="170"
-      />
       <el-table-column
         align="center"
         label="领用数量"
