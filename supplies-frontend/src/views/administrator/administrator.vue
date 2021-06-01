@@ -85,6 +85,7 @@
             size="mini"
             icon="edit"
             @click="deleteAdministrator(scope.$index)"
+            v-if="loginUserId != getCurrentWorkNumber(scope.$index)"
             >删除</el-button
           >
           <el-button
@@ -92,6 +93,7 @@
             type="success"
             size="mini"
             icon="edit"
+            v-if="loginUserId == getCurrentWorkNumber(scope.$index)"
             @click="showUpdatePassword(scope.$index)"
             >修改密码</el-button
           >
@@ -132,10 +134,7 @@
             maxlength="100"
           ></el-input>
         </el-form-item>
-        <el-form-item
-          label="密码"
-          prop="password"
-        >
+        <el-form-item label="密码" prop="password">
           <el-input
             show-password
             style="width: 100%"
@@ -207,10 +206,7 @@
         ref="passwordform"
         :rules="passwordrules"
       >
-        <el-form-item
-          label="原始密码"
-          prop="oldPassword"
-        >
+        <el-form-item label="原始密码" prop="oldPassword">
           <el-input
             show-password
             style="width: 100%"
@@ -219,10 +215,7 @@
             placeholder="请输入原密码"
           ></el-input>
         </el-form-item>
-        <el-form-item
-          label="新密码"
-          prop="password"
-        >
+        <el-form-item label="新密码" prop="password">
           <el-input
             show-password
             style="width: 100%"
@@ -231,10 +224,7 @@
             placeholder="请设置新密码"
           ></el-input>
         </el-form-item>
-        <el-form-item
-          label="确认密码"
-          prop="qrpassword"
-        >
+        <el-form-item label="确认密码" prop="qrpassword">
           <el-input
             show-password
             style="width: 100%"
@@ -256,6 +246,7 @@
 <script>
 import { formateDate } from "@/utils/index";
 import { Base64 } from "js-base64";
+import { getUserId } from "@/utils/auth";
 
 export default {
   data() {
@@ -384,6 +375,7 @@ export default {
           },
         ],
       },
+      loginUserId: "",
     };
   },
   created() {
@@ -391,6 +383,7 @@ export default {
   },
   methods: {
     getList() {
+      this.loginUserId = getUserId();
       this.listLoading = true;
       this.api({
         url: "/admin",
@@ -422,6 +415,9 @@ export default {
           });
         }
       });
+    },
+    getCurrentWorkNumber(e) {
+      return this.list[e].id;
     },
     handleSizeChange(val) {
       //改变每页数量
@@ -554,10 +550,10 @@ export default {
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const body={
+          const body = {
             oldPassword: Base64.encode(this.passwordform.oldPassword),
-            password: Base64.encode(this.passwordform.password)
-          }
+            password: Base64.encode(this.passwordform.password),
+          };
           this.api({
             url: "/admin/updatePas",
             method: "put",

@@ -32,7 +32,7 @@
             <el-col :xs="12" :sm="12" :md="12" :lg="8" :xl="8">
               <el-form-item label="物料编码">
                 <el-input
-                  class="input" 
+                  class="input"
                   placeholder="请输入物料编码"
                   v-model="listQuery.partNumber"
                 >
@@ -68,7 +68,15 @@
     <br />
     <div>
       <el-row :gutter="10">
-        <el-col :xs="12" :sm="12" :md="8" :lg="6" :xl="6" v-for="(item, index) in list" :key="item.id">
+        <el-col
+          :xs="12"
+          :sm="12"
+          :md="8"
+          :lg="6"
+          :xl="6"
+          v-for="(item, index) in list"
+          :key="item.id"
+        >
           <el-card
             :body-style="{ padding: '0px' }"
             class="card"
@@ -83,44 +91,42 @@
                 width="100%"
                 height="100%"
               />
-              <img
-                v-else
-                src="../login/log.png"
-                class="image"
-              />
+              <img v-else src="../login/log.png" class="image" />
 
               <div style="padding: 14px" class="cardDiv">
                 <span>{{ item.title }}&nbsp;&nbsp;</span>
                 <span v-if="item.partNumber">({{ item.partNumber }})</span>
-                <p>
+                <div>
                   库存数量：
                   <span v-if="item.inventory > 0">
-                    <el-tag type="success" v-if="parseInt(item.inventory / item.repertory) > 0" size="small">
-                      {{parseInt(item.inventory / item.repertory)}} {{item.bigUnit}}
+                    <el-tag
+                      type="success"
+                      v-if="parseInt(item.inventory / item.repertory) > 0"
+                      size="small"
+                    >
+                      {{ parseInt(item.inventory / item.repertory) }}
+                      {{ item.bigUnit }}
                     </el-tag>
-                    <span v-if="(item.inventory % item.repertory) > 0">
-                      <el-tag type="warning" size="small">
-                        零
-                      </el-tag>
+                    <span v-if="item.inventory % item.repertory > 0">
+                      <el-tag type="warning" size="small"> 零 </el-tag>
                       <el-tag type="primary" size="small">
-                        {{item.inventory % item.repertory}} {{item.smallUnit}}
+                        {{ item.inventory % item.repertory }}
+                        {{ item.smallUnit }}
                       </el-tag>
                     </span>
                   </span>
                   <span v-else>
                     <el-tag type="success" size="small">
-                        0 {{item.bigUnit}}
-                      </el-tag> 
+                      0 {{ item.bigUnit }}
+                    </el-tag>
                   </span>
-                </p>
-                <p v-if="item.smallUnit">
-                  转换量： &nbsp;一{{ item.bigUnit }}有{{
-                    item.repertory
+                </div>
+                <div v-if="item.smallUnit">
+                  转换量： &nbsp;一{{ item.bigUnit }}有{{ item.repertory
                   }}{{ item.smallUnit }}
-                </p>
-                <p v-else>转换量： &nbsp;{{ item.repertory }}</p>
-                <div class="bottom clearfix">
-                  <time class="time"></time>
+                </div>
+                <div v-else>转换量： &nbsp;{{ item.repertory }}</div>
+                <div class="bottom">
                   <el-row>
                     <el-col :span="10">
                       <el-button
@@ -473,7 +479,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="数量(大)" prop="amount">
+        <el-form-item label="数量(大)">
           <el-input-number
             style="width: 80%"
             v-model.trim="tempArticle.bigAmount"
@@ -484,7 +490,11 @@
           ></el-input-number>
           &nbsp;&nbsp;{{ tempArticle.bigUnit }}
         </el-form-item>
-        <el-form-item v-if="tempArticle.smallUnit" label="数量(小)" prop="amount">
+        <el-form-item
+          v-if="tempArticle.smallUnit"
+          label="数量(小)"
+          prop="smallUnit"
+        >
           <el-input-number
             style="width: 80%"
             v-model.trim="tempArticle.amount"
@@ -582,7 +592,6 @@ export default {
         title: [
           {
             required: true,
-            required: true,
             message: "请输入物料名称",
             trigger: "blur",
           },
@@ -619,7 +628,7 @@ export default {
           { required: true, message: "请输入物料名称", trigger: "blur" },
         ],
         amount: [
-          { required: true, message: "请输入物料名称", trigger: "blur" },
+          { required: true, message: "请输入物料数量", trigger: "blur" },
         ],
         unit: [{ message: "请选择计量单位", trigger: "blur" }],
         category: [
@@ -838,26 +847,30 @@ export default {
         remark: this.tempArticle.remark,
         userId: this.tempArticle.userId,
       };
-      this.$refs[tempArticle].validate((valid) => {
-        if (valid) {
-          this.api({
-            url: "/outStock",
-            method: "post",
-            data: body,
-          }).then((data) => {
-            if (data.data.code == 200) {
-              this.$message({
-                message: "领用出库成功！",
-                type: "success",
-              });
-              this.getList();
-              this.dialogOutStorage = false;
-            } else {
-              this.$message.error(data.data);
-            }
-          });
-        }
-      });
+      if (num == 0) {
+        this.$message.error("请检查领取数量！");
+      } else {
+        this.$refs[tempArticle].validate((valid) => {
+          if (valid) {
+            this.api({
+              url: "/outStock",
+              method: "post",
+              data: body,
+            }).then((data) => {
+              if (data.data.code == 200) {
+                this.$message({
+                  message: "领用出库成功！",
+                  type: "success",
+                });
+                this.getList();
+                this.dialogOutStorage = false;
+              } else {
+                this.$message.error(data.data);
+              }
+            });
+          }
+        });
+      }
     },
     updateAdministrator(tempArticle) {
       const num =
@@ -953,13 +966,14 @@ export default {
 }
 
 .bottom {
-  margin-top: 13px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   line-height: 12px;
 }
 
 .image {
   width: 100%;
-  height: 220px;
+  height: 200px;
 }
 
 .clearfix:before,
@@ -981,6 +995,6 @@ export default {
 .cardDiv {
   height: 160px;
   padding: 10px;
+  line-height: 25px;
 }
-
 </style>

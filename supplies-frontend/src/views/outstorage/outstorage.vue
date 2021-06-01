@@ -84,33 +84,31 @@
           <span v-text="getIndex(scope.$index)"> </span>
         </template>
       </el-table-column>
-      <el-table-column
-        align="center"
-        prop="partNumber"
-        label="物料编码"
-      />
+      <el-table-column align="center" prop="partNumber" label="物料编码" />
       <el-table-column align="center" prop="title" label="物料名称" />
-      <el-table-column
-        align="center"
-        prop="userName"
-        label="员工"
-      />
-      <el-table-column
-        align="center"
-        label="库存数量"
-      >
+      <el-table-column align="center" prop="userName" label="员工" />
+      <el-table-column align="center" label="库存数量">
         <template slot-scope="scope">
-          <span v-if="parseInt(scope.row.inventory / scope.row.repertory) > 0">{{parseInt(scope.row.inventory / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
-          <span v-if="(scope.row.inventory % scope.row.repertory) > 0">{{scope.row.inventory % scope.row.repertory}} {{scope.row.smallUnit}}</span>
+          <span v-if="parseInt(scope.row.inventory / scope.row.repertory) > 0"
+            >{{ parseInt(scope.row.inventory / scope.row.repertory) }}
+            {{ scope.row.bigUnit }}</span
+          >
+          <span v-if="scope.row.inventory % scope.row.repertory > 0"
+            >{{ scope.row.inventory % scope.row.repertory }}
+            {{ scope.row.smallUnit }}</span
+          >
         </template>
       </el-table-column>
-      <el-table-column
-        align="center"
-        label="领用数量"
-      >
+      <el-table-column align="center" label="领用数量">
         <template slot-scope="scope">
-          <span v-if="parseInt(scope.row.amount / scope.row.repertory) > 0">{{parseInt(scope.row.amount / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
-          <span v-if="(scope.row.amount % scope.row.repertory) > 0">{{scope.row.amount % scope.row.repertory}} {{scope.row.smallUnit}}</span>
+          <span v-if="parseInt(scope.row.amount / scope.row.repertory) > 0"
+            >{{ parseInt(scope.row.amount / scope.row.repertory) }}
+            {{ scope.row.bigUnit }}</span
+          >
+          <span v-if="scope.row.amount % scope.row.repertory > 0"
+            >{{ scope.row.amount % scope.row.repertory }}
+            {{ scope.row.smallUnit }}</span
+          >
         </template>
       </el-table-column>
       <el-table-column
@@ -197,7 +195,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="数量(大)" prop="amount">
+        <el-form-item label="数量(大)">
           <el-input-number
             style="width: 80%"
             v-model.trim="tempArticle.bigAmount"
@@ -208,7 +206,7 @@
           ></el-input-number>
           &nbsp;&nbsp;{{ tempArticle.bigUnit }}
         </el-form-item>
-        <el-form-item v-if="tempArticle.smallUnit" label="数量(小)" prop="amount">
+        <el-form-item v-if="tempArticle.smallUnit" label="数量(小)">
           <el-input-number
             style="width: 80%"
             v-model.trim="tempArticle.amount"
@@ -285,7 +283,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="数量(大)" prop="amount">
+        <el-form-item label="数量(大)">
           <el-input-number
             style="width: 80%"
             v-model.trim="tempArticle.bigAmount"
@@ -296,7 +294,7 @@
           ></el-input-number>
           &nbsp;&nbsp;{{ tempArticle.bigUnit }}
         </el-form-item>
-        <el-form-item v-if="tempArticle.smallUnit" label="数量(小)" prop="amount">
+        <el-form-item v-if="tempArticle.smallUnit" label="数量(小)">
           <el-input-number
             style="width: 80%"
             v-model.trim="tempArticle.amount"
@@ -372,9 +370,7 @@ export default {
         goodsId: [
           { required: true, message: "请输入物料名称", trigger: "blur" },
         ],
-        amount: [
-          { required: true, message: "请输入物料数量", trigger: "blur" },
-        ],
+        amount: [{ message: "请输入物料数量", trigger: "blur" }],
         bigAmount: [
           { required: true, message: "请输入物料数量", trigger: "blur" },
         ],
@@ -496,26 +492,30 @@ export default {
         remark: this.tempArticle.remark,
         userId: this.tempArticle.userId,
       };
-      this.$refs[tempArticle].validate((valid) => {
-        if (valid) {
-          this.api({
-            url: "/outStock",
-            method: "post",
-            data: body,
-          }).then((data) => {
-            if (data.data.code == 200) {
-              this.$message({
-                message: "添加成功！",
-                type: "success",
-              });
-              this.getList();
-              this.dialogFormAdd = false;
-            } else {
-              this.$message.error(data.data.message);
-            }
-          });
-        }
-      });
+      if (num == 0) {
+        this.$message.error("请检查领取数量！");
+      } else {
+        this.$refs[tempArticle].validate((valid) => {
+          if (valid) {
+            this.api({
+              url: "/outStock",
+              method: "post",
+              data: body,
+            }).then((data) => {
+              if (data.data.code == 200) {
+                this.$message({
+                  message: "添加成功！",
+                  type: "success",
+                });
+                this.getList();
+                this.dialogFormAdd = false;
+              } else {
+                this.$message.error(data.data.message);
+              }
+            });
+          }
+        });
+      }
     },
     updateAdministrator(tempArticle) {
       const num =
@@ -528,26 +528,30 @@ export default {
         userId: this.tempArticle.userId,
         id: this.tempArticle.id,
       };
-      this.$refs[tempArticle].validate((valid) => {
-        if (valid) {
-          this.api({
-            url: "/outStock",
-            method: "put",
-            data: body,
-          }).then((data) => {
-            if (data.data.code == 200) {
-              this.$message({
-                message: "修改成功！",
-                type: "success",
-              });
-              this.getList();
-              this.dialogFormUpdate = false;
-            } else {
-              this.$message.error(data.data.message);
-            }
-          });
-        }
-      });
+      if (num == 0) {
+        this.$message.error("请检查领取数量！");
+      } else {
+        this.$refs[tempArticle].validate((valid) => {
+          if (valid) {
+            this.api({
+              url: "/outStock",
+              method: "put",
+              data: body,
+            }).then((data) => {
+              if (data.data.code == 200) {
+                this.$message({
+                  message: "修改成功！",
+                  type: "success",
+                });
+                this.getList();
+                this.dialogFormUpdate = false;
+              } else {
+                this.$message.error(data.data.message);
+              }
+            });
+          }
+        });
+      }
     },
     deleteAdministrator($index) {
       this.$confirm("确定删除这条领用记录吗?", "提示", {

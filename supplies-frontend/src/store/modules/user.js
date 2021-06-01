@@ -37,7 +37,7 @@ const user = {
             //储存用户信息
             commit('SET_USER', data.data.data.admin);
           } else {
-            //alert(data.data.message);
+            // alert(data.data.message);
             this.$message.error(data.data.message);
           }
           resolve(data);

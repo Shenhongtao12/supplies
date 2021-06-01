@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-row :gutter="10">
-        <el-col  :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
+        <el-col  :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
           <el-button type="primary" icon="plus" @click="showCreate"
             >添加员工
           </el-button>
@@ -14,7 +14,7 @@
             Excel 导入
           </el-button>
         </el-col><br/>
-        <!-- <el-col  :xs="12" :sm="12" :md="12" :lg="6" :xl="6"> -->
+        <el-col  :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
           <el-form
             :model="listQuery"
             :rules="rules"
@@ -39,7 +39,7 @@
               </el-button>
             </el-form-item>
           </el-form>
-        <!-- </el-col> -->
+        </el-col>
       </el-row>
     </div>
     <br />
