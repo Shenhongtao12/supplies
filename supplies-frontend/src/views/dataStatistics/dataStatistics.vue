@@ -10,6 +10,7 @@
                   v-model="listQuery.goodsId"
                   placeholder="请选择物料"
                   filterable
+                  clearable
                   style="width: 100%"
                 >
                   <el-option

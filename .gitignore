@@ -42,5 +42,7 @@ build/
 
 #supplies
 /supplies-frontend/node_modules/
+/supplies-frontend/dist/
 /supplies/src/main/resources/static/
+/supplies/src/main/resources/public/
 /supplies/supplies/target/

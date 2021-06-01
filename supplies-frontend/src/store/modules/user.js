@@ -53,10 +53,10 @@ const user = {
           url: '/admin/refreshToken',
           method: 'get'
         }).then(data => {
+          setToken(data.data.data.token);
+          setUserId(data.data.data.admin.id);
           //储存用户信息
-          // commit('SET_USER', data);
-          //存储 token
-          // setToken(data.data.data.token);
+          commit('SET_USER', data.data.data.admin);
           //生成路由
           store.dispatch('GenerateRoutes', data).then(() => {
             //生成该用户的新路由json操作完毕之后,调用vue-router的动态新增路由方法,将新路由添加

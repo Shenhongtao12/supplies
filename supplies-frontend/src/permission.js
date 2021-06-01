@@ -2,7 +2,7 @@ import router from './router'
 import store from './store'
 import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css' // Progress 进度条样式
-import {getToken,getUserId} from '@/utils/auth' // 验权
+import {getToken} from '@/utils/auth' // 验权
 const whiteList = ['/login', '/404'] //白名单,不需要登录的路由
 router.beforeEach((to, from, next) => {
   NProgress.start()
@@ -12,13 +12,20 @@ router.beforeEach((to, from, next) => {
       next({path: '/'})
       NProgress.done() // 结束Progress
     } 
-    else if (!getUserId()) {
-      //已经登录但是store内没有userId,说明可能是重新刷新的页面,因此重新获取用户信息
-      store.dispatch('GetInfo').then(() => {
-        next({...to})
-      })
-    } else {
-      next()
+    else {
+      if (!store.getters.id) {
+        //已经登录但是store内没有userId,说明可能是重新刷新的页面,因此重新获取用户信息
+        store.dispatch('GetInfo').then(() => {
+          next({...to})
+        }).catch(() => {
+          store.dispatch('LogOut').then(() => {
+              Message.error('验证失败,请重新登录')
+              next({ path: '/login' })
+          })
+        })
+      } else {
+        next()
+      }
     }
   } else if (whiteList.indexOf(to.path) !== -1) {
     //如果前往的路径是白名单内的,就可以直接前往

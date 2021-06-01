@@ -244,7 +244,7 @@
             ></el-col>
             <el-col :span="5">
               &nbsp; &nbsp;{{
-                chooseGoods != "" ? chooseGoods.bigUnit : tempArticle.bigUnit
+                tempArticle.bigUnit
               }}
             </el-col>
           </el-row>
@@ -735,7 +735,8 @@ export default {
     showUpdate($index) {
       //显示修改对话框
       this.tempArticle.id = this.list[$index].id;
-      this.tempArticle.amount = this.list[$index].amount;
+      this.tempArticle.amount = parseInt(this.list[$index].amount / this.list[$index].repertory);
+      //this.tempArticle.amount = this.list[$index].amount;
       this.tempArticle.partNumber = this.list[$index].partNumber;
       this.tempArticle.title = this.list[$index].title;
       this.tempArticle.remark = this.list[$index].remark;
@@ -779,11 +780,11 @@ export default {
     },
     updateAdministrator(tempArticle) {
       let num = 0;
-      if (this.chooseGoods == "") {
+      //if (this.chooseGoods == "") {
         num = this.tempArticle.amount * this.tempArticle.repertory;
-      } else {
+      /* } else {
         num = this.tempArticle.amount * this.chooseGoods.repertory;
-      }
+      } */
       const body = {
         id: this.tempArticle.id,
         amount: num,

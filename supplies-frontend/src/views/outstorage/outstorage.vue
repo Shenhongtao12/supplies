@@ -17,6 +17,7 @@
                   v-model="listQuery.goodsId"
                   placeholder="请选择物料"
                   filterable
+                  clearable
                   size="small"
                 >
                   <el-option
@@ -35,6 +36,7 @@
                   v-model="listQuery.userId"
                   placeholder="请选择员工"
                   filterable
+                  clearable
                   size="small"
                 >
                   <el-option
@@ -471,7 +473,8 @@ export default {
     showUpdate($index) {
       //显示修改对话框
       this.tempArticle.id = this.list[$index].id;
-      this.tempArticle.amount = this.list[$index].amount;
+      this.tempArticle.bigAmount = parseInt(this.list[$index].amount / this.list[$index].repertory);
+      this.tempArticle.amount = this.list[$index].amount % this.list[$index].repertory;
       this.tempArticle.partNumber = this.list[$index].partNumber;
       this.tempArticle.title = this.list[$index].title;
       this.tempArticle.remark = this.list[$index].remark;

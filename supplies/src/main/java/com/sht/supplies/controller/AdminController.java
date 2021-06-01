@@ -120,6 +120,7 @@ public class AdminController extends BaseController {
         }
         JSONObject response = new JSONObject();
         response.put("token", JwtUtils.geneJsonWebToken(userId));
+        response.put("admin", adminService.findById(userId));
         return ResponseEntity.ok(SUCCESS(response, "成功"));
     }
 
