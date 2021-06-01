@@ -1,90 +1,89 @@
 <template>
-  <div class="login">
-    <el-row :gutter="20">
-  <el-col :span="10">
-    <div class="block">
-      <div class="demonstration">
-        <img style="width: 18%; height: 18%" src="./log.png" />
-        <div class="text">海底捞 | 智慧库房管理平台</div>
-      </div>
-      <img class="logo" style="width: 100%; height: 100%" src="./logo.png" />
-    </div>
-  </el-col>
-  <el-col :span="10">
-    <el-form
-      ref="loginForm"
-      :model="loginForm"
-      :rules="loginRules"
-      class="login-form"
-    >
-      <h3 class="title">账号登录</h3>
-      <el-form-item prop="workNumber">
-        <el-input
-          v-model="loginForm.workNumber"
-          type="text"
-          auto-complete="off"
-          maxlength="20"
-          placeholder="请输入工号"
-        >
-          <svg-icon
-            slot="prefix"
-            icon-class="user"
-            class="el-input__icon input-icon"
-          />
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input
-          v-model="loginForm.password"
-          type="password"
-          auto-complete="off"
-          placeholder="请输入密码"
-          maxlength="20"
-          @keyup.enter.native="handleLogin"
-        >
-          <svg-icon
-            slot="prefix"
-            icon-class="password"
-            class="el-input__icon input-icon"
-          />
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="code">
-        <el-input
-          v-model="loginForm.code"
-          auto-complete="off"
-          placeholder="验证码"
-          style="width: 63%"
-          maxlength="4"
-          @keyup.enter.native="handleLogin"
-        >
-          <svg-icon
-            slot="prefix"
-            icon-class="validCode"
-            class="el-input__icon input-icon"
-          />
-        </el-input>
-        <div class="login-code">
-          <img :src="codeUrl" @click="getCode" class="login-code-img" />
+  <div class="login1">
+    <el-row :gutter="10">
+      <el-col :span="12" class="block">
+        <div >
+          <div>
+            <img style="width: 6%; height: 6%" src="./log.png" />
+            <span >海底捞 | 智慧库房管理平台</span>
+          </div><br/>
+          <img class="logo" style="width: 50%; " src="./logo.png" />
         </div>
-      </el-form-item>
-      <!-- <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox> -->
-      <el-form-item style="width: 100%">
-        <el-button
-          :loading="loading"
-          size="medium"
-          type="primary"
-          style="width: 100%"
-          @click.native.prevent="handleLogin"
+      </el-col>
+      <el-col :span="12" class="block1">
+        <el-form
+          ref="loginForm"
+          :model="loginForm"
+          :rules="loginRules"
+          class="login-form"
         >
-          <span v-if="!loading">登 录</span>
-          <span v-else>登 录 中...</span>
-        </el-button>
-      </el-form-item>
-    </el-form>
-  </el-col>
-</el-row>
-
+          <h3 class="title">账号登录</h3>
+          <el-form-item prop="workNumber">
+            <el-input
+              v-model="loginForm.workNumber"
+              type="text"
+              auto-complete="off"
+              maxlength="20"
+              placeholder="请输入工号"
+            >
+              <svg-icon
+                slot="prefix"
+                icon-class="user"
+                class="el-input__icon input-icon"
+              />
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input
+              v-model="loginForm.password"
+              type="password"
+              auto-complete="off"
+              placeholder="请输入密码"
+              maxlength="20"
+              @keyup.enter.native="handleLogin"
+            >
+              <svg-icon
+                slot="prefix"
+                icon-class="password"
+                class="el-input__icon input-icon"
+              />
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="code">
+            <el-input
+              v-model="loginForm.code"
+              auto-complete="off"
+              placeholder="验证码"
+              style="width: 63%"
+              maxlength="4"
+              @keyup.enter.native="handleLogin"
+            >
+              <svg-icon
+                slot="prefix"
+                icon-class="validCode"
+                class="el-input__icon input-icon"
+              />
+            </el-input>
+            <div class="login-code">
+              <img :src="codeUrl" @click="getCode" class="login-code-img" />
+            </div>
+          </el-form-item>
+          <!-- <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox> -->
+          <el-form-item style="width: 100%">
+            <el-button
+              :loading="loading"
+              size="medium"
+              type="primary"
+              style="width: 100%"
+              @click.native.prevent="handleLogin"
+            >
+              <span v-if="!loading">登 录</span>
+              <span v-else>登 录 中...</span>
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
 
     <!--  底部  -->
     <div class="el-login-footer">
@@ -203,9 +202,6 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-.login{
-padding-top: 15%;
-}
 .title {
   margin: 0px auto 30px auto;
   text-align: left;
@@ -215,11 +211,10 @@ padding-top: 15%;
 .login-form {
   margin: auto;
   border-radius: 6px;
-  margin-left: 30%;
-  margin-top: 5%;
   background: #ffffff;
   border: solid 1px gainsboro;
-  width: 80%;
+  width: 60%;
+  // height: 70%;
   padding: 25px 25px 5px 25px;
   .el-input {
     height: 38px;
@@ -263,13 +258,14 @@ padding-top: 15%;
   height: 38px;
 }
 .block {
-  margin-left: 20%;
+  text-align: center;
+  padding-top: 10%;
 }
-.text {
-  margin-top: -13%;
-  margin-left: 20%;
+.block1 {
+  text-align: center;
+  padding-top: 10%;
 }
 .logo {
-  margin-top: 10%;
+  margin-left: 10%;
 }
 </style>
