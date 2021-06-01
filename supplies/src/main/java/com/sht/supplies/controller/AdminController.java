@@ -4,21 +4,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.sht.supplies.common.RestResponse;
 import com.sht.supplies.entity.Admin;
 import com.sht.supplies.entity.Login;
-import com.sht.supplies.entity.User;
 import com.sht.supplies.service.AdminService;
 import com.sht.supplies.utils.JwtUtils;
 import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
@@ -29,13 +27,14 @@ import java.io.IOException;
 @RestController
 @RequestMapping("api/admin")
 @Api(tags = "管理员")
+@Validated
 public class AdminController extends BaseController {
 
     @Autowired
     private AdminService adminService;
 
     @PostMapping("add")
-    public ResponseEntity<RestResponse> add(@Validated @RequestBody Admin admin) {
+    public ResponseEntity<RestResponse> add(@Valid @RequestBody Admin admin) {
         if (adminService.existsWorkNumber(admin.getWorkNumber())) {
             return ResponseEntity.ok().body(ERROR(admin.getWorkNumber() + " 工号已存在，请重新输入"));
         }
@@ -46,7 +45,7 @@ public class AdminController extends BaseController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<RestResponse> login(@Validated @RequestBody Login admin, HttpSession session) {
+    public ResponseEntity<RestResponse> login(@Valid @RequestBody Login admin, HttpSession session) {
         //验证图形验
         Object code = session.getAttribute("code");
         if (code == null) {
@@ -66,8 +65,8 @@ public class AdminController extends BaseController {
     }
 
     @PutMapping("updatePas")
-    public ResponseEntity<RestResponse> updatePas(@Validated @Length(max = 20, min = 6, message = "密码长度应在6-20字符") @RequestParam(name = "oldPassword") String oldPassword,
-                                                  @Validated @Length(max = 20, min = 6, message = "密码长度应在6-20字符") @RequestParam(name = "password") String password) {
+    public ResponseEntity<RestResponse> updatePas(@Valid @Length(max = 20, min = 6, message = "密码长度应在6-20字符") @RequestParam(name = "oldPassword") String oldPassword,
+                                                  @Valid @Length(max = 20, min = 6, message = "密码长度应在6-20字符") @RequestParam(name = "password") String password) {
         Admin admin = adminService.findById(userId);
         if (admin == null) {
             return ResponseEntity.ok().body(ERROR("该账号已被删除，请找其他管理员确认"));

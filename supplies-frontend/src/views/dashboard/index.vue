@@ -34,6 +34,7 @@
                 <el-input
                   class="input"
                   placeholder="请输入物料编码"
+                  maxlength="20"
                   v-model="listQuery.partNumber"
                 >
                 </el-input>
@@ -262,28 +263,28 @@
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.partNumber"
-            maxlength="100"
+            maxlength="20"
           ></el-input>
         </el-form-item>
         <el-form-item label="物料名称" prop="title">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.title"
-            maxlength="100"
+            maxlength="50"
           ></el-input>
         </el-form-item>
         <el-form-item label="计量单位（大）" prop="bigUnit">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.bigUnit"
-            maxlength="100"
+            maxlength="10"
           ></el-input>
         </el-form-item>
         <el-form-item label="计量单位（小）" prop="smallUnit">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.smallUnit"
-            maxlength="100"
+            maxlength="10"
           ></el-input>
         </el-form-item>
         <el-form-item label="转换量" prop="repertory">
@@ -291,7 +292,6 @@
             style="width: 100%"
             v-model.trim="tempArticle.repertory"
             placeholder="大单位转小单位的转化量"
-            maxlength="100"
             :min="1"
             :max="999999"
           ></el-input-number>
@@ -353,28 +353,28 @@
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.partNumber"
-            maxlength="100"
+            maxlength="20"
           ></el-input>
         </el-form-item>
         <el-form-item label="物料名称" prop="title">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.title"
-            maxlength="100"
+            maxlength="50"
           ></el-input>
         </el-form-item>
         <el-form-item label="计量单位（大）" prop="bigUnit">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.bigUnit"
-            maxlength="100"
+            maxlength="10"
           ></el-input>
         </el-form-item>
         <el-form-item label="计量单位（小）" prop="smallUnit">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.smallUnit"
-            maxlength="100"
+            maxlength="10"
           ></el-input>
         </el-form-item>
         <el-form-item label="转换量" prop="repertory">
@@ -382,7 +382,6 @@
             style="width: 100%"
             v-model.trim="tempArticle.repertory"
             placeholder="大单位转小单位的转化量"
-            maxlength="100"
             :min="1"
             :max="999999"
           ></el-input-number>

@@ -28,6 +28,7 @@
                   class="input"
                   placeholder="请输入物料编码"
                   v-model="listQuery.partNumber"
+                  maxlength="20"
                   style="width: 100%"
                 >
                 </el-input>

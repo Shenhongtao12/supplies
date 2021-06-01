@@ -27,8 +27,7 @@
                 class="input"
                 placeholder="请输入姓名搜索"
                 v-model.trim="listQuery.name"
-                max="2"
-                min="0"
+                maxlength="10"
               >
               </el-input>
               <el-button
@@ -117,11 +116,11 @@
         <el-form-item label="工号" prop="workNumber">
           <el-input
             v-model.trim="tempArticle.workNumber"
-            maxlength="100"
+            maxlength="20"
           ></el-input>
         </el-form-item>
         <el-form-item label="姓名" prop="name">
-          <el-input v-model.trim="tempArticle.name" maxlength="100"></el-input>
+          <el-input v-model.trim="tempArticle.name" maxlength="10"></el-input>
         </el-form-item>
         <el-form-item class="dialog_footer">
           <el-button @click="dialogFormAdd = false">取 消</el-button>
@@ -146,14 +145,14 @@
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.name"
-            maxlength="100"
+            maxlength="10"
           ></el-input>
         </el-form-item>
         <el-form-item label="工号" prop="workNumber">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.workNumber"
-            maxlength="100"
+            maxlength="20"
           ></el-input>
         </el-form-item>
         <el-form-item class="dialog_footer">

@@ -20,6 +20,7 @@
                 class="input"
                 placeholder="请输入姓名搜索"
                 v-model.trim="listQuery.name"
+                maxlength="10"
               >
               </el-input>
               <el-button
@@ -124,14 +125,14 @@
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.workNumber"
-            maxlength="100"
+            maxlength="20"
           ></el-input>
         </el-form-item>
         <el-form-item label="姓名" prop="name">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.name"
-            maxlength="100"
+            maxlength="10"
           ></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
@@ -139,14 +140,14 @@
             show-password
             style="width: 100%"
             v-model.trim="tempArticle.password"
-            maxlength="100"
+            maxlength="20"
           ></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.phone"
-            maxlength="100"
+            maxlength="20"
           ></el-input>
         </el-form-item>
 
@@ -173,14 +174,14 @@
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.name"
-            maxlength="100"
+            maxlength="10"
           ></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
           <el-input
             style="width: 100%"
             v-model.trim="tempArticle.phone"
-            maxlength="100"
+            maxlength="20"
           ></el-input>
         </el-form-item>
         <el-form-item>
@@ -211,7 +212,7 @@
             show-password
             style="width: 100%"
             v-model.trim="passwordform.oldPassword"
-            maxlength="100"
+            maxlength="20"
             placeholder="请输入原密码"
           ></el-input>
         </el-form-item>
@@ -220,7 +221,7 @@
             show-password
             style="width: 100%"
             v-model.trim="passwordform.password"
-            maxlength="100"
+            maxlength="20"
             placeholder="请设置新密码"
           ></el-input>
         </el-form-item>
@@ -229,7 +230,7 @@
             show-password
             style="width: 100%"
             v-model.trim="passwordform.qrpassword"
-            maxlength="100"
+            maxlength="20"
             placeholder="请确认新密码"
           ></el-input>
         </el-form-item>

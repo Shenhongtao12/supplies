@@ -35,7 +35,7 @@ public class Admin {
     private String name;
 
     @NotBlank(message = "密码不能为空")
-    @Length(min = 6, max = 20, message = "密码长度应在6-20字符")
+    @Length(min = 6, max = 40, message = "密码长度应在6-20字符")
     private String password;
 
     @ApiModelProperty(notes = "手机号")

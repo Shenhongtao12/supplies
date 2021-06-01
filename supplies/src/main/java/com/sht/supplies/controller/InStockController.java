@@ -13,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/inStock")
 @Api(tags = "入库")
+@Validated
 public class InStockController extends BaseController {
 
     @Autowired

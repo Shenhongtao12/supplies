@@ -23,6 +23,7 @@
           v-model="loginForm.workNumber"
           type="text"
           auto-complete="off"
+          maxlength="20"
           placeholder="请输入工号"
         >
           <svg-icon
@@ -38,6 +39,7 @@
           type="password"
           auto-complete="off"
           placeholder="请输入密码"
+          maxlength="20"
           @keyup.enter.native="handleLogin"
         >
           <svg-icon
@@ -53,6 +55,7 @@
           auto-complete="off"
           placeholder="验证码"
           style="width: 63%"
+          maxlength="4"
           @keyup.enter.native="handleLogin"
         >
           <svg-icon
@@ -107,12 +110,30 @@ export default {
       loginRules: {
         workNumber: [
           { required: true, trigger: "blur", message: "用户名不能为空" },
+          {
+            min: 4,
+            max: 20,
+            message: "长度在 4 到 20 个字符",
+            trigger: "blur",
+          },
         ],
         password: [
           { required: true, trigger: "blur", message: "密码不能为空" },
+          {
+            min: 6,
+            max: 20,
+            message: "长度在 6 到 20 个字符",
+            trigger: "blur",
+          },
         ],
         code: [
           { required: true, trigger: "change", message: "验证码不能为空" },
+          {
+            min: 4,
+            max: 4,
+            message: "长度为 4 个字符",
+            trigger: "blur",
+          },
         ],
       },
       loading: false,

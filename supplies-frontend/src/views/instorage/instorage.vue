@@ -184,6 +184,7 @@
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 4 }"
             placeholder="请输入备注"
+            maxlength="200"
             v-model="tempArticle.remark"
           >
           </el-input>
@@ -253,6 +254,7 @@
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 4 }"
             placeholder="请输入备注"
+            maxlength="200"
             v-model="tempArticle.remark"
           >
           </el-input>
