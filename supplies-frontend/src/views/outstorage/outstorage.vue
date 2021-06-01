@@ -511,7 +511,7 @@ export default {
               this.getList();
               this.dialogFormAdd = false;
             } else {
-              this.$message.error(data.data);
+              this.$message.error(data.data.message);
             }
           });
         }
@@ -543,7 +543,7 @@ export default {
               this.getList();
               this.dialogFormUpdate = false;
             } else {
-              this.$message.error(data.data);
+              this.$message.error(data.data.message);
             }
           });
         }
@@ -569,6 +569,8 @@ export default {
                 message: "删除成功！",
                 type: "success",
               });
+            } else {
+              this.$message.error(data.data.message);
             }
           })
           .catch(() => {

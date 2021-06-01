@@ -125,4 +125,8 @@ public class AdminService {
     public String aesEncrypt(String password) {
         return DigestUtil.md5Hex(new String(Base64Utils.decode(password.getBytes())));
     }
+
+    public int countAdmin() {
+        return adminMapper.countAdmin();
+    }
 }

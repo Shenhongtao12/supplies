@@ -30,17 +30,17 @@ const user = {
           method: "post",
           data: loginForm
         }).then(data => {
-          if (data.data.code == 400) {
-            alert(data.data.message);
+          if (data.data.code == 200) {
+            //localstorage中保存token
+            setToken(data.data.data.token);
+            setUserId(data.data.data.admin.id);
+            //储存用户信息
+            commit('SET_USER', data.data.data.admin);
+          } else {
+            //alert(data.data.message);
             this.$message.error(data.data.message);
           }
-          //localstorage中保存token
-          setToken(data.data.data.token);
-          setUserId(data.data.data.admin.id);
-          //储存用户信息
-          commit('SET_USER', data.data.data.admin);
           resolve(data);
-
         }).catch(err => {
           reject(err)
         })

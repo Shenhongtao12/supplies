@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 /**
@@ -100,11 +101,17 @@ public class AdminController extends BaseController {
     }
 
     @DeleteMapping
-    public ResponseEntity<RestResponse> delete(@RequestParam(name = "id") Integer id) {
-        if (adminService.delete(id)) {
-            return ResponseEntity.ok(SUCCESS("成功"));
+    public ResponseEntity<RestResponse> delete(@Validated @NotNull(message = "管理员id不能为空") @RequestParam(name = "id") Integer id) {
+        if (id.equals(userId)) {
+            return ResponseEntity.ok(ERROR("管理员不能删除自己"));
         }
-        return ResponseEntity.ok().body(ERROR(400,"删除失败"));
+        if (adminService.countAdmin() <= 1) {
+            return ResponseEntity.ok(ERROR("仅剩一位管理员，不能删除"));
+        }
+        if (adminService.delete(id)) {
+            return ResponseEntity.ok(SUCCESS("删除成功"));
+        }
+        return ResponseEntity.ok().body(ERROR(400,"删除失败，不存在该管理员"));
     }
 
     @GetMapping("refreshToken")

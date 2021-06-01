@@ -17,4 +17,7 @@ public interface AdminMapper extends Mapper<Admin> {
      */
     @Select("select id from admin where work_number = #{workNumber} limit 1")
     Integer existsWorkNumber(String workNumber);
+
+    @Select("select count(1) from admin limit 1")
+    int countAdmin();
 }
