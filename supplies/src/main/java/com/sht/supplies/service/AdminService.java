@@ -129,4 +129,8 @@ public class AdminService {
     public int countAdmin() {
         return adminMapper.countAdmin();
     }
+
+    public boolean exists(Integer id) {
+        return adminMapper.existsWithPrimaryKey(id);
+    }
 }

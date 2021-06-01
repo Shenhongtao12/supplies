@@ -50,19 +50,19 @@ public class AdminController extends BaseController {
         //验证图形验
         Object code = session.getAttribute("code");
         if (code == null) {
-            return ResponseEntity.ok().body(ERROR("验证码已过期，请刷新页面"));
+            return ResponseEntity.badRequest().body(ERROR("验证码已过期，请刷新页面"));
         }
         if (StringUtils.equals(code.toString().toLowerCase(), admin.getCode().toLowerCase())) {
             Admin adminInfo = adminService.login(admin);
             if (adminInfo == null) {
-                return ResponseEntity.ok().body(ERROR("用户名或密码错误"));
+                return ResponseEntity.badRequest().body(ERROR("用户名或密码错误"));
             }
             JSONObject response = new JSONObject();
             response.put("admin", adminInfo);
             response.put("token", JwtUtils.geneJsonWebToken(adminInfo.getId()));
             return ResponseEntity.ok(SUCCESS(response));
         }
-        return ResponseEntity.ok().body(ERROR("验证码错误"));
+        return ResponseEntity.badRequest().body(ERROR("验证码错误"));
     }
 
     @PutMapping("updatePas")
@@ -116,6 +116,9 @@ public class AdminController extends BaseController {
 
     @GetMapping("refreshToken")
     public ResponseEntity<RestResponse> refreshToken() {
+        if (!adminService.exists(userId)) {
+            return ResponseEntity.badRequest().body(ERROR("身份过期，请重新登录"));
+        }
         JSONObject response = new JSONObject();
         response.put("token", JwtUtils.geneJsonWebToken(userId));
         return ResponseEntity.ok(SUCCESS(response, "成功"));

@@ -56,7 +56,7 @@ public class JwtInterceptor extends BaseController implements HandlerInterceptor
         PrintWriter writer = response.getWriter();
         writer.print(JSON.toJSON(obj));
         writer.close();
-        response.setStatus(200);
+        response.setStatus(400);
         try {
             response.flushBuffer();
         }catch (IOException e){
