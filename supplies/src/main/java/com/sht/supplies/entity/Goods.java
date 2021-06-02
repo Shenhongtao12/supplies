@@ -44,7 +44,7 @@ public class Goods {
     private Integer repertory;
 
     @ApiModelProperty(notes = "小计量单位")
-    @Length(min = 1, max = 10, message = "计量单位长度应在1-10个字符")
+    @Length(max = 10, message = "计量单位长度应在1-10个字符")
     private String smallUnit;
 
     @ApiModelProperty(notes = "总库存，根据进货量计算，库存最小值为0，最大值为999999")

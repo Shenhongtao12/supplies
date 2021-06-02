@@ -91,11 +91,11 @@
       <el-table-column align="center" prop="repertory" label="转换量">
         <template slot-scope="scope">
           <p v-if="scope.row.smallUnit">
-            转换量：一{{ scope.row.bigUnit }}有{{
+            一{{ scope.row.bigUnit }}有{{
               scope.row.repertory
             }}{{ scope.row.smallUnit }}
           </p>
-          <p v-else>转换量：{{ scope.row.repertory }}</p>
+          <p v-else>{{ scope.row.repertory }}</p>
         </template>
       </el-table-column>
       <!-- <el-table-column align="center" prop="bigUnit" label="计量单位（大）" />

@@ -44,7 +44,7 @@
         <if test="startDateTime != null and endDateTime != null">
             AND #{endDateTime} >= A.in_date AND A.in_date >= #{startDateTime}
         </if>
-        order by A.in_date DESC
+        order by A.id DESC
     </select>
 
 

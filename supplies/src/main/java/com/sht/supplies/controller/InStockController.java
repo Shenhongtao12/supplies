@@ -43,6 +43,7 @@ public class InStockController extends BaseController {
             if (!goodsService.existsWithPrimaryKey(inStocks.get(0).getGoodsId())) {
                 return ERROR("物料不存在，请刷新页面重试");
             }
+            inStocks.get(0).setInDate(LocalDateTime.now());
             if (inStockService.batchInsert(inStocks)) {
                 return SUCCESS("入库成功");
             }

@@ -4,7 +4,7 @@
  import moment from 'moment'
 
  export function formateDate (time) {
-   return  moment(time).format("YYYY-MM-DD HH:MM")
+   return  moment(time).format("YYYY-MM-DD HH:mm")
  }
 
  export function formateDates (time) {

@@ -102,7 +102,7 @@ public class GoodsService extends BaseCommon {
         if (StringUtils.isNotEmpty(category)) {
             criteria.andEqualTo("category", category);
         }
-        example.setOrderByClause("in_date DESC");
+        example.setOrderByClause("id DESC");
         PageHelper.startPage(page, size);
         Page<Goods> goodsPage = (Page<Goods>) goodsMapper.selectByExample(example);
         return new PageResult<>(goodsPage.getTotal(), goodsPage.getPages(), goodsPage.getResult());
