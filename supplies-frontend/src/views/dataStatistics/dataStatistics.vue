@@ -165,17 +165,16 @@ export default {
     this.queryGoods();
   },
   methods: {
-        cancalReadOnly(onOff) {
+    cancalReadOnly(onOff) {
       this.$nextTick(() => {
         if (!onOff) {
           const Selects = this.$refs;
-          console.log(Selects); // 如果只有1个下拉框，这段就足够了---start
           if (Selects.agent1Select) {
             const input = Selects.agent1Select.$el.querySelector(
               ".el-input__inner"
             );
             input.removeAttribute("readonly");
-          } 
+          }
         }
       });
     },
