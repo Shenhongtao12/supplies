@@ -7,6 +7,9 @@
             <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
               <el-form-item label="物料名称">
                 <el-select
+                  ref="agent1Select"
+                  @hook:mounted="cancalReadOnly"
+                  @visible-change="cancalReadOnly"
                   v-model="listQuery.goodsId"
                   placeholder="请选择物料"
                   filterable
@@ -81,22 +84,28 @@
         label="物料名称"
         column-key="title"
       />
-      <el-table-column
-        align="center"
-        label="领用数量"
-      >
-       <template slot-scope="scope">
-          <span v-if="parseInt(scope.row.outStock / scope.row.repertory) > 0">{{parseInt(scope.row.outStock / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
-          <span v-if="(scope.row.outStock % scope.row.repertory) > 0">{{scope.row.outStock % scope.row.repertory}} {{scope.row.smallUnit}}</span>
+      <el-table-column align="center" label="领用数量">
+        <template slot-scope="scope">
+          <span v-if="parseInt(scope.row.outStock / scope.row.repertory) > 0"
+            >{{ parseInt(scope.row.outStock / scope.row.repertory) }}
+            {{ scope.row.bigUnit }}</span
+          >
+          <span v-if="scope.row.outStock % scope.row.repertory > 0"
+            >{{ scope.row.outStock % scope.row.repertory }}
+            {{ scope.row.smallUnit }}</span
+          >
         </template>
       </el-table-column>
-      <el-table-column
-        align="center"
-        label="库存数量"
-      >
+      <el-table-column align="center" label="库存数量">
         <template slot-scope="scope">
-          <span v-if="parseInt(scope.row.inventory / scope.row.repertory) > 0">{{parseInt(scope.row.inventory / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
-          <span v-if="(scope.row.inventory % scope.row.repertory) > 0">{{scope.row.inventory % scope.row.repertory}} {{scope.row.smallUnit}}</span>
+          <span v-if="parseInt(scope.row.inventory / scope.row.repertory) > 0"
+            >{{ parseInt(scope.row.inventory / scope.row.repertory) }}
+            {{ scope.row.bigUnit }}</span
+          >
+          <span v-if="scope.row.inventory % scope.row.repertory > 0"
+            >{{ scope.row.inventory % scope.row.repertory }}
+            {{ scope.row.smallUnit }}</span
+          >
         </template>
       </el-table-column>
       <el-table-column
@@ -156,6 +165,20 @@ export default {
     this.queryGoods();
   },
   methods: {
+        cancalReadOnly(onOff) {
+      this.$nextTick(() => {
+        if (!onOff) {
+          const Selects = this.$refs;
+          console.log(Selects); // 如果只有1个下拉框，这段就足够了---start
+          if (Selects.agent1Select) {
+            const input = Selects.agent1Select.$el.querySelector(
+              ".el-input__inner"
+            );
+            input.removeAttribute("readonly");
+          } 
+        }
+      });
+    },
     getList() {
       let query = { ...this.listQuery };
       if (this.listQuery.data) {

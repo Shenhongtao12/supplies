@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-row :gutter="10">
-        <el-col  :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
+        <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
           <el-button type="primary" icon="plus" @click="showCreate"
             >添加员工
           </el-button>
@@ -12,9 +12,9 @@
             @click="showExcelDiglog()"
           >
             Excel 导入
-          </el-button>
-        </el-col><br/>
-        <el-col  :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
+          </el-button> </el-col
+        ><br />
+        <el-col :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
           <el-form
             :model="listQuery"
             :rules="rules"
@@ -164,23 +164,28 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog title="Excel导入"
-      :before-close="handleClose" :visible.sync="showExcelDig">
-      <div style="display: flex; flex-direction: row;">
-        <el-input style="width: 35%"
-        placeholder="请上传文件"
-        v-model="excelName"
-        :disabled="true">
-      </el-input>
-      <input
-        ref="excel-upload"
-        class="excel-upload-input"
-        type="file"
-        accept=".xlsx, .xls"
-        @change="handleClick"
-      />
-      <el-button
-          style="margin-left: 16px; margin-right: 16px;"
+    <el-dialog
+      title="Excel导入"
+      :before-close="handleClose"
+      :visible.sync="showExcelDig"
+    >
+      <div style="display: flex; flex-direction: row">
+        <el-input
+          style="width: 35%"
+          placeholder="请上传文件"
+          v-model="excelName"
+          :disabled="true"
+        >
+        </el-input>
+        <input
+          ref="excel-upload"
+          class="excel-upload-input"
+          type="file"
+          accept=".xlsx, .xls"
+          @change="handleClick"
+        />
+        <el-button
+          style="margin-left: 16px; margin-right: 16px"
           type="primary"
           plain
           @click="handleUpload"
@@ -188,17 +193,25 @@
         >
           上传<i class="el-icon-upload el-icon--right"></i>
         </el-button>
-        <a href="../../../static/batchUser.xlsx" style="color: #79BBFF; margin-top: 12px" download="员工信息模板.xlsx">
+        <a
+          href="../../../static/batchUser.xlsx"
+          style="color: #79bbff; margin-top: 12px"
+          download="员工信息模板.xlsx"
+        >
           下载Excel模板<i class="el-icon-download"></i>
         </a>
       </div>
-      
+
       <el-table :data="errorResponse" max-height="320">
         <el-table-column property="workNumber" label="员工工号" width="100px">
         </el-table-column>
         <el-table-column property="name" label="姓名" width="100px">
         </el-table-column>
-        <el-table-column property="errorMessage" label="错误提示信息" width="200px">
+        <el-table-column
+          property="errorMessage"
+          label="错误提示信息"
+          width="200px"
+        >
         </el-table-column>
       </el-table>
     </el-dialog>
@@ -295,38 +308,36 @@ export default {
         let data = await this.readerData(rawFile);
         if (data.length <= 0) {
           this.$message.error("Excel数据为空");
-           this.loading = false;
+          this.loading = false;
           return;
         }
         let apiList = [];
         let errorList = [];
-        let request = this.result(data)
-        let error = request.filter(x => (!x.isSuccess));
+        let request = this.result(data);
+        let error = request.filter((x) => !x.isSuccess);
         if (error && error.length > 0) {
           errorList = error;
         }
-        
+
         request = request.filter((x) => x.isSuccess);
         if (request.length > 0) {
           this.batchInStore(request, apiList);
-        } 
+        }
         let response = await this.batchHttp(apiList);
         for (let res of response) {
-          let errorRes = res.data.data.filter(x => !x.isSuccess);
+          let errorRes = res.data.data.filter((x) => !x.isSuccess);
           if (errorRes && errorRes[0]) {
-            errorList = [
-              ...errorList, errorRes
-            ];
+            errorList = [...errorList, errorRes];
           }
         }
         this.errorResponse = errorList;
         this.loading = false;
         this.$message({
-                message: "导入成功！",
-                type: "success",
-              });
+          message: "导入成功！",
+          type: "success",
+        });
         this.getList();
-      } 
+      }
     },
     readerData(rawFile) {
       this.loading = true;
@@ -338,8 +349,7 @@ export default {
           const firstSheet = workbook.SheetNames[0];
           const result1 = workbook.Sheets[firstSheet];
           let header = this.getHeaderRow(result1);
-          if (header[0] !== "员工工号" ||
-              header[1] !== "姓名") {
+          if (header[0] !== "员工工号" || header[1] !== "姓名") {
             this.$message.error("Excel不正确，请下载正确的模板");
             this.loading = false;
             return;
@@ -347,7 +357,7 @@ export default {
           resolve(XLSX.utils.sheet_to_json(result1));
         };
         reader.readAsArrayBuffer(rawFile);
-      })
+      });
     },
     getHeaderRow(sheet) {
       const headers = [];
@@ -369,17 +379,19 @@ export default {
       let request = [];
       value.forEach((data) => {
         let req = {
-          workNumber: data["员工工号"] ? this.strTrim(data["员工工号"].toString()) : null,
+          workNumber: data["员工工号"]
+            ? this.strTrim(data["员工工号"].toString())
+            : null,
           name: data["姓名"] ? this.strTrim(data["姓名"].toString()) : null,
           isSuccess: true,
         };
         this.verify(req);
         request.push(req);
       });
-      return request.filter(x => !(!x.workNumber && !x.name));
+      return request.filter((x) => !(!x.workNumber && !x.name));
     },
     verify(data) {
-      if(!data.workNumber && !data.name){
+      if (!data.workNumber && !data.name) {
         return;
       }
       if (!data.workNumber) {
@@ -387,9 +399,9 @@ export default {
         data.errorMessage = "员工工号不能为空";
         return;
       }
-      if (data.workNumber && (
-        data.workNumber.length > 20 ||
-        data.workNumber.length < 4)
+      if (
+        data.workNumber &&
+        (data.workNumber.length > 20 || data.workNumber.length < 4)
       ) {
         data.isSuccess = false;
         data.errorMessage = "员工工号长度应4-20字符";
@@ -412,11 +424,10 @@ export default {
     },
     batchHttp(apiList) {
       return new Promise((resolve, reject) => {
-        this.api.all(apiList).then(res => {
+        this.api.all(apiList).then((res) => {
           resolve(res);
-        })
-      })
-      
+        });
+      });
     },
     batchInStore(request, apiList) {
       let num = 0;
@@ -428,7 +439,7 @@ export default {
             method: "post",
             data: request.slice(i * this.batch, (i + 1) * this.batch - 1),
           })
-        )
+        );
       }
     },
     showExcelDiglog() {
@@ -441,13 +452,13 @@ export default {
       return str.trim();
     },
     handleClose(done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
+      this.$confirm("确认关闭？")
+        .then((_) => {
           this.errorResponse = [];
           this.excelName = "";
           done();
         })
-        .catch(_ => {});
+        .catch((_) => {});
     },
     beforeUpload(file) {
       const isLt3M = file.size / 1024 / 1024 < 3;
@@ -634,8 +645,7 @@ export default {
   display: none;
   z-index: -9999;
 }
-.demo-ruleForm{
- margin-top: -14px;
+.demo-ruleForm {
+  margin-top: -14px;
 }
-
 </style>

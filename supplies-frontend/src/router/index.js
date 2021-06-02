@@ -123,24 +123,24 @@ export const asyncRouterMap = [
   //     },
   //   ]
   // },
-  {
-    path: '/user',
-    component: Layout,
-    redirect: '/user/',
-    name: '',
-    meta: {title: '用户权限', icon: 'table'},
-    children: [
-      {
-        path: '', name: '用户列表', component: _import('user/user'), meta: {title: '用户列表', icon: 'user'}, menu: 'user'
-      },
-      {
-        path: 'role',
-        name: '权限管理',
-        component: _import('user/role'),
-        meta: {title: '权限管理', icon: 'password'},
-        menu: 'role'
-      },
-    ]
-  },
+  // {
+  //   path: '/user',
+  //   component: Layout,
+  //   redirect: '/user/',
+  //   name: '',
+  //   meta: {title: '用户权限', icon: 'table'},
+  //   children: [
+  //     {
+  //       path: '', name: '用户列表', component: _import('user/user'), meta: {title: '用户列表', icon: 'user'}, menu: 'user'
+  //     },
+  //     {
+  //       path: 'role',
+  //       name: '权限管理',
+  //       component: _import('user/role'),
+  //       meta: {title: '权限管理', icon: 'password'},
+  //       menu: 'role'
+  //     },
+  //   ]
+  // },
   {path: '*', redirect: '/404', hidden: true}
 ]

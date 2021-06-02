@@ -21,6 +21,9 @@
             <el-col :xs="12" :sm="8" :md="8" :lg="8" :xl="8">
               <el-form-item label="物料名称">
                 <el-select
+                   ref="agent1Select"
+                  @hook:mounted="cancalReadOnly"
+                  @visible-change="cancalReadOnly"
                   v-model="listQuery.goodsId"
                   placeholder="请选择物料"
                   filterable
@@ -76,16 +79,28 @@
       </el-table-column>
       <el-table-column align="center" prop="partNumber" label="物料编码" />
       <el-table-column align="center" prop="title" label="物料名称" />
-      <el-table-column align="center" label="库存数量" >
+      <el-table-column align="center" label="库存数量">
         <template slot-scope="scope">
-          <span v-if="parseInt(scope.row.inventory / scope.row.repertory) > 0">{{parseInt(scope.row.inventory / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
-          <span v-if="(scope.row.inventory % scope.row.repertory) > 0">{{scope.row.inventory % scope.row.repertory}} {{scope.row.smallUnit}}</span>
+          <span v-if="parseInt(scope.row.inventory / scope.row.repertory) > 0"
+            >{{ parseInt(scope.row.inventory / scope.row.repertory) }}
+            {{ scope.row.bigUnit }}</span
+          >
+          <span v-if="scope.row.inventory % scope.row.repertory > 0"
+            >{{ scope.row.inventory % scope.row.repertory }}
+            {{ scope.row.smallUnit }}</span
+          >
         </template>
       </el-table-column>
-      <el-table-column align="center" label="入库数量" >
+      <el-table-column align="center" label="入库数量">
         <template slot-scope="scope">
-          <span v-if="parseInt(scope.row.amount / scope.row.repertory) > 0">{{parseInt(scope.row.amount / scope.row.repertory)}} {{scope.row.bigUnit}}</span>
-          <span v-if="(scope.row.amount % scope.row.repertory) > 0">{{scope.row.amount % scope.row.repertory}} {{scope.row.smallUnit}}</span>
+          <span v-if="parseInt(scope.row.amount / scope.row.repertory) > 0"
+            >{{ parseInt(scope.row.amount / scope.row.repertory) }}
+            {{ scope.row.bigUnit }}</span
+          >
+          <span v-if="scope.row.amount % scope.row.repertory > 0"
+            >{{ scope.row.amount % scope.row.repertory }}
+            {{ scope.row.smallUnit }}</span
+          >
         </template>
       </el-table-column>
       <el-table-column align="center" prop="repertory" label="转换量">
@@ -149,6 +164,9 @@
       >
         <el-form-item label="物料名称" prop="goodsId">
           <el-select
+             ref="agent2Select"
+                  @hook:mounted="cancalReadOnly"
+                  @visible-change="cancalReadOnly"
             v-model="tempArticle.goodsId"
             placeholder="请选择物料名称"
             style="width: 100%"
@@ -215,6 +233,9 @@
       >
         <el-form-item label="物料名称" prop="goodsId">
           <el-select
+             ref="agent3Select"
+                  @hook:mounted="cancalReadOnly"
+                  @visible-change="cancalReadOnly"
             v-model="tempArticle.goodsId"
             placeholder="请选择物料"
             style="width: 100%"
@@ -242,11 +263,7 @@
                 :max="999999"
               ></el-input-number
             ></el-col>
-            <el-col :span="5">
-              &nbsp; &nbsp;{{
-                tempArticle.bigUnit
-              }}
-            </el-col>
+            <el-col :span="5"> &nbsp; &nbsp;{{ tempArticle.bigUnit }} </el-col>
           </el-row>
         </el-form-item>
         <el-form-item label="备注">
@@ -267,23 +284,28 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <el-dialog title="Excel导入"
-      :before-close="handleClose" :visible.sync="showExcelDig">
-      <div style="display: flex; flex-direction: row;">
-        <el-input style="width: 35%"
-        placeholder="请上传文件"
-        v-model="excelName"
-        :disabled="true">
-      </el-input>
-      <input
-        ref="excel-upload-input"
-        class="excel-upload-input"
-        type="file"
-        accept=".xlsx, .xls"
-        @change="handleClick"
-      />
-      <el-button
-          style="margin-left: 16px; margin-right: 16px;"
+    <el-dialog
+      title="Excel导入"
+      :before-close="handleClose"
+      :visible.sync="showExcelDig"
+    >
+      <div style="display: flex; flex-direction: row">
+        <el-input
+          style="width: 35%"
+          placeholder="请上传文件"
+          v-model="excelName"
+          :disabled="true"
+        >
+        </el-input>
+        <input
+          ref="excel-upload-input"
+          class="excel-upload-input"
+          type="file"
+          accept=".xlsx, .xls"
+          @change="handleClick"
+        />
+        <el-button
+          style="margin-left: 16px; margin-right: 16px"
           type="primary"
           plain
           @click="handleUpload"
@@ -291,17 +313,25 @@
         >
           上传<i class="el-icon-upload el-icon--right"></i>
         </el-button>
-        <a href="../../../static/template.xlsx" style="color: #79BBFF; margin-top: 12px" download="新开货模板.xlsx">
+        <a
+          href="../../../static/template.xlsx"
+          style="color: #79bbff; margin-top: 12px"
+          download="新开货模板.xlsx"
+        >
           下载Excel模板<i class="el-icon-download"></i>
         </a>
       </div>
-      
+
       <el-table :data="errorResponse" max-height="320">
         <el-table-column property="partNumber" label="物料编码" width="100px">
         </el-table-column>
         <el-table-column property="title" label="物料名称" width="150px">
         </el-table-column>
-        <el-table-column property="errorMessage" label="错误提示信息" width="200px">
+        <el-table-column
+          property="errorMessage"
+          label="错误提示信息"
+          width="200px"
+        >
         </el-table-column>
       </el-table>
     </el-dialog>
@@ -368,8 +398,8 @@ export default {
       chooseGoods: "",
       loading: false,
       errorResponse: [],
-      excelTitle:["蔬菜", "食品", "底料", "冻货", "杂货"],
-      excelName: ""
+      excelTitle: ["蔬菜", "食品", "底料", "冻货", "杂货"],
+      excelName: "",
     };
   },
   created() {
@@ -377,17 +407,43 @@ export default {
     this.queryGoods();
   },
   methods: {
+        cancalReadOnly(onOff) {
+      this.$nextTick(() => {
+        if (!onOff) {
+          const Selects = this.$refs;
+          console.log(Selects); // 如果只有1个下拉框，这段就足够了---start
+          if (Selects.agent1Select) {
+            const input = Selects.agent1Select.$el.querySelector(
+              ".el-input__inner"
+            );
+            input.removeAttribute("readonly");
+          } // 如果只有1个下拉框，这段就足够了---end // 如果有多个，就加多几个，代码可以优化，我懒了
+          if (Selects.agent2Select) {
+            const appinput = Selects.agent2Select.$el.querySelector(
+              ".el-input__inner"
+            );
+            appinput.removeAttribute("readonly");
+          }
+          if (Selects.agent3Select) {
+            const gameinput = Selects.agent3Select.$el.querySelector(
+              ".el-input__inner"
+            );
+            gameinput.removeAttribute("readonly");
+          }
+        }
+      });
+    },
     showExcelDiglog() {
       this.showExcelDig = true;
     },
     handleClose(done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
+      this.$confirm("确认关闭？")
+        .then((_) => {
           this.errorResponse = [];
           this.excelName = "";
           done();
         })
-        .catch(_ => {});
+        .catch((_) => {});
     },
     beforeUpload(file) {
       const isLt3M = file.size / 1024 / 1024 < 3;
@@ -461,16 +517,19 @@ export default {
         let apiList = [];
         let errorList = [];
         for (let i = 0; i < this.excelTitle.length; i++) {
-          let request = this.result(data['result' + (i+1)], this.excelTitle[i]);
-          let error = request.filter(x => (!x.isSuccess));
+          let request = this.result(
+            data["result" + (i + 1)],
+            this.excelTitle[i]
+          );
+          let error = request.filter((x) => !x.isSuccess);
           if (error && error.length > 0) {
             for (let err of error) {
               errorList.push({
                 isSuccess: err.isSuccess,
                 errorMessage: err.errorMessage,
                 partNumber: err.goods.partNumber,
-                title: err.goods.title
-              })
+                title: err.goods.title,
+              });
             }
           }
           request = request.filter((x) => x.isSuccess);
@@ -480,28 +539,26 @@ export default {
         }
         let response = await this.batchHttp(apiList);
         for (let res of response) {
-          let errorRes = res.data.data.filter(x => !x.isSuccess);
+          let errorRes = res.data.data.filter((x) => !x.isSuccess);
           if (errorRes && errorRes[0]) {
-            errorList = [
-              ...errorList, errorRes
-            ];
+            errorList = [...errorList, errorRes];
           }
           if (res.data.code !== 200) {
-             this.$message({
-                message: res.data.message,
-                type: "error",
-                duration: 0
-              });
+            this.$message({
+              message: res.data.message,
+              type: "error",
+              duration: 0,
+            });
           }
         }
         this.errorResponse = errorList;
         this.loading = false;
         this.$message({
-                message: "导入成功！",
-                type: "success",
-              });
+          message: "导入成功！",
+          type: "success",
+        });
         this.getList();
-      } 
+      }
     },
     readerData(rawFile) {
       this.loading = true;
@@ -551,12 +608,12 @@ export default {
           let result5 = workbook.Sheets[workbook.SheetNames[4]];
           header = this.getHeaderRow(result5);
           if (
-              header[0] !== "物料名称" ||
-              header[1] !== "单位" ||
-              header[2] !== "来货" ||
-              header[5] !== "小计量单位" ||
-              header[6] !== "转换量") 
-            {
+            header[0] !== "物料名称" ||
+            header[1] !== "单位" ||
+            header[2] !== "来货" ||
+            header[5] !== "小计量单位" ||
+            header[6] !== "转换量"
+          ) {
             this.$message.error("Excel杂货页格式不正确，请下载正确的模板");
             this.loading = false;
             return;
@@ -568,12 +625,12 @@ export default {
       });
     },
     verify(data) {
-      if(!data.goods.partNumber && !data.goods.title){
+      if (!data.goods.partNumber && !data.goods.title) {
         return;
       }
-      if (data.goods.partNumber && (
-        data.goods.partNumber.length > 20 ||
-        data.goods.partNumber.length < 4)
+      if (
+        data.goods.partNumber &&
+        (data.goods.partNumber.length > 20 || data.goods.partNumber.length < 4)
       ) {
         data.isSuccess = false;
         data.errorMessage = "物料编码长度应4-20字符";
@@ -608,8 +665,12 @@ export default {
         let req = {
           amount: data["来货"] ? data["来货"] : 0,
           goods: {
-            partNumber: data["物料编码"] ? this.strTrim(data["物料编码"].toString()) : null,
-            title: data["物料名称"] ? this.strTrim(data["物料名称"].toString()) : null,
+            partNumber: data["物料编码"]
+              ? this.strTrim(data["物料编码"].toString())
+              : null,
+            title: data["物料名称"]
+              ? this.strTrim(data["物料名称"].toString())
+              : null,
             bigUnit: this.strTrim(data["单位"]),
             smallUnit: this.strTrim(data["小计量单位"]),
             repertory: data["转换量"] ? data["转换量"] : 1,
@@ -620,16 +681,15 @@ export default {
         this.verify(req);
         request.push(req);
       });
-      return request.filter(x => !(!x.goods.partNumber && !x.goods.title));
+      return request.filter((x) => !(!x.goods.partNumber && !x.goods.title));
     },
 
     batchHttp(apiList) {
       return new Promise((resolve, reject) => {
-        this.api.all(apiList).then(res => {
+        this.api.all(apiList).then((res) => {
           resolve(res);
-        })
-      })
-      
+        });
+      });
     },
 
     batchInStore(request, apiList) {
@@ -642,7 +702,7 @@ export default {
             method: "post",
             data: request.slice(i * this.batch, (i + 1) * this.batch - 1),
           })
-        )
+        );
       }
     },
     checkExcelTitle(title) {
@@ -735,7 +795,9 @@ export default {
     showUpdate($index) {
       //显示修改对话框
       this.tempArticle.id = this.list[$index].id;
-      this.tempArticle.amount = parseInt(this.list[$index].amount / this.list[$index].repertory);
+      this.tempArticle.amount = parseInt(
+        this.list[$index].amount / this.list[$index].repertory
+      );
       //this.tempArticle.amount = this.list[$index].amount;
       this.tempArticle.partNumber = this.list[$index].partNumber;
       this.tempArticle.title = this.list[$index].title;
@@ -781,7 +843,7 @@ export default {
     updateAdministrator(tempArticle) {
       let num = 0;
       //if (this.chooseGoods == "") {
-        num = this.tempArticle.amount * this.tempArticle.repertory;
+      num = this.tempArticle.amount * this.tempArticle.repertory;
       /* } else {
         num = this.tempArticle.amount * this.chooseGoods.repertory;
       } */

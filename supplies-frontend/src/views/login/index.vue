@@ -1,16 +1,15 @@
 <template>
   <div class="login1">
-    <el-row :gutter="10">
-      <el-col :span="12" class="block">
-        <div >
-          <div>
-            <img style="width: 6%; height: 6%" src="./log.png" />
-            <span >海底捞 | 智慧库房管理平台</span>
-          </div><br/>
-          <img class="logo" style="width: 50%; " src="./logo.png" />
-        </div>
+    <div class="logoText">
+      <img style="width: 6%; height: 6%" src="./log.png" />
+      <div class="text">海底捞 | 智慧库房管理平台</div>
+    </div>
+
+    <el-row :gutter="10" class="main">
+      <el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" class="col">
+        <div class="block"></div>
       </el-col>
-      <el-col :span="12" class="block1">
+      <el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12">
         <el-form
           ref="loginForm"
           :model="loginForm"
@@ -202,6 +201,13 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
+body {
+  width: 100%;
+  height: 100vh; /**屏幕高度百分百*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .title {
   margin: 0px auto 30px auto;
   text-align: left;
@@ -257,15 +263,29 @@ export default {
 .login-code-img {
   height: 38px;
 }
-.block {
-  text-align: center;
-  padding-top: 10%;
+.main {
+  height: 400px;
+  width: 1200px;
+  display: table-cell;
+  vertical-align: middle;
 }
-.block1 {
-  text-align: center;
-  padding-top: 10%;
+.logoText{
+  margin-left: 10%;
+}
+.text{
+  margin-left: 8%;
+  margin-top: -4%;
+}
+.block {
+  width: 60%;
+  height: 331px;
+  background-image: url("./logo.png");
+  background-size: 100% 100%;
+  margin: 0 auto;
 }
 .logo {
   margin-left: 10%;
+  width: 60%;
+  height: 80%;
 }
 </style>

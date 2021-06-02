@@ -14,6 +14,9 @@
             <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6" :span="6">
               <el-form-item label="物料名称">
                 <el-select
+                  ref="agent1Select"
+                  @hook:mounted="cancalReadOnly"
+                  @visible-change="cancalReadOnly"
                   v-model="listQuery.title"
                   placeholder="请选择物料"
                   filterable
@@ -43,6 +46,9 @@
             <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
               <el-form-item label="物料类别">
                 <el-select
+                  ref="agent2Select"
+                  @hook:mounted="cancalReadOnly"
+                  @visible-change="cancalReadOnly"
                   v-model="listQuery.category"
                   placeholder="请选择物料类别"
                   clearable
@@ -298,6 +304,9 @@
         </el-form-item>
         <el-form-item label="物料类别" prop="category">
           <el-select
+            ref="agent3Select"
+            @hook:mounted="cancalReadOnly"
+            @visible-change="cancalReadOnly"
             v-model="tempArticle.category"
             placeholder="请选择物料类别"
             style="width: 100%"
@@ -388,6 +397,9 @@
         </el-form-item>
         <el-form-item label="物料类别" prop="category">
           <el-select
+            ref="agent4Select"
+            @hook:mounted="cancalReadOnly"
+            @visible-change="cancalReadOnly"
             v-model="tempArticle.category"
             placeholder="请选择物料类别"
             style="width: 100%"
@@ -447,6 +459,9 @@
         </el-form-item>
         <el-form-item label="物料名称" prop="goodsId">
           <el-select
+            ref="agent5Select"
+            @hook:mounted="cancalReadOnly"
+            @visible-change="cancalReadOnly"
             v-model="tempArticle.goodsId"
             placeholder="请选择物料"
             style="width: 100%"
@@ -464,6 +479,9 @@
         </el-form-item>
         <el-form-item label="员工" prop="userId">
           <el-select
+            ref="agent6Select"
+            @hook:mounted="cancalReadOnly"
+            @visible-change="cancalReadOnly"
             v-model="tempArticle.userId"
             placeholder="请选择员工"
             style="width: 100%"
@@ -506,6 +524,9 @@
         </el-form-item>
         <el-form-item label="物料类别" prop="category">
           <el-select
+            ref="agent7Select"
+            @hook:mounted="cancalReadOnly"
+            @visible-change="cancalReadOnly"
             v-model="tempArticle.category"
             placeholder="请选择物料类别"
             style="width: 100%"
@@ -671,6 +692,56 @@ export default {
     this.queryUsers();
   },
   methods: {
+    cancalReadOnly(onOff) {
+      this.$nextTick(() => {
+        if (!onOff) {
+          const Selects = this.$refs;
+          console.log(Selects); // 如果只有1个下拉框，这段就足够了---start
+          if (Selects.agent1Select) {
+            const input = Selects.agent1Select.$el.querySelector(
+              ".el-input__inner"
+            );
+            input.removeAttribute("readonly");
+          } // 如果只有1个下拉框，这段就足够了---end // 如果有多个，就加多几个，代码可以优化，我懒了
+          if (Selects.agent2Select) {
+            const appinput = Selects.agent2Select.$el.querySelector(
+              ".el-input__inner"
+            );
+            appinput.removeAttribute("readonly");
+          }
+          if (Selects.agent3Select) {
+            const gameinput = Selects.agent3Select.$el.querySelector(
+              ".el-input__inner"
+            );
+            gameinput.removeAttribute("readonly");
+          }
+          if (Selects.agent4Select) {
+            const gameinput = Selects.agent4Select.$el.querySelector(
+              ".el-input__inner"
+            );
+            gameinput.removeAttribute("readonly");
+          }
+          if (Selects.agent5Select) {
+            const gameinput = Selects.agent5Select.$el.querySelector(
+              ".el-input__inner"
+            );
+            gameinput.removeAttribute("readonly");
+          }
+          if (Selects.agent6Select) {
+            const gameinput = Selects.agent6Select.$el.querySelector(
+              ".el-input__inner"
+            );
+            gameinput.removeAttribute("readonly");
+          }
+          if (Selects.agent7Select) {
+            const gameinput = Selects.agent7Select.$el.querySelector(
+              ".el-input__inner"
+            );
+            gameinput.removeAttribute("readonly");
+          }
+        }
+      });
+    },
     getList() {
       this.listLoading = true;
       this.api({

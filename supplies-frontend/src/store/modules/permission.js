@@ -61,7 +61,6 @@ const permission = {
         let accessedRouters
         //筛选出本角色可用的路由
         accessedRouters = filterAsyncRouter(asyncRouterMap, menus)
-        console.log("accessedRouters",accessedRouters);
         //执行设置路由的方法
         commit('SET_ROUTERS', accessedRouters)
         resolve()
