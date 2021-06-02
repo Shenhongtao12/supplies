@@ -4,6 +4,9 @@
  import moment from 'moment'
 
  export function formateDate (time) {
+   if (!time) {
+     return null;
+   }
    return  moment(time).format("YYYY-MM-DD HH:mm")
  }
 
@@ -158,7 +161,6 @@
    const difference = to - element.scrollTop
    const perTick = difference / duration * 10
    setTimeout(() => {
-     console.log(new Date())
      element.scrollTop = element.scrollTop + perTick
      if (element.scrollTop === to) return
      scrollTo(element, to, duration - 10)

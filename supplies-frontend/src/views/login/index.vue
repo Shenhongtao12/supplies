@@ -2,8 +2,8 @@
   <div class="login1">
     <el-row :gutter="10" class="main">
       <div class="logoText">
-        <img style="width: 6%; height: 6%" src="./log.png" />
-        <div class="text">海底捞 | 智慧库房管理平台</div>
+        <img style="width: 8%; height: 7%" src="./log.png" />
+        <div class="text" style="font-size: 18px; margin-bottom: 10px;">海底捞 | 智慧库房管理平台</div>
       </div><br/>
       <el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" class="col">
         <div class="block"></div>
