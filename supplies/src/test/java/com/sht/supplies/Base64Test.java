@@ -42,9 +42,10 @@ public class Base64Test {
 
     @Test
     public void test() {
-        LocalDate endDate = LocalDate.now();
+        /*LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusMonths(1);
-        System.out.println(startDate);
+        System.out.println(startDate);*/
+        System.out.println(DigestUtil.md5Hex("1234567"));
     }
 
     @Test

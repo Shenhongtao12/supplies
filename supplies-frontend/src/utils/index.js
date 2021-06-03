@@ -11,7 +11,7 @@
  }
 
  export function formateDates (time) {
-  return  moment(time).format("YYYY-MM-DD")
+  return  moment(time).format("YYYY-MM")
 }
 
  export function parseTime(time, cFormat) {
