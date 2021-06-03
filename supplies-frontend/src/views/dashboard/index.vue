@@ -826,6 +826,9 @@ export default {
       return url;
     },
     showCreate() {
+      if (this.$refs['tempArticle'] !== undefined) {
+          this.$refs['tempArticle'].resetFields();
+      }
       //显示新增对话框
       this.tempArticle.id = "";
       this.tempArticle.partNumber = "";
@@ -842,6 +845,9 @@ export default {
       this.dialogFormAdd = true;
     },
     showUpdate($index) {
+      if (this.$refs['tempArticle'] !== undefined) {
+          this.$refs['tempArticle'].resetFields();
+      }
       //显示修改对话框
       this.tempArticle.id = this.list[$index].id;
       this.tempArticle.partNumber = this.list[$index].partNumber;

@@ -281,6 +281,7 @@
               :key="item.id"
               :label="getGoodsName(item)"
               :value="item.id"
+              :disabled="true"
             >
             </el-option>
           </el-select>
@@ -524,6 +525,9 @@ export default {
       return "【" + item.partNumber + "】 " + item.title;
     },
     showCreate() {
+      if (this.$refs['tempArticle'] !== undefined) {
+          this.$refs['tempArticle'].resetFields();
+      }
       //显示新增对话框
       this.tempArticle.id = "";
       this.tempArticle.amount = "";
@@ -558,20 +562,20 @@ export default {
       this.dialogFormUpdate = true;
     },
     createEmployee(tempArticle) {
-      const num =
-        this.tempArticle.amount +
-        this.tempArticle.bigAmount * this.tempArticle.repertory;
-      const body = {
-        amount: num,
-        goodsId: this.tempArticle.goodsId,
-        remark: this.tempArticle.remark,
-        userId: this.tempArticle.userId,
-      };
-      if (num == 0) {
-        this.$message.error("请检查领取数量！");
-      } else {
-        this.$refs[tempArticle].validate((valid) => {
-          if (valid) {
+      this.$refs[tempArticle].validate((valid) => {
+        if (valid) {
+          const num =
+            this.tempArticle.amount +
+            this.tempArticle.bigAmount * this.tempArticle.repertory;
+          const body = {
+            amount: num,
+            goodsId: this.tempArticle.goodsId,
+            remark: this.tempArticle.remark,
+            userId: this.tempArticle.userId,
+          };
+          if (num == 0) {
+            this.$message.error("请检查领取数量！");
+          } else {
             this.api({
               url: "/outStock",
               method: "post",
@@ -589,25 +593,25 @@ export default {
               }
             });
           }
-        });
-      }
+        }
+      });
     },
     updateAdministrator(tempArticle) {
-      const num =
-        this.tempArticle.amount +
-        this.tempArticle.bigAmount * this.tempArticle.repertory;
-      const body = {
-        amount: num,
-        goodsId: this.tempArticle.goodsId,
-        remark: this.tempArticle.remark,
-        userId: this.tempArticle.userId,
-        id: this.tempArticle.id,
-      };
-      if (num == 0) {
-        this.$message.error("请检查领取数量！");
-      } else {
-        this.$refs[tempArticle].validate((valid) => {
-          if (valid) {
+      this.$refs[tempArticle].validate((valid) => {
+        if (valid) {
+          const num =
+            this.tempArticle.amount +
+            this.tempArticle.bigAmount * this.tempArticle.repertory;
+          const body = {
+            amount: num,
+            goodsId: this.tempArticle.goodsId,
+            remark: this.tempArticle.remark,
+            userId: this.tempArticle.userId,
+            id: this.tempArticle.id,
+          };
+          if (num == 0) {
+            this.$message.error("请检查领取数量！");
+          } else {
             this.api({
               url: "/outStock",
               method: "put",
@@ -625,8 +629,8 @@ export default {
               }
             });
           }
-        });
-      }
+        }
+      });
     },
     deleteAdministrator($index) {
       this.$confirm("确定删除这条领用记录吗?", "提示", {

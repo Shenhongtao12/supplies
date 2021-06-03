@@ -252,7 +252,7 @@ export default {
       },
       rules: {
         name: [
-          { message: "请输入姓名", trigger: "blur" },
+          { required: true, message: "请输入姓名", trigger: "blur" },
           {
             min: 2,
             max: 10,
@@ -263,7 +263,7 @@ export default {
       },
       dataVerify: {
         workNumber: [
-          { message: "请输入工号", trigger: "blur" },
+          { required: true, message: "请输入工号", trigger: "blur" },
           {
             min: 4,
             max: 20,
@@ -272,7 +272,7 @@ export default {
           },
         ],
         name: [
-          { message: "请输入姓名", trigger: "blur" },
+          { required: true, message: "请输入姓名", trigger: "blur" },
           {
             min: 2,
             max: 10,
@@ -524,20 +524,26 @@ export default {
       return (this.listQuery.page - 1) * this.listQuery.size + $index + 1;
     },
     showCreate() {
+      if (this.$refs['tempArticle'] !== undefined) {
+          this.$refs['tempArticle'].resetFields();
+      }
+      this.dialogFormAdd = true;
       //显示新增对话框
       this.tempArticle.id = "";
       this.tempArticle.name = "";
       this.tempArticle.workNumber = "";
       this.dialogStatus = "create";
-      this.dialogFormAdd = true;
     },
     showUpdate($index) {
+      this.dialogStatus = "update";
+      this.dialogFormUpdate = true;
+      if (this.$refs['tempArticle'] !== undefined) {
+          this.$refs['tempArticle'].resetFields();
+      }
       //显示修改对话框
       this.tempArticle.id = this.list[$index].id;
       this.tempArticle.name = this.list[$index].name;
       this.tempArticle.workNumber = this.list[$index].workNumber;
-      this.dialogStatus = "update";
-      this.dialogFormUpdate = true;
     },
     createEmployee(tempArticle) {
       this.$refs[tempArticle].validate((valid) => {

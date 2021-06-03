@@ -247,6 +247,7 @@
               :key="item.id"
               :label="getGoodsName(item)"
               :value="item.id"
+              :disabled="true"
             >
             </el-option>
           </el-select>
@@ -776,6 +777,9 @@ export default {
       return (this.listQuery.page - 1) * this.listQuery.size + $index + 1;
     },
     showCreate() {
+      if (this.$refs['tempArticle'] !== undefined) {
+          this.$refs['tempArticle'].resetFields();
+      }
       //显示新增对话框
       this.tempArticle.id = "";
       this.tempArticle.amount = "";

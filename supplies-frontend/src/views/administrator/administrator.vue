@@ -440,6 +440,9 @@ export default {
       return (this.listQuery.page - 1) * this.listQuery.size + $index + 1;
     },
     showCreate() {
+      if (this.$refs['tempArticle'] !== undefined) {
+          this.$refs['tempArticle'].resetFields();
+      }
       //显示新增对话框
       this.tempArticle.id = "";
       this.tempArticle.name = "";
@@ -449,6 +452,9 @@ export default {
       this.dialogFormAdd = true;
     },
     showUpdate($index) {
+      if (this.$refs['tempArticle'] !== undefined) {
+          this.$refs['tempArticle'].resetFields();
+      }
       //显示修改对话框
       this.tempArticle.id = this.list[$index].id;
       this.tempArticle.name = this.list[$index].name;
@@ -459,6 +465,9 @@ export default {
       this.dialogFormUpdate = true;
     },
     showUpdatePassword($index) {
+      if (this.$refs['passwordform'] !== undefined) {
+          this.$refs['passwordform'].resetFields();
+      }
       //显示修改密码对话框
       this.passwordform.oldPassword="";
       this.passwordform.password="";
