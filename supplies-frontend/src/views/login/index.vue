@@ -1,11 +1,10 @@
 <template>
   <div class="login1">
-    <div class="logoText">
-      <img style="width: 6%; height: 6%" src="./log.png" />
-      <div class="text">海底捞 | 智慧库房管理平台</div>
-    </div>
-
     <el-row :gutter="10" class="main">
+      <div class="logoText">
+        <img style="width: 8%; height: 7%" src="./log.png" />
+        <div class="text" style="font-size: 18px; margin-bottom: 10px;">海底捞 | 智慧库房管理平台</div>
+      </div><br/>
       <el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" class="col">
         <div class="block"></div>
       </el-col>
@@ -201,7 +200,14 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-body {
+// body {
+//   width: 100%;
+//   height: 100vh; /**屏幕高度百分百*/
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+.login1 {
   width: 100%;
   height: 100vh; /**屏幕高度百分百*/
   display: flex;
@@ -269,10 +275,10 @@ body {
   display: table-cell;
   vertical-align: middle;
 }
-.logoText{
+.logoText {
   margin-left: 10%;
 }
-.text{
+.text {
   margin-left: 8%;
   margin-top: -4%;
 }
