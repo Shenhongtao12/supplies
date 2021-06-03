@@ -460,12 +460,9 @@ export default {
     },
     showUpdatePassword($index) {
       //显示修改密码对话框
-      this.tempArticle.id = this.list[$index].id;
-      this.tempArticle.name = this.list[$index].name;
-      this.tempArticle.workNumber = this.list[$index].workNumber;
-      this.tempArticle.phone = this.list[$index].phone;
-      // this.tempArticle.password = this.list[$index].password;
-      this.tempArticle.password = "******";
+      this.passwordform.oldPassword="";
+      this.passwordform.password="";
+      this.passwordform.qrpassword="";
       this.dialogFormUpdatePassword = true;
     },
     createEmployee(tempArticle) {
