@@ -11,6 +11,10 @@
  }
 
  export function formateDates (time) {
+  return  moment(time).format("YYYY-MM-DD")
+}
+
+export function formateMonth (time) {
   return  moment(time).format("YYYY-MM")
 }
 

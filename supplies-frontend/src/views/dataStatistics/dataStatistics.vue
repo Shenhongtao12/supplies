@@ -128,8 +128,7 @@
   </div>
 </template>
 <script>
-import { formateDates } from "@/utils/index";
-import { Base64 } from "js-base64";
+import { formateMonth } from "@/utils/index";
 
 export default {
   data() {
@@ -181,7 +180,7 @@ export default {
     getList() {
       let query = { ...this.listQuery };
       if (this.listQuery.data) {
-        query.date = formateDates(this.listQuery.data);
+        query.date = formateMonth(this.listQuery.data);
       }
       this.listLoading = true;
       this.api({
