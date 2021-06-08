@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.sht.supplies.common.PageResult;
 import com.sht.supplies.entity.Statistical;
 import com.sht.supplies.mapper.StatisticalMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,12 +13,14 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @author Aaron
  * @date 2021/5/17 19:15
  */
 @Service
+@Slf4j
 public class StatisticalService {
 
     @Autowired
@@ -27,8 +30,9 @@ public class StatisticalService {
      * 每月1号自动统计当月用货量、库存量
      * 0 0 0 1 * ?
      */
-    @Scheduled(cron = "0 0 0 1 * ?")
+    @Scheduled(cron = "0 10 0 L * ?")
     public void autoStatistical() {
+        log.info("自动统计数据开始: " + LocalDateTime.now());
         statisticalMapper.autoStatistical();
     }
 

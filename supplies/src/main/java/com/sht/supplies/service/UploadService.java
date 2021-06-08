@@ -38,7 +38,7 @@ public class UploadService extends BaseCommon {
                 Long size = file.getSize();
                 if (size >= 2 * 1024 * 1024) {
                     log.error("文件过大：" + size + " 字节");
-                    return ERROR("文件大小不能超过10M");
+                    return ERROR("文件大小不能超过2M");
                 }
                 //原图
                 String fileName = file.getOriginalFilename();

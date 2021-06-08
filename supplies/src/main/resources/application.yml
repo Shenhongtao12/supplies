@@ -2,8 +2,8 @@ server:
   port: 8888
 database:
   url: jdbc:mysql://172.24.77.44:3306/supplies?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong
-  username: root
-  password: kindy0916
+  username: suppuser
+  password: suppuser
 spring:
   datasource:
     url: ${database.url}
